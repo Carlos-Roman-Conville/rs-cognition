@@ -3,3 +3,4 @@ export * from "./types.ts";
 export * from "./beliefs.ts";
 export * from "./attention.ts";
 export * from "./perception.ts";
+export * from "./memory.ts";
