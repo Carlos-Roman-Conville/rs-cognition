@@ -9,3 +9,4 @@ export * from "./actions.ts";
 export * from "./evaluate.ts";
 export * from "./select.ts";
 export * from "./personality.ts";
+export * from "./learning.ts";

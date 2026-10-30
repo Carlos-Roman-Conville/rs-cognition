@@ -1,21 +1,48 @@
 # HANDOFF: cognition
 
 ## State
-Units 2661–2666 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
+Units 2661–2667 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
-exported from `src/index.ts`.
+exported from `src/index.ts`, plus outcome learning and KL attribution.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
 Attention implements TVA weights, need-based pertinence and the identity/default personality hook. Perception
 implements equal-variance SDT, categorical identification, Weber noise, declared false alarms and null evidence.
 
 ## Next
-Units 2667–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
+Units 2668–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
 
 ## Blocked
 Nothing.
 
 ## Gotchas
+- Unit 2667: `learnOutcome(inputs, memory, view, counters, personality?)` validates the outcome's cause against
+  this mind's intention id, computes `r_obs - EU(intention)`, updates declared latents once, attributes the
+  largest posterior-to-prior KL, and encodes one episode. Supply the EU saved at intention formation (not a
+  refreshed score), original action/context, observed feedback, and a pure subjective appraisal callback.
+  The reducer owns event wrapping, outcome deduplication and intention completion; this function emits data.
+- Learning adapters are host naive-model likelihoods over observations, not objective outcome inputs.
+  Discrete likelihood arrays follow the existing categorical support (existence: present, absent); Gaussian
+  adapters must supply a conjugate likelihood's mean/variance in the latent; reliability adapters supply
+  observed Bernoulli evidence and its weight. All adapters/hooks read the same pre-update memory snapshot.
+  Duplicate update targets or attribution ids are rejected. No source code branches on scenario/action names.
+- Proposed learning conventions: discrete likelihood floor `1e-12`, attribution epsilon `1e-6` nats,
+  effective inertia `min(1, interpret.eta * learning.rate)` with neutral base rate 1. Configured eta=0
+  overrides hooks; with `encode: false`, memory and counters retain identity. Floor applies to likelihoods,
+  never prior support. Equal/below-epsilon moves attribute chance; equal maxima use declared latent order.
+  Beta reliability uses full Beta KL, not Bernoulli KL of its mean. Singular KL is tagged `"Infinity"`
+  in traces; disabled half-life is `null`, keeping JSON lossless. Rate affects this outcome update; hook d
+  and half-life are reported only, with future retrieval/drift wiring belonging to the personality layer.
+- Unit 2667 integration verifies refusal lowers generosity, lost combat raises believed opponent strength
+  relative to self, and exposed broken promise lowers Beta reliability. Identical later testimony is weighted
+  by that changed reliability before entering the belief-only action model. Each case lowers subsequent EU
+  and softmax choice probability, with separate belief-only and memory-only checks and a frozen control.
+  Learning is level 4 and attribution level 5; these are formula/integration checks, not empirical validation.
+  Independent V2 and benchmark validation remain with unit 2671 and the benchmark report. Sibling-repository
+  validation was not performed under the folder-only rule. Existing mechanisms/specs were left intact;
+  the requested module/tests and public export are the intended exception to the broad Don't globs.
+- Unit 2667 verification: 17 focused tests pass. Final required gate passed: both files present,
+  all 137 tests across 13 files pass, and `npx tsc --noEmit` passes.
 - Unit 2666: `generateActions(inputs, view, personality?)` takes a host repertoire and a separate mandatory
   `wait` definition. The fallback's id is host data, with no reserved action id in the engine. It must have no
   prerequisites, zero capacity/cost and one epoch. The fallback is restored if a generate hook drops it.
