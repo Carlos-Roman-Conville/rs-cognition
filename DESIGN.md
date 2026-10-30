@@ -1,7 +1,9 @@
 # Cognition: design (P7 baseline, Cognition keeper, 2026-10-30)
 
-**Status: proposed, awaiting Rex's approval.** Nothing is built. The belt units in
-`Games/Card Games/_agent/queue/cognition/` all wait on the marker unit 2659 (`cognition-design-approved-by-rex`).
+**Status: approved (Rex, 2026-10-30)**: C-Q1 to C-Q8 as proposed; C-Q4 kept (personality only after CB-1 to CB-7
+pass); the crude-formula plan of §9; with the universal motivational architecture folded into §2.2. The belt units
+in `Games/Card Games/_agent/queue/cognition/` are released. C-R2 (appetite and the eating rule, DUP-49) still waits
+on Rex in overlap batch 2.
 
 Every item is marked **(Rex)** = Rex's decision, **proposed** = the Cognition keeper's proposal, or **open** = a
 question for Rex or another owner (§12 lists them). Evidence levels are PLATFORM.md §4: (1) physical or
@@ -112,9 +114,51 @@ Also an explicit **null observation** for every attended location with no detect
 
 ### 2.2 Needs, goals and motivational priorities (rows `cognition.needs.drive`, `cognition.goals.objectives`)
 
-**Felt needs.** Each need `k` has an internal deficit `h_k ∈ [0,1]` and a setpoint `h*_k` (0 unless configured).
-Species configuration lists the needs and weights; the baseline human set (proposed): hunger, safety, social
-connection; others (thirst, warmth, rest, sex) are configuration rows added when their signals exist.
+**(Rex, 2026-10-30) A universal motivational architecture.** Motivations **compete and interact by circumstance**;
+nothing executes top-down. A hungry person can protect a child; someone in danger can pursue status. The frameworks
+used, each for what its evidence supports:
+
+| Framework | Used for | Evidence (PLATFORM §4) |
+|---|---|---|
+| Homeostatic regulation (Cannon 1932; Keramati & Gutkin 2014 as the RL formulation) | physiological needs as deviations from setpoints; reward as drive reduction | physiology strong (2); the motivational model 4 |
+| Allostatic regulation (Sterling & Eyer 1988; Sterling 2012) | anticipated bodily demands: acting before a deficit arrives | 3–4 |
+| Self-Determination Theory (Deci & Ryan 1985, 2000; Ryan & Deci 2017) | autonomy, competence and relatedness as psychological needs | 2 (substantial cross-cultural support) |
+| Maslow 1943 | the **classification** of needs only (physiological, safety, belonging, esteem/status, growth/curiosity); **never** a priority pyramid; the strict hierarchy is weakly supported (Wahba & Bridwell 1976) | 3 as a taxonomy |
+| Reinforcement learning (Sutton & Barto 2018; Schultz, Dayan & Montague 1997, reward prediction error) | how outcomes alter future choices (§2.5) | 2 |
+| Expected-utility decision theory (von Neumann & Morgenstern 1944; prospect-theory loss aversion) | choosing among actions (§2.4) | 1 normative, 2 descriptive with known violations |
+| Active inference (Friston 2010; Parr, Pezzulo & Friston 2022) | a possible unifying framework, held as an alternative to test, not adopted | 5 (debated) |
+
+**Motivational pressure (proposed starting model).**
+
+```
+M_i(t) = w_i · D_i(t) · S_i(t)          priority_i(t) = M_i(t) / Σ_j M_j(t)
+```
+
+`w_i` the individual's sensitivity to need `i` (configuration; identical across the benchmark's minds), `D_i(t) =
+|h*_i − h_i(t)| ∈ [0,1]` the degree of unmet need, `S_i(t) ≥ 0` the situational salience: how strongly the mind's
+current observations and beliefs bear on the need (`S_i = 1 + Σ_c a_c · η(c, i)` over attended cues tagged with the
+need, e.g. food in sight raises hunger's salience; proposed, level 4). Priority feeds attention pertinence (§2.1) and
+which goals are formed; the reward that evaluation uses stays the homeostatic drive reduction below, so pressure
+steers attention and goal formation while drive reduction scores outcomes: two roles, one deficit, no second
+penalty. **Open extensions** (C-M1…C-M3): interactions between needs (one need's pressure scaling another's), urgency
+thresholds (a deficit beyond which a need preempts), allostatic anticipation (`D_i` including the deficit the mind
+predicts over its horizon), and long-term goals feeding `M` as needs do.
+
+**Boundaries (Rex, restated).** Reality owns physiological signals and biological deficits: hunger, thirst, pain,
+fatigue, temperature, reproductive state. Cognition owns motivational appraisal, competing priorities, goal
+formation (safety, belonging, autonomy, status, curiosity, goals, values) and action selection. Cognition computes no
+biological need and applies no duplicate motivational penalty: a physiological `D_i` is Reality's signal read
+through its port, and the drive never feeds back a physiological effect. **Personality never manufactures
+motivations** (§9): its hooks cannot touch `w_i`, `D_i`, setpoints or the need list; an Ne-dominant is not
+automatically more curious or less hungry.
+
+**Needs are data, extensible from the first unit (Rex).** A need is a record, never an enum:
+`{ id, category (Maslow class; SDT tag autonomy | competence | relatedness where it applies), source, setpoint,
+weight w, salience tags }`, where `source` is one of `{ signal: <quantity id> }` (Reality's deficit, e.g.
+`body.hunger_signal`), `{ appraisal: <belief query> }` (e.g. safety = believed probability of serious harm),
+`{ accumulator: { rate, reset_on: <outcome tags> } }` (e.g. social connection). Adding a need (thirst, warmth,
+status, curiosity, autonomy) is a configuration row, no code. **The benchmark's set stays hunger, safety, social
+connection (Rex, C-Q5).**
 
 | Need | Deficit `h_k` comes from | Owner of the signal |
 |---|---|---|
@@ -130,8 +174,8 @@ D(h) = ( Σ_k w_k · |h*_k − h_k|^n )^(1/m)        n > m ≥ 1        r(h → 
 
 Reward is drive reduction; with `n > m` urgency grows faster than the deficit, so a starving mind weighs food above
 everything (the model's documented property; the paper's defaults `n = 4, m = 3` are the proposed starting values).
-**Priority** of need `k` = its share of the drive gradient, `priority_k = (∂D/∂h_k) / Σ_j ∂D/∂h_j`; it feeds
-attention pertinence (§2.1) and is reported in every decision trace.
+**Priority** is the share of motivational pressure `M` defined above (it replaces the drive-gradient share of the
+first draft); it feeds attention pertinence (§2.1) and is reported in every decision trace with `w`, `D` and `S`.
 
 **Personal objectives.** A host (or Story, ENGINES.md "story defines motives") may give a mind standing goals
 `g = { id, value V_g, progress p_g ∈ [0,1], deadline? }`; an outcome that advances `p_g` adds `V_g · Δp_g` to the
@@ -571,6 +615,9 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q7 | V2 needs the Technion Prediction Tournament data (public, Erev et al. 2010); the unit fetches it, or Rex downloads it if the belt cannot | Rex if fetch fails |
 | C-Q8 | One-action lookahead in the baseline; planning later | Rex |
 | C-Q9 | Mistaken identity (beliefs keyed by the mind's own handles) deferred | proposed |
+| C-M1 | Interactions between needs (one need's pressure scaling another's) | open, after the baseline |
+| C-M2 | Urgency thresholds (preemption beyond a deficit) | open, after the baseline |
+| C-M3 | Allostatic anticipation and long-term goals in `M` | open, after the baseline |
 | C-K1 | Per-mind RNG streams | **agreed 2026-10-30**: `get(mechanismId, entityId)`, kernel unit 2660 (§7) |
 | C-K2 | `cognition` and `host` phases | **agreed 2026-10-30**, kernel unit 2660 (§7) |
 | C-R1 | Port names and the hunger boundary | **agreed 2026-10-30** with Reality and the registry; `percept.detectability` renamed `body.detectability` (§8) |
@@ -597,3 +644,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | Lane opened (Rex's directive); design drafted for approval; units 2659… drafted behind the marker |
 | 2026-10-30 | Kernel, Reality and registry keepers replied: C-K1, C-K2, C-R1, C-G1 agreed (kernel unit 2660; rows and quantities registered as planned; `body.detectability` rename); C-R2 (appetite and eating rule) raised for Rex |
 | 2026-10-30 | Rex's direction on the personality layer folded into §9: crude cited formulas F1–F13, gaps off, codex fingerprint check, versions side by side, T-2 derived traits; units 2673–2676 |
+| 2026-10-30 | **Approved by Rex** (C-Q1–C-Q8 as proposed, C-Q4 kept, crude-formula plan); §2.2 amended with the universal motivational architecture (`M_i = w_i D_i S_i`, needs as data, Maslow as classification only); marker 2659 released |
