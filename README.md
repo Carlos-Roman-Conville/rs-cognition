@@ -1,0 +1,21 @@
+# @rex/cognition
+
+The Cognition engine: it generates an organism's **intentions** from perceived conditions, internal needs,
+knowledge, memory and cognitive structure, and keeps the objective world state apart from the individual's
+subjective interpretation. Policy: `a_t = π(o_t, m_t, n_t, p)`, with personality `p` a null model in the baseline.
+Design: `DESIGN.md`.
+
+## The fence (DESIGN §0)
+
+- Cognition outputs intentions; it never decides whether an attempt succeeds (the engine owning that state does).
+- Physics, neurology, capacity, detectability and hunger's body side reach it only through ports; time, ids,
+  events and RNG come from `@rex/kernel`, the only package `src/` may import (besides relative paths).
+- No `Math.random`, no `Date.now`: `test/fence.test.ts` enforces all of this.
+
+## Test
+
+```
+npm install
+npm test            # vitest run
+npm run typecheck   # tsc --noEmit
+```

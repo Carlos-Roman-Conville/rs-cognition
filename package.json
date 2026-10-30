@@ -1,0 +1,22 @@
+{
+  "name": "@rex/cognition",
+  "version": "0.0.1",
+  "description": "The cognition engine: perception, needs, beliefs and memory, action selection and learning. Generates an organism's intentions; never decides whether an attempt succeeds. A pure function of its inputs plus kernel streams; no game imports.",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@rex/kernel": "file:../kernel"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.5"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
