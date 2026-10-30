@@ -1,7 +1,8 @@
 # HANDOFF: cognition
 
 ## State
-Units 2661–2664 done: package scaffold, shared subjective types and belief store, attention, perception and episodic memory,
+Units 2661–2666 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
+needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
 exported from `src/index.ts`.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
@@ -9,12 +10,50 @@ Attention implements TVA weights, need-based pertinence and the identity/default
 implements equal-variance SDT, categorical identification, Weber noise, declared false alarms and null evidence.
 
 ## Next
-Units 2665–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
+Units 2667–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
 
 ## Blocked
 Nothing.
 
 ## Gotchas
+- Unit 2666: `generateActions(inputs, view, personality?)` takes a host repertoire and a separate mandatory
+  `wait` definition. The fallback's id is host data, with no reserved action id in the engine. It must have no
+  prerequisites, zero capacity/cost and one epoch. The fallback is restored if a generate hook drops it.
+  Candidate order is host order followed by the fallback, or the hook's declared order. Action/target pairs
+  must be unique. Each prerequisite must independently meet `thetaPre` (proposed 0.5); no product or assumption
+  of independent evidence is introduced. Capacity is the declared `body.capacity_functional` scalar.
+- Candidate now includes target kind, capacity requirement, evaluated prerequisites and predicted outcome
+  effects. `outcomeSpace` supplies outcome ids, predicted need deficits and absolute goal progress; missing
+  keys leave current values unchanged. Its order must match the pure belief-only `naiveModel` distribution.
+  These are predictions, never applied physiology or resolved outcomes. Unknown need/goal keys throw.
+- `evaluateActions(generation, view, episodes, context, t, personality?)` reads the interpretation hook's
+  `alpha0`, `lambda` and `confidence` per candidate domain. Memory remains the sole theory/experience blend.
+  The host supplies matching episode context features (including target distinctions when relevant).
+  Proposed confidence convention: multiply total success mass by confidence in [0,1], move removed mass to
+  failures proportionally, or uniformly when failure mass was zero. A nonidentity confidence requires explicit
+  boolean success flags on every outcome and at least one failure outcome; no outcome id implies success.
+  `InterpretParams` also exposes eta, weberFraction and testimonyFloor; the last two are neutral zero placeholders
+  at this evaluation-only call site, not perceptual or testimony defaults. `LearningParams` exposes rate, d,
+  and beliefHalfLife in seconds. Wiring other mechanisms' interpret/learning hooks belongs to subsequent units.
+- `selectAction(evaluation, { mind, counters, current? }, stream)` takes the kernel stream for
+  `cognition.decision.select`. It returns intention data, updated kernel counters and a serializable SelectionTrace
+  extending DecisionTrace; the reducer must wrap new intentions in kernel events. One draw is consumed for a
+  re-choice, none for retained commitment. Completed/failed/impossible or absent candidates release commitment.
+  DESIGN §10's explicit κ=0 re-choice requirement resolves §2.4's tie boundary; positive κ keeps at equality.
+  A retained intention preserves its id, timestamp and original expectation; the trace records refreshed EUs.
+  Trace `probability` is the effective distribution (a point mass if committed); `softmaxProbability` preserves
+  the Luce distribution. Traces include P_hat before/after confidence, counts, reward terms, effective hook
+  parameters, prerequisites/capacity, beliefs, need w/D/S/priority, goals, episodes/context and the draw.
+- Unit 2666 evidence: Luce rule level 2, loss-aversion form level 2 and EU mapping level 4 as in DESIGN §2.4;
+  commitment's quantitative threshold is level 5, not empirically validated. V4 mixed-gamble acceptance boundaries
+  are formula verification only; independent V2/V4 validation remains pending. No sibling-repository audit was
+  performed under the folder-only rule. The task's broad `Don't src/**, test/**` was interpreted as protecting
+  unrelated mechanisms, with the explicitly requested modules, shared candidate/trace types and public exports
+  authorized by the task. DESIGN.md and codex/RULES.md were not changed.
+- Unit 2666 verification: 25 focused tests pass, including 100,000 choices within 3 SE of softmax, β=0/large β,
+  equal and extreme EUs, κ boundaries, host filtering, null-hook byte identity, kernel replay/stream isolation,
+  and observation→belief→memory→needs→candidate→EU→intention integration with named trace inputs.
+  Final required gate passed: eight files present, all 120 tests across 12 files pass, and `npx tsc --noEmit` passes.
 - Unit 2665: `evaluateNeeds(definitions, inputs)` returns felt needs in definition order; pass supplied
   signal deficits, the subjective belief store, previous accumulator levels, elapsed seconds, outcome tags,
   and attended cue memberships. Persist returned accumulator levels for the next interval. Missing inputs

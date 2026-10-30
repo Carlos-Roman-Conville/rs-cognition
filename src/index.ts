@@ -5,3 +5,7 @@ export * from "./attention.ts";
 export * from "./perception.ts";
 export * from "./memory.ts";
 export * from "./needs.ts";
+export * from "./actions.ts";
+export * from "./evaluate.ts";
+export * from "./select.ts";
+export * from "./personality.ts";

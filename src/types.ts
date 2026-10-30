@@ -166,13 +166,27 @@ export interface MemoryState {
   readonly reliability: readonly { readonly speaker: EntityHandle; readonly belief: BetaReliability }[];
 }
 
-/** DESIGN §2.4: a generated, subjective candidate; host repertoire expressions come later. */
+/** DESIGN §2.4: predicted deficits/progress, never changes applied to an engine. */
+export interface PredictedOutcome {
+  readonly id: string;
+  /** Omitted need/goal keys retain their current values (proposed). */
+  readonly deficits: Readonly<Record<string, number>>;
+  readonly goalProgress: Readonly<Record<string, number>>;
+  /** Host classification for the §9 confidence hook; never inferred from an id. */
+  readonly success?: boolean;
+}
+
+/** DESIGN §2.4: serializable subjective candidate, in host repertoire order. */
 export interface Candidate {
   readonly action: string;
   readonly target?: EntityHandle;
+  readonly targetKind: string;
   readonly domain: Domain;
   readonly duration: number;
   readonly cost: number;
+  readonly capacityRequired: number;
+  readonly preconditions: readonly { readonly id: string; readonly probability: number }[];
+  readonly effects: readonly PredictedOutcome[];
   readonly outcomes: CategoricalBelief;
 }
 
@@ -188,6 +202,8 @@ export interface Intention {
 
 export interface CandidateTrace {
   readonly candidate: Candidate;
+  /** DESIGN §2.4: P_hat after interpretation, distinct from the candidate's naive theory. */
+  readonly expectedOutcomes: CategoricalBelief;
   readonly expectedUtility: number;
   readonly probability: number;
 }
