@@ -1,0 +1,8 @@
+{
+  "description": "DESIGN §2.2 benchmark needs. Weights, setpoints and social rate (1/3600 per second) are proposed fixture parameters, not calibrated human data. Signals are supplied deficits; appraisal uses the mind's own self handle.",
+  "needs": [
+    { "id": "hunger", "category": "physiological", "source": { "signal": "body.hunger_signal" }, "setpoint": 0, "weight": 1, "salienceTags": ["food"] },
+    { "id": "safety", "category": "safety", "source": { "appraisal": { "about": "self", "attribute": "serious_harm", "value": "yes" } }, "setpoint": 0, "weight": 1, "salienceTags": ["threat"] },
+    { "id": "social_connection", "category": "belonging", "sdt": "relatedness", "source": { "accumulator": { "rate": 0.0002777777777777778, "reset_on": ["positive_interaction"] } }, "setpoint": 0, "weight": 1, "salienceTags": ["person"] }
+  ]
+}

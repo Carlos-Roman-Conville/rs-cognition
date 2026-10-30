@@ -15,6 +15,17 @@ Units 2665–2672, in order, each adding its exports to `src/index.ts`. Read eac
 Nothing.
 
 ## Gotchas
+- Unit 2665: `evaluateNeeds(definitions, inputs)` returns felt needs in definition order; pass supplied
+  signal deficits, the subjective belief store, previous accumulator levels, elapsed seconds, outcome tags,
+  and attended cue memberships. Persist returned accumulator levels for the next interval. Missing inputs
+  throw instead of silently manufacturing a need. Signal `level` is represented as setpoint + supplied deficit.
+- `drive`, `driveReward`, and `goalReward` are exported from the package. Goal reward is additive to drive
+  reduction; deadlines remain host metadata. Pressure never adds a second reward penalty.
+- `data/needs.human.json` supplies the three benchmark rows. Its weights, setpoints, one-hour social rate,
+  full reset on positive interaction, saturation, maximum membership across overlapping salience tags,
+  and uniform zero-pressure priorities are proposed conventions, not empirical validation.
+- Unit 2665: 12 focused tests and final gate (95 tests in eight files plus typecheck) passed.
+  No sibling-repository audit was performed under the folder-only task rule.
 - Unit 2664 API: `encodeEpisode(input, counters)` returns `{ episode, counters }`, minting local `ep.0001`
   ids with kernel prefix `ep` (kernel adds the dot). The encoding time is the first presentation;
   `episode.retrievals` contains only subsequent successful retrieval times. Records are immutable.
