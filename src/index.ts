@@ -1,3 +1,5 @@
-// @rex/cognition public surface. Stimulus is declared here but consumed only by perception.
+// @rex/cognition public surface; objective inputs are consumed only at the sensory boundary.
 export * from "./types.ts";
 export * from "./beliefs.ts";
+export * from "./attention.ts";
+export * from "./perception.ts";
