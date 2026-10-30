@@ -289,8 +289,8 @@ Planned rows, owning engine `cognition`, domain C, scope universal:
 | Row | Evidence | Writes (quantity ids, proposed scope `mind.`) | Reads |
 |---|---|---|---|
 | `cognition.attention.allocate` | 2 form / 4 mapping | `mind.attention_share` (1) | stimuli (host), `mind.need_priority` |
-| `cognition.perception.detect` | 2 (SDT) / 4 | `mind.observation` (record) | `percept.detectability` (stub → Reality P2), `mind.attention_share` |
-| `cognition.belief.update` | 4 (conservatism 2) | `mind.belief` (record) | `mind.observation`, `mind.testimony` |
+| `cognition.perception.detect` | 2 (SDT) / 4 | `mind.observation` (record) | `body.detectability` (stub → Reality P2), `mind.attention_share` |
+| `cognition.belief.update` | 4 (conservatism 2) | `mind.belief` (record) | `mind.observation`, `mind.testimony` (a host input until `cognition.communication.language` exists) |
 | `cognition.memory.episodic` | 2 (forgetting) / 4 | `mind.episode` (record), `mind.retrieval_p` (1) | outcomes, `mind.prediction_error` |
 | `cognition.needs.drive` | 4 | `mind.need_deficit` (1), `mind.drive` (1), `mind.need_priority` (1) | `body.hunger_signal` (stub → nutrition), `body.pain`, `mind.belief` (safety) |
 | `cognition.goals.objectives` | 4 | `mind.goal_progress` (1) | host goals, outcomes |
@@ -368,20 +368,20 @@ real hungry people choose in this scene. That is stated in the report (§10).
 | Kernel service | Use |
 |---|---|
 | `SimTime`, `MINUTE` etc. | epoch period `Δ` (host parameter; benchmark 10 min); memory activation in seconds |
-| `Scheduler`, `Process` | one process `cognition.tick` per population, phase `cognition`, after the body's processes at the same instant (reads finished physiology) and before the host's resolution phase |
+| `Scheduler`, `Process` | one process `cognition.tick` per population, phase `cognition`. **Agreed with the Kernel keeper (2026-10-30, kernel unit 2660):** the default order becomes `fast, cognition, host, day.settlement, day.economy, aggregate`: `cognition` after physiology at the same instant, `host` the phase where a host resolves intentions (named `host`, not `resolution`, to avoid confusion with kernel DESIGN §9) |
 | `EventBus` | emits `cognition.intention` / `cognition.attribution`; reads the host's outcome events by cursor; **causality**: an outcome's `cause` is the intention event id, which is how learning finds what it is learning about |
-| `streams` | `cognition.perception.detect`, `cognition.memory.retrieve`, `cognition.decision.select`. Per-mind independence needs a stream per (mechanism, mind) so adding a mind never shifts another's draws: proposed key `<mechanism id>@<qualified mind id>`, with the check script resolving the part before `@` to the registry row (open, C-K1) |
+| `streams` | `cognition.perception.detect`, `cognition.memory.retrieve`, `cognition.decision.select`. **Agreed (kernel unit 2660):** `streams(runSeed).get(mechanismId, entityId)`, seeded `mix32(mix32(runSeed, fnv1a32(mechanismId)), fnv1a32(entityId))`, so a mind's draws are independent of how many minds exist and of call order; snapshot key `<mechanism id>@<entity id>`; `kernel.json` lists mechanism ids only. Call `get('cognition.decision.select', 'cognition/mind.0002')` |
 | `mint`, `qualify` | `mind.`, `bel.`, `ep.`, `int.` ids; `cognition/mind.0001` at the boundary |
 | `Runner`, `take`/`restore`, `canonical` | the reducer, replay from the initial snapshot, byte-identical comparison |
-| `ports`, `kernel.json` | declared inputs (`body.hunger_signal`, `body.pain`, `body.capacity_functional`, `percept.detectability`) and outputs (§5) |
+| `ports`, `kernel.json` | declared inputs (`body.hunger_signal`, `body.pain`, `body.capacity_functional`, `body.detectability`) and outputs (§5) |
 | `transaction` | not needed in the baseline (Cognition never writes another engine's state) |
 
 ## 8. What Cognition consumes from Reality (to agree with the Reality & Species keeper)
 
 | Input | Unit | Today | Contract proposed |
 |---|---|---|---|
-| detectability `d'` per observer and cue (sight, sound) | 1 | none (P2) | a declared stub the host sets; P2 optics and acoustics write it per observer, cue and channel; the AUDIT §3b "detection by sight and sound" splits as Reality = signal at the observer, Cognition = detection, attention and interpretation |
-| hunger signal | 1 (0–1) | `realism.nutrition.hunger_fullness` documented-only | Reality writes `body.hunger_signal`; Cognition reads it as the hunger deficit. Thirst, cold, fatigue (`body.sleep_debt`), pain (`body.pain`) by the same pattern when configured |
+| detectability `d'` per observer and cue (sight, sound): `body.detectability` | 1 | none (P2) | **agreed (Reality, registry; renamed from `percept.detectability`, alias recorded):** a host stub until P2 optics and acoustics write it per observer, cue and channel; Reality = signal at the observer, Cognition = attention, criterion, identification, belief. **d' already includes the observer's eyesight and hearing (DUP-37, the capacity combination): perception never applies a sensory-capacity factor again** |
+| hunger signal | 1 (0–1) | `realism.nutrition.hunger_fullness` documented-only | **agreed:** Reality writes `body.hunger_signal` (fullness and hunger stay Reality's signals, built later from gut and energy state); Cognition reads it as the deficit and writes only the felt drive and priority, which never feed back a second physiological effect. Thirst, cold and pain (`body.pain`, written by `realism.medicine.pain`) by the same pattern; for sleep, the **single** sleep-pressure quantity DUP-12 settles on (proposed: neurology's adenosine pressure), never `body.sleep_debt` as well. **New overlap (Reality → registry → Rex):** `nutrition.json`'s `appetite` (hunger × palatability × state) and `eating-rule` (eat if appetite > 0.3 or hunger > 0.8) are decisions, duplicate authority with Cognition's drive and selection; proposed owner Cognition (eating is an action evaluated like any other; palatability a taste percept Reality may keep), the rows becoming restatements; nothing moves until Rex approves (C-R2) |
 | functional capacity | 1 (0–1 per action class) | DUP-15, planned | Reality writes `body.capacity_functional`; generation reads it; Cognition never computes strength |
 | mood and arousal bias | 1 | `realism.neurology.circuits` writes `body.circuit_outputs` | **not read in the baseline**; when read, as a modulation of `β`, `λ` or pertinence that Reality's row defines, never a second mood model |
 
@@ -462,10 +462,11 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q7 | V2 needs the Technion Prediction Tournament data (public, Erev et al. 2010); the unit fetches it, or Rex downloads it if the belt cannot | Rex if fetch fails |
 | C-Q8 | One-action lookahead in the baseline; planning later | Rex |
 | C-Q9 | Mistaken identity (beliefs keyed by the mind's own handles) deferred | proposed |
-| C-K1 | Per-mind RNG streams `<mechanism>@<mind>`, and the check script's rule 4 resolving them | Kernel keeper |
-| C-K2 | A `cognition` phase in `order.json` after body processes, before host resolution | Kernel keeper |
-| C-R1 | `body.hunger_signal`, `body.capacity_functional`, `percept.detectability` as the port names; hunger boundary deficit (Reality) vs drive (Cognition) | Reality & Species keeper |
-| C-G1 | `mind.` as a quantity scope; the 13 rows of §5 | registry keeper |
+| C-K1 | Per-mind RNG streams | **agreed 2026-10-30**: `get(mechanismId, entityId)`, kernel unit 2660 (§7) |
+| C-K2 | `cognition` and `host` phases | **agreed 2026-10-30**, kernel unit 2660 (§7) |
+| C-R1 | Port names and the hunger boundary | **agreed 2026-10-30** with Reality and the registry; `percept.detectability` renamed `body.detectability` (§8) |
+| C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | Rex (a new overlap group, raised by Reality to the registry keeper) |
+| C-G1 | `mind.` scope, 13 rows, 5 reserved rows, 14 quantities + `mind.testimony` | **registered 2026-10-30** (planned); DUP-46's owner still Rex's in batch 5 |
 
 ## Sources (to be confirmed and expanded by each unit)
 
@@ -485,3 +486,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | Date | What |
 |---|---|
 | 2026-10-30 | Lane opened (Rex's directive); design drafted for approval; units 2659… drafted behind the marker |
+| 2026-10-30 | Kernel, Reality and registry keepers replied: C-K1, C-K2, C-R1, C-G1 agreed (kernel unit 2660; rows and quantities registered as planned; `body.detectability` rename); C-R2 (appetite and eating rule) raised for Rex |
