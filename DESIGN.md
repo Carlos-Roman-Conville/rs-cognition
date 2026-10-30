@@ -253,9 +253,10 @@ memory.
 interface PersonalityModel {           // p: the slot, CTRL-7
   id: string
   pertinence(base: Record<string, number>, ctx: MindView): Record<string, number>      // attention, §2.1
-  inertia(base: number, domain: string, ctx: MindView): number                         // interpretation, η, §2.3
-  generate(candidates: readonly Candidate[], ctx: MindView): readonly Candidate[]     // strategy generation, §2.4
-  learning(base: LearningRates, domain: string, ctx: MindView): LearningRates          // learning, §2.5
+  interpret(base: InterpretParams, domain: Domain, ctx: MindView): InterpretParams      // interpretation: η, α0, λ, confidence, Weber w, testimony floor (§2.3, §2.4; §9)
+  generate(candidates: readonly Candidate[], base: GenerateParams, ctx: MindView)
+    : { candidates: readonly Candidate[]; params: GenerateParams }                       // strategy generation: κ, recombinations, other-mind model (§2.4; §9)
+  learning(base: LearningParams, domain: Domain, ctx: MindView): LearningParams        // learning: rate, memory decay d, belief half-life (§2.3, §2.5; §9)
 }
 const nullPersonality: PersonalityModel  // identity on every hook
 
@@ -265,8 +266,8 @@ function policy(o: Observation[], m: MemoryState /* beliefs + episodes */, n: Ne
 ```
 
 `MindView` is a read-only view of the mind's own beliefs, needs and parameters (never the world). `π` is pure given
-its arguments and the stream state, so a run is replayable. The `domain` strings are the extraverted domains Rex's
-theory names (§9) plus "body", "strategy", "people", "systems"; the null model ignores them.
+its arguments and the stream state, so a run is replayable. `Domain` is defined in §9 (Rex's four extraverted
+domains plus body, people, strategy, none); the null model ignores it.
 
 **Cognitive parameters θ** (individual, not personality; the benchmark varies these): decision temperature `β`,
 loss aversion `λ`, discount `γ`, belief inertia `η`, prior strength `α0`, memory decay `d`, retrieval threshold
@@ -387,37 +388,144 @@ real hungry people choose in this scene. That is stated in the report (§10).
 
 Until Reality writes these, the benchmark fixture supplies them, labelled fixture.
 
-## 9. The second layer: personality (Rex's theory; design only, nothing built)
+## 9. The second layer: personality (Rex's theory; crude formulas written now, switched on after the baseline)
 
 **(Rex)** The eight-function model is the intended personality architecture: the underlying cognitive structure
 changes how experience is processed (attention allocation, interpretation, strategy generation, learning), while
 experience, knowledge and circumstances shape observable behaviour. It never assigns predetermined behaviours to
-types. It is introduced after the baseline passes, so its contribution can be measured against the null model.
+types.
 
-The source is Rex's personality-matrix project (`Writing/Cognitive Function Diagnostic/personality matrix/`,
-`FUNCTIONS.md`, `THEORY.md`; read, never edited). What it already states maps onto the four hooks of §3 without
-naming any behaviour (proposed mapping; each line to be confirmed by Rex):
+**(Rex, 2026-10-30) The framing.** The eight functions are the lower layer of abstraction: primitives, "like
+binary code". The Big Five and neuroscience are higher-level descriptions of outcomes. The strongest demonstration
+Rex accepts follows from this: the function model should **derive** higher-level traits (openness,
+conscientiousness, risk-taking, social behaviour) from its mechanisms rather than define them. That is test T-2
+below.
 
-| Rex's statement (FUNCTIONS.md) | Hook | Proposed form |
-|---|---|---|
-| "Extraverted functions take in data from the external world; introverted functions deduce from the internal world"; the ratio tilts toward the dominant's attitude | interpretation | relative weight of observation vs prior: η for external evidence vs α0 (theory) per function attitude, scaled by stack position |
-| Se: the present moment, exact on the target; Si: the self's body as the reference model, accumulated over time; Ne: combining theories to a new conclusion; Ni: model the opponent's strategy through one's own | attention; strategy generation | Se raises pertinence of present physical cues; Si lengthens the memory retained for bodies (lower `d` in the body domain); Ne generates recombined candidates from the repertoire; Ni predicts another mind by running its own policy in the other's position (self-model theory of mind) |
-| "What it learns from a loss": Te the meta, Ne where to adapt, Se which physical forces can be exploited, Fe what makes a group cohere | learning | which latent an outcome's update and attribution favour (a learning-rate multiplier per domain) |
-| "The lower it sits in the stack, the less confident the user is with exploiting its domain" | all hooks | a weight per stack position, decreasing (its curve open) |
-| Systems vs people: behaviour an environment rewards is learned by everyone; the function's mark is being first and most effective | test design | the personality layer must show its effect as **speed and effectiveness of learning within a domain**, not as a fixed action preference; a model that predicts "type X steals" fails this design |
+**(Rex, 2026-10-30) How the layer is built.**
+1. **Crude formulas now, only from what is written.** Each statement in the codex (`FUNCTIONS.md`, `THEORY.md`)
+   becomes a formula marked `crude`, with the exact file and section beside it, so every formula traces to Rex's
+   line. Constants the text does not give are marked "crude constant, not in source".
+2. **Gaps stay off, never guessed.** Fi, Fe, Ti and the eight stack positions have no core codex entries yet.
+   Their hooks exist and do nothing until Rex writes them (FUNCTIONS.md rule 4: a gap is a gap).
+3. **Codex edits flag the formulas they touch.** The fingerprint check is described below.
+4. **Every version is kept.** Formula sets are versioned (`v1`, `v2`, …) and never edited once frozen. Old and new
+   run side by side under the same seeds, so a change to the theory shows its effect on behaviour. That comparison
+   is also a test of the theory.
+5. **Order (C-Q4, kept).** The crude formulas are written now but switch on only after the baseline passes CB-1 to
+   CB-7. Odd behaviour is then attributable either to the baseline or to the theory, never to both.
 
-Gaps, reported as gaps (FUNCTIONS.md rule 4): Ti, Fe and Fi have no core definition yet; the eight stack positions
-(Primary … Devil) are "not yet written"; B1–B3 are open in the source; Te's hypocrisy row is open. **"Light and
-crystal"**, named in the controller's brief as Rex's theory, does not appear in the personality-matrix files read
-(THEORY.md, FUNCTIONS.md, the profiles); where it is written is open (C-Q3).
+**Source.** The source is Rex's personality-matrix project, `Writing/Cognitive Function Diagnostic/personality
+matrix/`. It is read, never edited. Part A of FUNCTIONS.md (the day-cycle and weather auras) gives no formula,
+because its own text says the auras "describe aura, not mechanism". THEORY.md §1–§5 (face as phenotype) gives
+none either: that is appearance, not cognition. Only THEORY.md §1's focus line feeds attention (F6).
 
-**Later test (proposed): stable differences across situations.** Run each personality configuration through `S`
-scenarios (the hungry pair plus scenarios that reward each of the four extraverted domains: meta, adaptation,
-taking up space, cohesion) × many seeds; measure each configuration's behaviour profile per scenario; the claim
-"the hierarchy produces stable differences" passes if between-configuration variance exceeds within-configuration
-variance across scenarios (intraclass correlation with a stated threshold) **and** beats two controls: the null
-model with randomly drawn θ, and a shuffled-hook model with the same number of free parameters. This is a level-5
-hypothesis test; a negative result is a result.
+### The hooks (refining §3)
+
+```ts
+interface PersonalityModel {
+  id: string; version: string
+  pertinence(base: Record<string, number>, ctx: MindView): Record<string, number>          // attention
+  interpret(base: InterpretParams, domain: Domain, ctx: MindView): InterpretParams         // η, α0, λ, confidence, Weber w, testimony floor
+  generate(candidates: readonly Candidate[], base: GenerateParams, ctx: MindView): { candidates: readonly Candidate[]; params: GenerateParams } // κ, recombinations, other-mind model
+  learning(base: LearningParams, domain: Domain, ctx: MindView): LearningParams            // learning rate, memory decay d, belief half-life
+}
+type Domain = 'space' | 'adaptation' | 'meta' | 'cohesion' | 'body' | 'people' | 'strategy' | 'none'
+```
+
+Actions, cues and latents carry domain tags as host data. Rex's four extraverted domains come from "Ecosystems":
+space (Se/Si), adaptation (Ne/Ni), meta (Te/Ti) and cohesion (Fe/Fi). `nullPersonality` is identity on every hook.
+
+### The stack and the weights (crude)
+
+A configuration is an ordered stack of the four functions of a type. The stacks per type come from THEORY.md §3a
+and §3d, e.g. ENFJ = Fe Ni Se Ti. A function in position `i` = 1…4 has weight
+
+```
+ω_f = (5 − i) / 4        (1, 0.75, 0.5, 0.25);   ω_f = 0 for a function not in positions 1–4
+```
+
+The source is FUNCTIONS.md "The advantage–hypocrisy cycle", **Stack position and confidence**: "the lower it sits
+in the stack, the less confident the user is". Only the order is sourced; the linear form is a crude constant.
+Positions 5–8 (Oppositional … Devil) are **off**: FUNCTIONS.md "Not yet written".
+
+The attitude tilt is
+
+```
+Δ = ρ_E − ρ_I        ρ_E = Σ_{f extraverted} ω_f / Σ ω_f,    ρ_I = 1 − ρ_E
+```
+
+It counts all four positions, because FUNCTIONS.md "Attitudes" is stated "for all eight functions". With the
+standard alternating stack, Δ = +0.2 for an extraverted dominant and −0.2 for an introverted one.
+
+### v1 formulas (all `crude`; each cites FUNCTIONS.md unless marked THEORY.md)
+
+| Id | Statement (section) | Hook | Formula |
+|---|---|---|---|
+| F1 | Attitudes: **Direction of data**, **The ratio**, **Never pure** [CARLOS] | interpret | `η_obs' = clamp(η·(1 + Δ), η_min, 1)`; `α0' = α0·(1 − Δ)`. External data weighs more for an extraverted tilt, internal theory more for an introverted one. Both channels are always present, because \|Δ\| < 1 |
+| F2 | Attitudes: **Mastery and scope** [CARLOS] | pertinence | `π_j' = π_j^(1 − Δ)`, renormalised. An extraverted tilt flattens attention (wide, "scattered"); an introverted tilt sharpens it ("focused") |
+| F3 | Attitudes: **Failure and resilience** [CARLOS] | interpret | `λ' = λ·(1 − Δ)·(1 − max(Δ,0)·n_fail/(n_fail + N½))`. `N½ = 10` is a crude constant, not in the source. Extraverts fail more, get used to it and become resilient; introverts fear failure more. Isolation is not a formula: it should emerge from the higher λ on social failures |
+| F4 | **Systems vs people**: the shared mechanism, "what it learns from a loss" [CARLOS] | learning, pertinence | For domain `d` of extraverted function X (Te → meta, Ne → adaptation, Se → space): `lr_d' = lr·(1 + ω_X)`, and cues tagged `d` get `π' = π·(1 + ω_X)` ("first to key into it … most aggressive and effective"). Fe → cohesion is **off** |
+| F5 | **Refinement: the introverted form outpaces all** [CARLOS] | learning | For domain `d` of introverted function Y (Si → space, Ni → adaptation): `lr_d' = lr_d'·(1 + r·ω_Y)`, `r = 1.5`, a crude constant chosen so Y outpaces X at equal weight. Ti → meta and Fi → cohesion are **off**. The timing claim is [DERIVED] and not encoded |
+| F6 | **Se**: Domain, Time frame, Precision, Limit [CARLOS]; THEORY.md §1, focus "sensation → Se" | pertinence, interpret | Cues tagged physical and present: `π' = π·(1 + ω_Se)`. Weber fraction on the **targeted** entity only: `w' = w·(1 − ω_Se/2)`; precision around the target is unchanged. Present observations of people: `η' = η + ω_Se·(1 − η)/2` ("judgments revised continually by the current moment") |
+| F7 | **Stack position and confidence** [CARLOS] | interpret | Believed own success probability for actions tagged `d`: `P' = P·(0.5 + ω_d/2)`, with `ω_d` the larger weight of the on functions owning `d`. No change if both of the domain's functions are off. "More likely to avoid" is not a formula: it should emerge from the lower EU |
+| F8 | **Si**: Mechanism, Accumulation, Time frame [CARLOS] | learning | Episodes tagged body, or about a specific person: `d' = d·(1 − ω_Si/2)` (retained longer). Belief half-life for person attributes: `h_b' = h_b·(1 + ω_Si)` ("fleshes out the organism"). B1, whether the weakness emphasis is central, is open, so that emphasis is **off** |
+| F9 | **Ne**: Mechanism [CARLOS] | generate | Add up to `k = round(ω_Ne·K)` two-step compounds (a then b), where a's believed outcome satisfies a precondition of b. `K = 3` is a crude constant. These are candidates only; B2, whether Ne acts or only predicts, is open, and an answer of "only predicts" would turn F9 into a prediction-only use |
+| F10 | **Ni**: Mechanism [CARLOS]; "Extraverted vs introverted perception" [DERIVED] | generate | For outcomes that depend on another mind's choice: `P_theory = (1 − ω_Ni)·P_belief + ω_Ni·P_selfsim`. `P_selfsim` runs the mind's own policy in the other's believed situation ("how would I strategize in their position") |
+| F11 | **Ne and Ni — fate** [CARLOS] | generate | Commitment `κ' = κ·(1 + ω_Ni − ω_Ne)`, floored at 0 ("Ni is fate. Ne holds back fate") |
+| F12 | **Interaction: Se with Ni** [CARLOS] | interpret | For beliefs about a person: `α0_person' = α0·(1 + ω_Ni)` (a settled idea of who someone is). F6's η raise still applies to present evidence, so the in-the-moment read usually wins. The grudge exception is **off** until B3 (grudge or grip) is answered |
+| F13 | **Te**: "accepts all data as good data" (INTJ notes, quoted there) [CARLOS] | interpret | Testimony reliability `r' = r + ω_Te·(1 − r)/2`. "More examples, quicker meaning" is covered by F4's meta learning rate. Te with inferior Fi, and lead-Fi contrasts, are **off** (Fi) |
+
+**Off in v1, with the reason** (each hook is present and acts as identity):
+- **Fe, Fi, Ti core functions.** No core definition yet ("Not yet written"). The partial statements that exist
+  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries.
+- **Positions 5–8.** Not written.
+- **The coping exception.** Its "up to roughly 50/50" needs a coping state the codex does not define.
+- **The advantage–hypocrisy cycle.** It would need communication (`cognition.communication.language`, reserved),
+  and as written it describes moves, so encoding it would risk prescribing behaviour. Held for Rex.
+- **Ecosystems (four domains compete).** That is a Society-level claim (P6), not a mind formula. Cognition supplies
+  only the learning speeds it would rest on.
+
+**Data and versions.** v1 lives in `personality/eight-function/v1/`:
+- `formulas.json` holds, per id: the citation (file, exact section heading, tag), status (`crude` / `off`), hook,
+  form, and constants, each marked sourced or crude.
+- `src/personality/eight-function/v1.ts` implements it.
+- A frozen version is never edited. A rederivation writes `v2` beside it.
+- `bench/personality-versions.ts` runs the null model and every version under the same seeds and reports the
+  differences.
+
+**The codex fingerprint check (proposed).**
+- `personality/fingerprints.json` stores a SHA-256 of each cited section: the text from its heading to the next
+  heading of the same or higher level, with line endings normalised.
+- `scripts/codex-fingerprint.ts --check` recomputes the hashes from the matrix files (read only).
+- If a cited section changed or vanished, it lists every formula built on it as **stale** and, with `--emit-task`,
+  writes one WORK file `NNNN-cognition-rederive-<version>-<ids>.md` into the cognition lane. The number comes from
+  `next_number.py`, and no duplicate is written while one for the same ids is queued.
+- The rederive unit writes the next version, keeps the old one, and records the new fingerprints. The new version
+  becomes the default only after the keeper reviews it and the side-by-side report.
+- The Cognition keeper runs the check at the start of every turn. A Haiku unit checks the script on a fixture copy
+  of the matrix.
+
+### Tests of the layer (after the baseline passes; level-5 hypothesis tests, a negative result is a result)
+
+- **T-1 Stable differences across situations.** Run each configuration through `S` scenarios: the hungry pair, plus
+  scenarios that reward each of the four extraverted domains, × many seeds. The claim passes if
+  between-configuration variance exceeds within-configuration variance across scenarios (intraclass correlation,
+  with a stated threshold) **and** beats two controls: the null model with randomly drawn θ, and a shuffled-hook
+  model with the same number of free parameters. The effect must show as **speed and effectiveness of learning in
+  a domain** ("Systems vs people"), not as a fixed action preference.
+- **T-2 Derived traits (Rex's strongest demonstration).** From behaviour alone, compute trait indicators: openness
+  (rate of novel or compound actions), conscientiousness (intentions completed, commitment kept), risk-taking
+  (choices under outcome variance), social behaviour (rate of ask, trade and testimony). No trait is defined in the
+  model. Compare the indicators across the 16 configurations with the published correlations between MBTI
+  preferences and the Big Five (McCrae & Costa 1989: E–I with Extraversion, S–N with Openness, J–P with
+  Conscientiousness, T–F with Agreeableness). Validation data: that study, as independent evidence. Tolerance: the
+  sign of each published correlation reproduced, magnitudes reported. This is the one place the personality layer
+  has external data.
+- **T-3 Version comparison.** Every new version is run against the previous one and the null model under the same
+  seeds; the report states which behaviours moved and which formulas caused the movement.
+
+**C-Q3, "light and crystal" (Rex, 2026-10-30).** It is not written down anywhere yet. It stays open until Rex writes
+it into the matrix, and it is never invented here.
 
 ## 10. Verification and validation (PLATFORM §11a)
 
@@ -455,8 +563,9 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 |---|---|---|
 | C-Q1 | The hungry-pair fixture world (§6): owner as a mind, the stub rules and their numbers, labelled fixture | Rex (approve as a test fixture) |
 | C-Q2 | The cognitive parameters varied (§3 θ) and that needs weights are *not* varied (Rex: identical needs) | Rex |
-| C-Q3 | Where "light and crystal" is written (not found in the personality-matrix files) | Rex |
-| C-Q4 | The personality layer starts only after CB-1…CB-7 pass on the null model | Rex |
+| C-Q3 | "Light and crystal" | **(Rex, 2026-10-30)** not written yet; open until he writes it into the matrix; never invented |
+| C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
+| C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
 | C-Q6 | The baseline has **no internalised norms**: lying and stealing cost only what their consequences cost (beliefs, retaliation); norms arrive with Society and personality | Rex |
 | C-Q7 | V2 needs the Technion Prediction Tournament data (public, Erev et al. 2010); the unit fetches it, or Rex downloads it if the belt cannot | Rex if fetch fails |
@@ -487,3 +596,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 |---|---|
 | 2026-10-30 | Lane opened (Rex's directive); design drafted for approval; units 2659… drafted behind the marker |
 | 2026-10-30 | Kernel, Reality and registry keepers replied: C-K1, C-K2, C-R1, C-G1 agreed (kernel unit 2660; rows and quantities registered as planned; `body.detectability` rename); C-R2 (appetite and eating rule) raised for Rex |
+| 2026-10-30 | Rex's direction on the personality layer folded into §9: crude cited formulas F1–F13, gaps off, codex fingerprint check, versions side by side, T-2 derived traits; units 2673–2676 |
