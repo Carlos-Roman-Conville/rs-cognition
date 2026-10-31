@@ -790,6 +790,9 @@ grooming, accessories, a personal aesthetic, behavioural presentation.
 - **Cognition owns the observer's interpretation**: style emits signals that the observer reads through their own
   beliefs (§2.3), rightly or wrongly. Style is never a guaranteed indicator of personality.
 - **Economy** owns the garments and accessories as goods; **Society** owns their cultural meaning.
+- **Composition (registry, 2026-10-31):** the planned row `shared.presentation.set` is Cognition's; it composes worn
+  items, grooming, body modifications and behavioural presentation into the one `body.presentation` record that observers
+  read, and writes nothing else. Each part keeps its owner (Economy the goods, Life the body, Society the meaning).
 
 **Social influence has two causal pathways, both real (Rex):**
 - on **attraction**: exposure and learning change what someone finds attractive (`P_i` and its weights move);
@@ -1063,6 +1066,33 @@ retrieval emits it back to Reality as a re-trigger (proposed port `mind.recalled
 `A_f(t)`, which is how Te organises Ni's recall without a special case.
 Open: the form of the detail vector and the cue-type weights, and their sources (C-Q17).
 
+## 17. Knowledge of history (Rex, 2026-10-31; recorded design, not built)
+
+**(Rex)** The History engine is the backend record of what occurred in the simulation: it aggregates, compares against
+real history for validation, and **never determines what happens and is never read by anyone in the world**. What a
+person knows of the past comes only through Cognition, by fallible routes. Those beliefs about the past, not the
+record, drive choices through the ordinary decision mechanism (§2.4). The record and the beliefs diverge by design:
+myth, propaganda, lost knowledge and archaeology arise from the gap, without scripts.
+
+**The four routes (Rex), as registry rows (planned, 2026-10-31):**
+
+| Route | Row | What it is | Writes |
+|---|---|---|---|
+| memory of events lived through | `cognition.history.lived_memory` | a route over the existing memory stages (§2.3, §14.1, §16): attention, encoding, consolidation, retrieval | nothing of its own |
+| written records | `cognition.history.written_record` | reading a persistent message through perceive and comprehend (§2.1, communication subsystem); one knows only what the writer chose to record and how, and only if the medium persisted: persistence, fidelity and accessibility come from `world.medium_properties` | nothing of its own |
+| inference from evidence that remains | `cognition.history.inference` | perception plus belief update (§2.3), which may be wrong | `mind.inferred_past` (record: hypotheses about past events with likelihoods) |
+| oral transmission | `cognition.history.oral_transmission` | communication plus memory across minds, carried on Society's network (DUP-60) | nothing of its own |
+
+The backend row `history.record.backend` (engine History) writes `history.record`.
+
+**Invariant (Rex; on all five rows):** no mechanism in any engine reads the History record. In Cognition this is the §1
+fence extended: `history.*` is objective state, and nothing past perception may take it. A check that no `kernel.json`
+process reads `history.*` is ROADMAP P10 test 2; Cognition's own fence test gains the same assertion when the rows are
+built.
+
+**Consequence (Rex, review finding 1):** polity formation, war decisions and collapse belong to Government and Society;
+History keeps aggregation and the harness.
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -1099,3 +1129,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | §14.1 memory writer split (keeper proposal) and §15 contract fields for the 13 built rows recorded (unit 2739; COG-33). |
 | 2026-10-31 | Rex's experience pipeline and memory profiles recorded as §16 (perception filter → encoding → chemical response → re-interpretation; memory as stored / retrievable / articulable; function profiles; stack interaction); C-Q16, C-Q17 open (unit 2746). Not built. |
 | 2026-10-31 | §8 gains Reality's `body.transmitter_levels` and `body.hormone_levels` (planned, absent until researched) and the outputs `mind.appraisal` / `mind.recalled_body_state` for §16 (unit 2747). |
+| 2026-10-31 | §17 knowledge of history (Rex: History is the backend record, never read in-world; four fallible routes as planned rows; `mind.inferred_past`); §13b names `shared.presentation.set` as Cognition's composition row (unit 2774). Not built. |
