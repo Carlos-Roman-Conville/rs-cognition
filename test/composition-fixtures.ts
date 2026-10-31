@@ -20,7 +20,6 @@ export const configs: MindsConfig = {
     learning: {
       appraise: ({ observations, intention }) => ({
         outcome: intention.action === "wait" ? "ok" : observations[0]?.kind === "categorical" ? observations[0].value : "no",
-        reward: -1,
       }),
       latents: [{ id: "generosity", kind: "discrete", about: "host/owner", attribute: "generosity",
         domain: "people", likelihood: ({ observations }) => observations[0]?.kind === "categorical" && observations[0].value === "yes"

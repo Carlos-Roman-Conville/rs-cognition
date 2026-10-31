@@ -8,7 +8,7 @@ Units 2661–2669 done: package scaffold, shared subjective types and belief sto
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
 kernel Runner integration, the cognition process and kernel declarations, plus the hungry-pair fixture and headless CLI.
-Unit 2670's acceptance tests and generated report are committed as a parked unit; see Blocked below.
+Unit 2700 applies the keeper rulings to unit 2670; baseline acceptance remains parked for CB-7 lambda and the separate CB-6b audit, below.
 Unit 2671's V1/V2 studies, source data and reports are present; V1 passes COG-14 after unit 2701; V2 remains parked (C-V2). No cognitive default or source mechanism was changed.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
@@ -36,46 +36,55 @@ Unit 2671 remains **parked** for V2 only; its data, result and tests are unchang
   documented. Monetary appraisal, zero prior and one-second trials are proposed host conventions,
   not fitted defaults. See `validation/V1-forgetting.md` and `validation/V2-repeated-choice.md`.
 
-Unit 2670 is **parked**, not accepted. The approved DESIGN is unchanged. New executable
-acceptance assertions and the generated `bench/hungry-pair/REPORT.md` expose these blockers:
+Unit 2700 is **parked**, not baseline acceptance. COG-10 through COG-13 and C-B1
+are implemented without changing DESIGN, defaults, physical consequences or the Kernel
+stream contract. `bench/hungry-pair/REPORT.md` records the remaining blockers:
 
-- **CB-3 vs horizon censoring:** seed 1, two epochs, `int.0001` (`ask`, unfinished) and
-  `int.0006` (`accept_promise`, unfinished) produce their one causal receipt but change no
-  need or belief. Seed 19, eight epochs, also has an unchanged unfinished trade receipt.
-  Encoding an episode is not a need/belief change. Decide how censoring fits the literal
-  "every outcome" requirement; the acceptance test does not exempt it.
-- **CB-5a is not guaranteed by the implemented formulas:** 8 of 21 negative prediction
-  errors in diagnostic seeds 1/19 fail the strict same-context EU decrease. For example,
-  seed 1 `pay` has delta -1.09581561454814 but EU rises from -0.7127784299659629 to
-  -0.356420900145876 after learning. The probe holds needs, repertoire, capabilities,
-  context and evaluation time fixed, varying only learned beliefs/episodes. Learning
-  stores a categorical outcome, while delta uses the observed scalar reward; encoding
-  that outcome need not lower the expected utility of its forecast. This needs a design
-  or mechanism decision, not a weaker assertion or an action-specific penalty.
-- **CB-6a exact ID swap vs DESIGN §7 ID-keyed streams:** an actual A/B ID exchange
-  (state/references/owner repertoire targets) changes the first selection draw from
-  0.021017447812482715 to 0.3518915353342891, seed 1. Statistical symmetry passes, but
-  pathwise identity requires an explicit convention for transporting stream identities
-  with renamed agents. No RNG contract was changed here.
-- **CB-7 lambda direction:** over seeds 1–200, lambda 2.25→4.5 leaves fight frequency
-  at .08875 and lowers steal .09750→.09500. The strict per-action fight decrease fails;
-  the combined fight+steal frequency does decrease. Clarify whether the design means
-  each action or their combined share, and whether finite-sample equality is acceptable.
-- **Runtime:** the 500-seed symmetry / 200-pair-per-dimension study still exceeded 60 s
-  with only two epochs and eight local computational workers. Seed counts were never
-  reduced. Two epochs are the minimum used here to observe a post-feedback decision;
-  the late-loss direction is a separate fixed-context probe one day after an early loss.
-  Performance work or an agreed protocol/budget change is needed; a one-day comparison
-  study has not passed. See the generated report and test results below for timings.
-- **CB-6b:** the required independent Haiku semantic source audit remains with its
-  designated check unit. The task prohibited subagents; a limited literal-ID branch
-  guard in this suite is explicitly not independent certification.
+- **CB-7 / COG-13 lambda:** over unchanged paired seeds 1-200, lambda 2.25 to 4.5
+  changes fight + steal frequency from .18625 to .18375: difference -.00250,
+  approximate 95% interval [-.00743, +.00243]. The interval crosses zero, so the
+  ruled interval-below-zero criterion is **FAIL**. Fight stays .08875; steal falls
+  .09750 to .09500. Per-action frequencies are reported, not asserted. No tuning,
+  extra seeds, favorable subset or weaker threshold was used.
+- **CB-6b independent audit:** zero of one required independent Haiku semantic source
+  audits is available. This task prohibits subagents; the audit remains with its
+  designated check unit. The literal-ID guard passes but does not certify this
+  requirement. Aggregate CB-6 is **FAIL** despite passing all its numerical checks.
 
-The personality layer remains gated by Rex's C-Q4. Do not treat this unit or the
-baseline as accepted merely because the report exists. No `src/`, DESIGN, rules,
-or sibling repositories were modified to make the assertions pass.
+Resolved: CB-3 exempts only explicit receipts censored at the actual run horizon;
+unchanged non-horizon receipts still fail. CB-5a passes all 15 negative prediction-error
+cases in the two diagnostic runs, using the perceived category's saved evaluator utility.
+CB-6a transports initialized stream states with renamed minds in the harness. Symmetry
+passes over 500 seeds: chi-square 9.7664301875, df 9, p .3697229536; 486 distinct sequences.
+Learning-on vs frozen diverges in 31/200 eligible seeds (15.5%; Wilson [.11140, .21161]).
+Beta, kappa and d directions pass.
+
+Full studies now run through `npm run bench`: 500 symmetry seeds, 200 paired seeds for
+each of ten dimensions, 200 frozen controls. The command writes REPORT.md and exits
+nonzero for failed criteria. Vitest uses fixed study seeds 1-16 plus diagnostic seeds
+1 (2 epochs) and 19 (8 epochs). Strict lambda and persisted-report assertions remain
+failing, never skipped or marked expected failures. The report gate checks verdicts,
+minimum 500/200/200 counts, git revision and a recursive SHA256 of current src/ paths
+and text; the runner rejects source edits during a study. Its git revision is the
+base commit; its source hash identifies the working source committed with the report.
+The prior two-epoch protocol and fixed-context +1 day d probe are retained. No full
+one-day population study or independent scene validation is claimed. Personality
+remains gated by C-Q4; V2 remains separately parked above.
 
 ## Gotchas
+- Unit 2700 API: `LearningInputs.evaluation` replaces scalar `expectedUtility`.
+  Supply the selected `Evaluation` saved with the intention; `appraise` returns only
+  `{ outcome }`. Reward is discount times the saved category utility; prediction error
+  subtracts saved EU. Physical feedback remains host-owned.
+- Unit 2700 verification: the hand-computed retrieval-mass property, original-EU
+  retention, horizon-only exemption, ID transport and byte-identical CB-1 replay pass.
+  The stale-report guard also rejected a real source-comment edit before regeneration.
+  Final required gate: **267 passed, 2 failed / 21 files**, 31.84 s; failures are the
+  strict lambda small-sample interval (upper .0108478894) and the report's CB-6/CB-7
+  FAIL verdicts. `npx tsc --noEmit` passes. Final `npm run bench` took 82.77 s for
+  the full studies and exited 1 after writing the honest FAIL verdicts. Source hash
+  freshness passes after regeneration; `git diff --check` passes. Focused learning
+  and mind tests: 28 passed. No servers, subagents, branch changes or remote push.
 - Unit 2701 verification: focused V1 **3 passed**; required gate **235 passed / 20 files**
   (19.00 s), excluding the parked benchmark suite as instructed; typecheck and report
   Verdict-line checks pass. V2 remains C-V2.

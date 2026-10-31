@@ -199,7 +199,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       const chosen = pending.trace.candidates.find(({ candidate }) => candidate.action === pending.intention.action &&
         candidate.target === pending.intention.target)!;
       const learned = learnOutcome({ ...config.learning, mind: qualify("cognition", mind.id),
-        intention: pending.intention, expectedUtility: chosen.expectedUtility,
+        intention: pending.intention, evaluation: chosen,
         context: pending.trace.inputs.context, domain: chosen.candidate.domain,
         outcome: { cause: pending.intention.id, t: command.t, observations: structuredClone(command.feedback.observations) },
       }, mind.memory, { beliefs: mind.memory.beliefs, needs: mind.needs, params: mind.params }, counters, personality);

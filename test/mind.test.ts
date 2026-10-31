@@ -109,7 +109,7 @@ describe("population reducer (DESIGN §4, §7)", () => {
     expect(original.trace.candidates[0].expectedUtility).toBeCloseTo(0.5);
     expect(runner.state.minds[0].decisions[1].candidates[0].expectedUtility).toBeCloseTo(0.1);
     outcome(runner);
-    expect(runner.state.minds[0].learning[0].predictionError).toBeCloseTo(-1.5);
+    expect(runner.state.minds[0].learning[0].predictionError).toBeCloseTo(-0.5);
     expect(decide(runner, "mind.0001", 3000).events).toHaveLength(1);
     expect(runner.state.minds[0].current!.id).toBe("int.0002");
   });

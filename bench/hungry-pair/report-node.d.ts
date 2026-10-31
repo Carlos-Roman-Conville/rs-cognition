@@ -14,3 +14,13 @@ declare module "node:worker_threads" {
     terminate(): Promise<number>;
   }
 }
+
+declare module "node:crypto" {
+  export function createHash(algorithm: string): {
+    update(value: string): ReturnType<typeof createHash>;
+    digest(encoding: "hex"): string;
+  };
+}
+declare module "node:child_process" {
+  export function execFileSync(file: string, args: string[], options: { encoding: "utf8" }): string;
+}

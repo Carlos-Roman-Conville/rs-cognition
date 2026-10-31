@@ -1,4 +1,7 @@
 import { canonical } from "@rex/kernel";
+import { execFileSync } from "node:child_process";
+import { reportErrors, sourceHash } from "./report-integrity.ts";
+import type { Check } from "./acceptance.ts";
 import { writeFileSync } from "node:fs";
 import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
 import { evaluateActions, softmax } from "../../src/index.ts";
@@ -45,6 +48,7 @@ export function summarize(run: Run): Record<string, number> {
     [`action:${action}`, decisions.filter((row) => row.intention.action === action).length / decisions.length]));
   for (const outcome of ["good", "bad", "unfinished"]) result[`outcome:${outcome}`] =
     outcomes.filter((row) => row.result === outcome).length / outcomes.length;
+  result["action:fight+steal"] = result["action:fight"] + result["action:steal"];
   result.entropy = decisions.reduce((sum, row) => sum + entropy(row.candidates.map((c) => c.softmaxProbability)), 0) / decisions.length;
   let switches = 0;
   let opportunities = 0;
@@ -191,21 +195,67 @@ export function divergence(rows: readonly SeedResult[]) {
 
 const number = (value: number) => value !== 0 && Math.abs(value) < 0.00001 ? value.toExponential(3) : value.toFixed(5);
 const format = (value: ReturnType<typeof interval>) => `${number(value.mean)} [${number(value.low)}, ${number(value.high)}]`;
-export function renderReport(rows: readonly SeedResult[], seconds: number, checks: readonly string[] = []) {
+export function studyVerdicts(rows: readonly SeedResult[], checks: readonly Check[]): Check[] {
+  const result = [...checks];
+  const add = (id: string, pass: boolean, numbers: string, cases = 1) =>
+    result.push({ id, failures: pass ? 0 : 1, cases, examples: [numbers] });
+  const learning = divergence(rows), sym = symmetry(rows);
+  add("CB-5b", learning.pairs >= COMPARISON_SEEDS && learning.eligible === learning.pairs && learning.count > 0,
+    `${learning.count}/${learning.eligible} diverged; pairs=${learning.pairs}; Wilson=[${learning.low},${learning.high}]`, learning.pairs);
+  add("CB-6a symmetry", rows.length >= SYMMETRY_SEEDS && sym.minimumExpected >= 5 && sym.df === ACTIONS.length - 1 && sym.p > 0.01,
+    `seeds=${rows.length}; chi-square=${sym.statistic}; df=${sym.df}; p=${sym.p}; min expected=${sym.minimumExpected}`, rows.length);
+  add("CB-6c", new Set(rows.map((row) => row.sequence)).size > 1,
+    `distinct sequences=${new Set(rows.map((row) => row.sequence)).size}`, rows.length);
+  // DESIGN assigns this independent certification to a separate check unit, not this worker.
+  add("CB-6b", false, "independent source audits available=0/1");
+  for (const [dimension, metric] of DIRECTIONS) {
+    const values = comparison(rows, dimension, metric), change = values.difference;
+    add(`CB-7 ${dimension}`, (dimension === "lambda" ? change.high < 0 : change.mean < 0) &&
+      (dimension !== "d" || values.baseline.mean > 0),
+      `${dimension}/${metric}: difference=${format(change)}`);
+  }
+  for (const dimension of Object.keys(DIMENSIONS) as Dimension[]) {
+    const pairs = rows.filter((row) => row.changed?.[dimension]);
+    add(`CB-7 ${dimension} sample`, pairs.length >= COMPARISON_SEEDS && pairs.every((row) =>
+      [row.baseline, row.changed![dimension]].every((metrics) => Object.values(metrics).every(Number.isFinite) &&
+        Math.abs(ACTIONS.reduce((sum, action) => sum + metrics[`action:${action}`], 0) - 1) < 1e-12 &&
+        Math.abs(["good", "bad", "unfinished"].reduce((sum, outcome) => sum + metrics[`outcome:${outcome}`], 0) - 1) < 1e-12)),
+    `${dimension} pairs=${pairs.length}`, pairs.length);
+  }
+  return result;
+}
+export const DIRECTIONS = [["lambda", "action:fight+steal"], ["beta", "entropy"],
+  ["kappa", "switches"], ["d", "earlyLossEffect"]] as const;
+
+export function renderReport(rows: readonly SeedResult[], seconds: number, checks: readonly Check[] = [],
+  provenance = { commit: execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(), source: sourceHash() }) {
   const symmetryResult = symmetry(rows), learning = divergence(rows);
-  const directions = [["lambda", "action:fight"], ["lambda", "action:steal"], ["beta", "entropy"],
-    ["kappa", "switches"], ["d", "earlyLossEffect"]] as const;
-  const failed = checks.some((check) => check.includes(": FAIL")) || seconds >= 60 || symmetryResult.p <= 0.01 ||
-    directions.some(([dimension, metric]) => comparison(rows, dimension, metric).difference.mean >= 0);
-  const status = failed ? "**parked**: acceptance failures remain; see HANDOFF.md Blocked. The suite keeps the requirements as failing assertions."
-    : "Numerical checks passed; independent CB-6b source audit is still required before acceptance can be claimed.";
+  const directions = DIRECTIONS;
+  const verdicts = studyVerdicts(rows, checks);
+  const failed = verdicts.some((check) => check.failures > 0);
+  const status = failed ? "**parked**: acceptance failures remain; see HANDOFF.md Blocked. Requirements remain failing assertions."
+    : "All acceptance checks passed.";
+  const summary = Array.from({ length: 7 }, (_, i) => {
+    const id = `CB-${i + 1}`;
+    const group = verdicts.filter((row) => row.id.startsWith(id));
+    const failures = group.reduce((sum, row) => sum + row.failures, 0);
+    const cases = group.reduce((sum, row) => sum + row.cases, 0);
+    return `Verdict ${id}: ${group.length > 0 && failures === 0 ? "PASS" : "FAIL"} (${failures}/${cases} assertions failed)`;
+  });
   const lines = ["# Hungry-pair acceptance report", "", `Status: ${status}`, "", "Verification only; no claim of independent validation.", "",
+    `Git commit: ${provenance.commit}`,
+    `Source SHA256: ${provenance.source}`,
+    "The git commit is the base revision executed with the working source tree identified by SHA256 above.",
+    `Seed count symmetry: ${rows.length}`,
+    `Seed count paired-per-dimension: ${Math.min(...Object.keys(DIMENSIONS).map((dimension) => rows.filter((row) => row.changed?.[dimension as Dimension]).length))}`,
+    `Seed count learning-frozen: ${learning.pairs}`, "", ...summary, "",
     `Protocol: seeds 1–${SYMMETRY_SEEDS} for CB-6; seeds 1–${COMPARISON_SEEDS} for every CB-7 dimension and CB-5b.`,
+    "Diagnostic checks use two fixed seeds: 1 (two epochs) and 19 (eight epochs); exact ID swap uses seed 1. Vitest study smoke checks use 16 fixed seeds, 1–16.",
     `Each world uses ${EPOCHS} ten-minute epochs instead of 144 to reduce runtime. All runs include Scheduler, EventBus, named streams, initial-snapshot Runner replay and host replay.`,
-    `Study wall time: ${seconds.toFixed(2)} s (${seconds < 60 ? "within" : "OVER"} the 60 s suite budget even before diagnostic tests). Two epochs cannot test completed six-epoch journeys or one-day behavior.`,
+    `Study wall time: ${seconds.toFixed(2)} s, outside vitest under C-B1. Two epochs cannot test completed six-epoch journeys or one-day behavior.`,
     "CB-7's late-loss metric is a separate fixed-context early-loss probe at +1 day, not a completed one-day world run.",
     "Paired worlds share seed and per-mind stream names. Conditional draws can desynchronize after histories diverge.", "",
-    "## CB-1 through CB-7 and P7-3", "", ...checks.map((check) => `- ${check}`),
+    "## CB-1 through CB-7 and P7-3", "", ...verdicts.map((check) => `- ${check.id}: ${check.failures ? "FAIL" : "PASS"} (${check.failures}/${check.cases} assertions failed). ${check.examples.join("; ")}`.trimEnd()),
     "- CB-1: every study world restores the initial snapshot and replays cognition and host logs; direct repeated-seed and stream-isolation assertions are in the acceptance suite.",
     "- CB-2, CB-3, CB-4, CB-5a: the acceptance suite checks distributions/draws, causal outcomes, informative likelihood directions, and every negative prediction error in its diagnostic runs. Failures are not converted to expected failures.",
     `- CB-5b: ${learning.count}/${learning.eligible} eligible seeds diverged in later selected actions (${learning.pairs} pairs); share ${learning.share.toFixed(5)}, Wilson 95% interval [${learning.low.toFixed(5)}, ${learning.high.toFixed(5)}].`,
@@ -231,14 +281,14 @@ export function renderReport(rows: readonly SeedResult[], seconds: number, check
   lines.push("### Direction assertions", "");
   for (const [dimension, metric] of directions) {
     const change = comparison(rows, dimension, metric).difference;
-    lines.push(`- ${dimension} / ${metric}: ${change.mean < 0 ? "PASS" : "FAIL"}, paired change ${format(change)}; strict decrease required.`);
+    lines.push(`- ${dimension} / ${metric}: ${(dimension === "lambda" ? change.high < 0 : change.mean < 0) ? "PASS" : "FAIL"}, paired change ${format(change)}; ${dimension === "lambda" ? "95% interval strictly below zero required" : "strict mean decrease required"}.`);
   }
   lines.push("");
   lines.push("## What this does not show", "",
     "DESIGN §10 V5: no independent data exist for this scene; none are in hand. The CB-7 directions are consequences of the formulas, not validation of how real hungry people choose. Closed-loop feedback and shared resources can also defeat a monotonic direction inferred from a single fixed-context formula. A failed direction is reported, not repaired by choosing favorable seeds.",
     "The experiment that would test the scene is a laboratory scarcity game with a stronger owner, using dictator/ultimatum and theft-option designs in experimental economics. Compare preregistered action frequencies, outcomes and learning trajectories against held-out human data. This report contains no such data or validation tolerance.",
     "No sibling repository was changed or tested under the folder-only instruction. Kernel is exercised through the linked public package. Reality, Settlement, Economy and pirate-ship integration remain outside this fixture's evidence.", "",
-    "Regenerate: `node --experimental-strip-types bench/hungry-pair/report.ts`. Run acceptance: `npx vitest run test/bench-acceptance.test.ts`.", "");
+    "Regenerate: `npm run bench`. Run acceptance: `npx vitest run test/bench-acceptance.test.ts`.", "");
   return lines.join("\n");
 }
 
@@ -246,8 +296,14 @@ if (!isMainThread) {
   parentPort!.postMessage(workerData.seeds.map((seed) => runSeed(seed, workerData.epochs)));
 } else if ((import.meta as ImportMeta & { main?: boolean }).main) {
   const start = performance.now();
+  const provenance = { commit: execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim(), source: sourceHash() };
   const rows = await collectStudy();
   const seconds = (performance.now() - start) / 1000;
-  const checks = basicChecks().map((check) => `${check.id}: ${check.failures ? "FAIL" : "PASS"} (${check.failures}/${check.cases} assertions failed). ${check.examples.join("; ")}`.trimEnd());
-  writeFileSync(new URL("./REPORT.md", import.meta.url), renderReport(rows, seconds, checks));
+  const checks = basicChecks();
+  if (sourceHash() !== provenance.source) throw new Error("src/ changed during the study; rerun npm run bench");
+  const report = renderReport(rows, seconds, checks, provenance);
+  writeFileSync(new URL("./REPORT.md", import.meta.url), report);
+  console.log(report.split("\n").filter((line) => line.startsWith("Verdict CB-")).join("\n"));
+  const errors = reportErrors(report);
+  if (errors.length) throw new Error(`Benchmark report written with failing criteria: ${errors.join(", ")}`);
 }

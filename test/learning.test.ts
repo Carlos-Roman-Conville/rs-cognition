@@ -25,17 +25,46 @@ const discrete = (overrides: Partial<Extract<LearningLatent, { kind: "discrete" 
 const input = (overrides: Partial<LearningInputs> = {}): LearningInputs => ({
   mind: "mind.0001", intention: { id: "int.0001", mind: "mind.0001", action: "ask", target: "owner", t: 1000,
     expectedOutcomes: categorical(["good", "bad"], [0.5, 0.5]), status: "active" },
-  expectedUtility: 0.5, outcome: { cause: "int.0001", observations: [observation], t: 2000 },
+  evaluation: evaluateActions(generation([action("ask", { target: "owner", outcomeSpace: [
+    { id: "good", deficits: {}, goalProgress: { goal: 1 } },
+    { id: "bad", deficits: {}, goalProgress: { goal: 0.5 } },
+  ], naiveModel: () => categorical(["good", "bad"], [1, 1]) })]), view(), [], {}, 1000).candidates[0], outcome: { cause: "int.0001", observations: [observation], t: 2000 },
   context: { target: "owner" }, domain: "people", appraise: ({ observations }) => {
     const observed = observations[0];
     if (observed.kind !== "categorical") throw new RangeError("Fixture requires a reported category");
-    return { outcome: observed.value, reward: observed.value === "good" ? 1 : 0 };
+    return { outcome: observed.value };
   }, latents: [discrete()], ...overrides,
 });
 const run = (inputs = input(), state = memory(), eta = 1, personality = nullPersonality) =>
   learnOutcome(inputs, state, view({ eta }), { ep: 4 }, personality);
 
 describe("learning formulas and causality (DESIGN §2.5)", () => {
+  it("CB-5a adding retrieval mass to a below-EU outcome lowers EU (hand-computed 2.3/2.4 values)", () => {
+    // Goal value 2 at p=.5; good p=1 -> +1, bad p=0 -> -1.
+    // Cost .25, lambda 2, gamma .5, duration 2: utilities .375 and -1.25.
+    // Prior counts [3,1]: EU=-.03125. One fresh bad episode adds mass 1:
+    // counts [3,2], EU=-.275, a strict decrease of .24375.
+    const ctx = view({ alpha0: 4, lambda: 2, gamma: 0.5 });
+    const candidates = generation([action("probe", { duration: 2, cost: 0.25,
+      outcomeSpace: [{ id: "good", deficits: {}, goalProgress: { goal: 1 } },
+        { id: "bad", deficits: {}, goalProgress: { goal: 0 } }],
+      naiveModel: () => categorical(["good", "bad"], [3, 1]),
+    })], ctx);
+    const before = evaluateActions(candidates, ctx, [], {}, 2000).candidates[0];
+    const intention = { ...input().intention, action: "probe", target: undefined,
+      expectedOutcomes: before.expectedOutcomes };
+    const learned = learnOutcome(input({ intention, evaluation: before, context: {}, latents: [] }),
+      memory(), ctx, {});
+    const after = evaluateActions(candidates, ctx, learned.next.episodes, {}, 2000).candidates[0];
+    expect(before.counts).toEqual([3, 1]);
+    expect(before.expectedUtility).toBe(-0.03125);
+    expect(learned.trace.reward).toBe(-1.25);
+    expect(learned.trace.predictionError).toBe(-1.21875);
+    expect(after.counts).toEqual([3, 2]);
+    expect(after.expectedUtility).toBeCloseTo(-0.275, 14);
+    expect(after.expectedUtility - before.expectedUtility).toBeCloseTo(-0.24375, 14);
+  });
+
   it("records r_obs minus the saved intention EU and encodes exactly one immutable episode", () => {
     const state = memory();
     const snapshot = JSON.stringify(state);
@@ -197,9 +226,9 @@ describe("numerical and input boundaries (DESIGN §10)", () => {
     expect(() => run(input({ outcome: { ...input().outcome, cause: "int.other" } }))).toThrow(/cause/);
     expect(() => run(input({ outcome: { ...input().outcome, t: 999 } }))).toThrow(/predates/);
     expect(() => run(input({ outcome: { ...input().outcome, observations: [{ ...observation, t: 3000 }] } }))).toThrow(/interval/);
-    expect(() => run(input({ appraise: () => ({ outcome: "missing", reward: 0 }) }))).toThrow(/outcome space/);
-    expect(() => run(input({ appraise: () => ({ outcome: "bad", reward: NaN }) }))).toThrow(/finite/);
-    expect(() => run(input({ expectedUtility: Infinity }))).toThrow(/finite/);
+    expect(() => run(input({ appraise: () => ({ outcome: "missing" }) }))).toThrow(/outcome space/);
+    expect(() => run(input({ evaluation: { ...input().evaluation, discount: NaN } }))).toThrow(/finite/);
+    expect(() => run(input({ evaluation: { ...input().evaluation, expectedUtility: Infinity } }))).toThrow(/finite/);
   });
 
   it("rejects duplicate targets, reserved ids, absent priors, malformed likelihoods and invalid hooks", () => {
@@ -253,7 +282,7 @@ describe("learning → beliefs/memory → evaluation → choice (DESIGN CB-5a, C
         if (obs.kind !== "categorical") throw new Error("Expected categorical feedback");
         return theory.probabilities.reduce((sum, p, i) => sum + p * (theory.values[i] === obs.value ? obs.model.q : 1 - obs.model.q), 0);
       }) });
-    const feedback = input({ intention: choice.intention, expectedUtility: before.candidates[0].expectedUtility,
+    const feedback = input({ intention: choice.intention, evaluation: before.candidates[0],
       outcome: { cause: choice.intention.id, t: 4000, observations: [{ ...observation, t: 4000 }] }, latents: [latent] });
     const result = learnOutcome(feedback, state, before.view, choice.counters);
     expect(result.trace.predictionError).toBeLessThan(0);

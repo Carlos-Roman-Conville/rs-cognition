@@ -1,6 +1,6 @@
 // Executable DESIGN §6 diagnostics shared by the acceptance suite and report.
 // A diagnostic records counterexamples; it never turns a failed requirement into a pass.
-import { canonical, restore, Runner } from "@rex/kernel";
+import { canonical, restore, Runner, streams } from "@rex/kernel";
 import {
   createMindsState, evaluateActions, generateActions, nullPersonality,
 } from "../../src/index.ts";
@@ -27,6 +27,12 @@ function record(check: Check, pass: boolean, message: string) {
 }
 const near = (a: number, b: number) => Math.abs(a - b) <= 1e-10 * Math.max(1, Math.abs(a), Math.abs(b));
 const view = (mind: Mind) => ({ beliefs: mind.memory.beliefs, needs: mind.needs, params: mind.params });
+
+/** COG-10 exempts only an explicit host receipt censored at this run's horizon. */
+export function consequenceSatisfied(changed: boolean, receipt: { t: number; payload: unknown } | undefined, horizon: number): boolean {
+  const payload = receipt?.payload as { result?: string; reason?: string } | undefined;
+  return changed || (receipt?.t === horizon && payload?.result === "unfinished" && payload.reason === "unfinished at horizon");
+}
 
 export function diagnosticRun(options: RunOptions) {
   const world = new HungryPairWorld(options), run = world.run();
@@ -69,9 +75,12 @@ export function diagnosticRun(options: RunOptions) {
     const learning = result.events.find((event) => event.type === "cognition.attribution")?.payload as LearningTrace | undefined;
     if (!learning) return result;
     const label = `seed ${options.seed}, ${command.intention}, ${pending.intention.action}, ${learning.outcome}`;
-    record(checks.consequences, canonical(before.needs) !== canonical(after.needs) ||
+    const receipt = run.outcomes.find((event) => event.id === command.event);
+    const changed = canonical(before.needs) !== canonical(after.needs) ||
       canonical(before.memory.beliefs) !== canonical(after.memory.beliefs) ||
-      canonical(before.memory.reliability) !== canonical(after.memory.reliability), `${label}: no need or belief changed`);
+      canonical(before.memory.reliability) !== canonical(after.memory.reliability);
+    record(checks.consequences, consequenceSatisfied(changed, receipt, (options.epochs ?? FIXTURE.epochs) * FIXTURE.epochMs),
+      `${label}: no need or belief changed`);
 
     const config = world.configs[before.config];
     const evidence: LearningEvidence = { observations: command.feedback.observations, intention: pending.intention,
@@ -129,6 +138,18 @@ export function swapIds<T>(value: T): T {
  * and owner repertoire order. Keep the public §7 ID-keyed RNG contract unchanged. */
 export function idSwapCheck(seed = 1, epochs = 2): Check {
   const original = new HungryPairWorld({ seed, epochs }), swapped = new HungryPairWorld({ seed, epochs });
+  // COG-12: materialize each stream at its original initial state, then transport
+  // the states with the minds. No draw is consumed and Kernel's ID contract is unchanged.
+  for (const world of [original, swapped]) {
+    const rng = streams(seed);
+    for (const body of world.state.bodies) {
+      for (const mechanism of ["cognition.decision.select", "cognition.perception.detect", "cognition.memory.retrieve"])
+        rng.get(mechanism, body.id);
+      for (const mechanism of ["fixture.fight", "fixture.find"]) world.random.get(mechanism, body.id);
+    }
+    world.runner.state = { ...world.runner.state, streams: rng.state() };
+  }
+  swapped.random.restore(swapIds(swapped.random.state()));
   swapped.state = swapIds(swapped.state);
   swapped.runner.state = swapIds(swapped.runner.state);
   const ids = swapped.state.bodies.map((body) => body.id), owner = ids[2];
@@ -140,7 +161,7 @@ export function idSwapCheck(seed = 1, epochs = 2): Check {
   const result = check("CB-6a exact ID swap");
   const expected = swapIds(original.runner.decisions), actual = swapped.runner.decisions;
   record(result, canonical(actual) === canonical(expected),
-    `seed ${seed}: first decision draws ${expected[0].draw} -> ${actual[0].draw}; §7 streams are keyed by the swapped entity IDs`);
+    `seed ${seed}: first decision draws ${expected[0].draw} -> ${actual[0].draw}; stream states travel with the renamed minds`);
   return result;
 }
 

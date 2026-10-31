@@ -4,6 +4,7 @@ import {
   categorical, existence, getBelief, klDivergence, reliabilityMean, setBelief,
   updateCategorical, updateGaussian, updateReliability,
 } from "./beliefs.ts";
+import type { Evaluation } from "./evaluate.ts";
 import { encodeEpisode } from "./memory.ts";
 import { nullPersonality } from "./personality.ts";
 import type { LearningParams, PersonalityModel } from "./personality.ts";
@@ -46,13 +47,13 @@ export type LearningLatent = Latent & (
 export interface LearningInputs {
   readonly mind: string;
   readonly intention: Intention;
-  /** EU saved when this intention was formed, not a refreshed decision score. */
-  readonly expectedUtility: number;
+  /** Complete utility evaluation saved when this intention was formed, including its needs context. */
+  readonly evaluation: Evaluation;
   readonly outcome: ObservedOutcome;
   readonly context: Episode["context"];
   readonly domain: Domain;
-  /** Observation-only appraisal into the action's outcome vocabulary and perceived reward. */
-  readonly appraise: (evidence: LearningEvidence) => { readonly outcome: string; readonly reward: number };
+  /** Observation-only appraisal into the action's outcome vocabulary; no scalar reward channel. */
+  readonly appraise: (evidence: LearningEvidence) => { readonly outcome: string };
   readonly latents: readonly LearningLatent[];
   readonly encode?: boolean;
   readonly epsilonAttribution?: number;
@@ -180,10 +181,17 @@ export function learnOutcome(
   const evidence: LearningEvidence = { observations: outcome.observations, intention, view: ctx, memory };
   const perceived = inputs.appraise(evidence);
   if (!intention.expectedOutcomes.values.includes(perceived.outcome)) throw new RangeError("Perceived outcome must belong to the intention's outcome space");
-  finite(perceived.reward, "perceived reward");
-  finite(inputs.expectedUtility, "expected utility");
+  const evaluated = inputs.evaluation;
+  if (evaluated.candidate.action !== intention.action || evaluated.candidate.target !== intention.target) {
+    throw new RangeError("Evaluation must belong to the intention's action and target");
+  }
+  const utility = evaluated.outcomes.find((row) => row.outcome === perceived.outcome);
+  if (!utility) throw new RangeError("Perceived outcome must belong to the evaluated outcome space");
+  // DESIGN section 2.5 COG-11: reuse section 2.4's saved needs, utility, cost, loss aversion and discount.
+  const reward = finite(evaluated.discount * utility.value, "perceived reward");
+  const expectedUtility = finite(evaluated.expectedUtility, "expected utility");
   // DESIGN §2.5: δ = r_obs - EU(ι); reward prediction error (Sutton & Barto 2018).
-  const predictionError = finite(perceived.reward - inputs.expectedUtility, "prediction error");
+  const predictionError = finite(reward - expectedUtility, "prediction error");
   const epsilon = inputs.epsilonAttribution ?? DEFAULT_ATTRIBUTION_EPSILON;
   nonnegative(epsilon, "attribution epsilon");
   unit(ctx.params.eta, "eta");
@@ -246,14 +254,14 @@ export function learnOutcome(
   const attributedCause = attributeCause(updates, epsilon);
   // DESIGN §2.5: encode by default; complete one episode with the read-out, never update latents again.
   const encoded = (inputs.encode ?? true) ? encodeEpisode({ t: outcome.t, context: inputs.context,
-    action: intention.action, outcome: perceived.outcome, reward: perceived.reward, predictionError,
+    action: intention.action, outcome: perceived.outcome, reward, predictionError,
     attributedCause, domain: inputs.domain }, counters) : undefined;
   const next = beliefs === memory.beliefs && reliability === memory.reliability && !encoded ? memory : {
     beliefs, reliability, episodes: encoded ? [...memory.episodes, encoded.episode] : memory.episodes,
   };
   return { next, counters: encoded?.counters ?? counters, episode: encoded?.episode,
     trace: { mind: inputs.mind, intention: intention.id, t: outcome.t, observations: outcome.observations,
-      outcome: perceived.outcome, reward: perceived.reward, expectedUtility: inputs.expectedUtility, predictionError,
+      outcome: perceived.outcome, reward, expectedUtility, predictionError,
       updates, attributedCause, epsilonAttribution: epsilon, likelihoodFloor: LEARNING_LIKELIHOOD_FLOOR,
       episode: encoded?.episode.id } };
 }

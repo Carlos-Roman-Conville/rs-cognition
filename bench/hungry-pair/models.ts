@@ -1,8 +1,8 @@
 // DESIGN §6 fixture models, not platform rules. Future owners: Economy (exchange),
 // Society (promises), Reality P3 (nutrition), P2 two-fighters demonstration (combat).
 import {
-  categorical, createBeliefStore, DEFAULT_COGNITIVE_PARAMS, driveReward, evaluateNeeds,
-  gaussian, getBelief, goalReward, setBelief,
+  categorical, createBeliefStore, DEFAULT_COGNITIVE_PARAMS, evaluateNeeds,
+  gaussian, getBelief, setBelief,
 } from "../../src/index.ts";
 import type {
   ActionDefinition, BeliefStore, CognitiveParams, LearningEvidence, LearningLatent,
@@ -173,16 +173,7 @@ export function makeConfig(owner: boolean, targets: readonly string[], encode = 
     } });
   return { generation: { repertoire: targets.flatMap((target) => rows.map((row) => definition(row, target, owner))),
     wait: definition(WAIT, "self", owner) }, learning: { encode, latents,
-    appraise: (e) => {
-      const after = e.view.needs.needs.map((need) => {
-        const observed = reported(e, need.definition.id);
-        return observed?.kind === "real" ? { ...need, deficit: clamp(observed.value) } : need;
-      });
-      let reward = driveReward(e.view.needs.needs, after, e.view.params.n, e.view.params.m);
-      const stock = reported(e, "stock");
-      if (stock?.kind === "real") for (const goal of e.view.needs.goals) reward += goalReward(goal, clamp(stock.value / goal.value));
-      return { outcome: result(e), reward };
-    } } };
+    appraise: (e) => ({ outcome: result(e) }) } };
 }
 
 /** fixture subjective forecasts at decision time (DESIGN §2.4, §6), future host action models.

@@ -1,12 +1,28 @@
 # Hungry-pair acceptance report
 
-Status: **parked**: acceptance failures remain; see HANDOFF.md Blocked. The suite keeps the requirements as failing assertions.
+Status: **parked**: acceptance failures remain; see HANDOFF.md Blocked. Requirements remain failing assertions.
 
 Verification only; no claim of independent validation.
 
+Git commit: 2380b5c966559c2a7041f6364caa8c2b0bb9ec66
+Source SHA256: 0bfb10cb903e1d60af952d572a7ef4678fd1634e6ea4257e927cd7919ab49cf3
+The git commit is the base revision executed with the working source tree identified by SHA256 above.
+Seed count symmetry: 500
+Seed count paired-per-dimension: 200
+Seed count learning-frozen: 200
+
+Verdict CB-1: PASS (0/5 assertions failed)
+Verdict CB-2: PASS (0/90 assertions failed)
+Verdict CB-3: PASS (0/62 assertions failed)
+Verdict CB-4: PASS (0/39 assertions failed)
+Verdict CB-5: PASS (0/215 assertions failed)
+Verdict CB-6: FAIL (1/1002 assertions failed)
+Verdict CB-7: FAIL (1/2004 assertions failed)
+
 Protocol: seeds 1–500 for CB-6; seeds 1–200 for every CB-7 dimension and CB-5b.
+Diagnostic checks use two fixed seeds: 1 (two epochs) and 19 (eight epochs); exact ID swap uses seed 1. Vitest study smoke checks use 16 fixed seeds, 1–16.
 Each world uses 2 ten-minute epochs instead of 144 to reduce runtime. All runs include Scheduler, EventBus, named streams, initial-snapshot Runner replay and host replay.
-Study wall time: 94.68 s (OVER the 60 s suite budget even before diagnostic tests). Two epochs cannot test completed six-epoch journeys or one-day behavior.
+Study wall time: 82.77 s, outside vitest under C-B1. Two epochs cannot test completed six-epoch journeys or one-day behavior.
 CB-7's late-loss metric is a separate fixed-context early-loss probe at +1 day, not a completed one-day world run.
 Paired worlds share seed and per-mind stream names. Conditional draws can desynchronize after histories diverge.
 
@@ -14,11 +30,29 @@ Paired worlds share seed and per-mind stream names. Conditional draws can desync
 
 - CB-1: PASS (0/5 assertions failed).
 - CB-2: PASS (0/90 assertions failed).
-- CB-3: FAIL (3/62 assertions failed). seed 1, int.0001, ask, unfinished: no need or belief changed; seed 1, int.0006, accept_promise, unfinished: no need or belief changed; seed 19, int.0002, trade, unfinished: no need or belief changed
+- CB-3: PASS (0/62 assertions failed).
 - CB-4: PASS (0/39 assertions failed).
-- CB-5a: FAIL (8/21 assertions failed). seed 1, int.0003, pay, bad: delta=-1.09581561454814, same-context EU -0.7127784299659629 -> -0.356420900145876; seed 1, int.0006, accept_promise, unfinished: delta=-0.6035463690939588, same-context EU -0.6888179375186941 -> -0.3444395888056861; seed 19, int.0001, fight, good: delta=-0.4727039242919514, same-context EU -0.017696073264605622 -> 0.11980316870015606
-- CB-6a exact ID swap: FAIL (1/1 assertions failed). seed 1: first decision draws 0.021017447812482715 -> 0.3518915353342891; §7 streams are keyed by the swapped entity IDs
+- CB-5a: PASS (0/15 assertions failed).
+- CB-6a exact ID swap: PASS (0/1 assertions failed).
 - P7-3: PASS (0/1 assertions failed).
+- CB-5b: PASS (0/200 assertions failed). 31/200 diverged; pairs=200; Wilson=[0.11139636927689314,0.21160690592342077]
+- CB-6a symmetry: PASS (0/500 assertions failed). seeds=500; chi-square=9.766430187464717; df=9; p=0.3697229536485609; min expected=90.5
+- CB-6c: PASS (0/500 assertions failed). distinct sequences=486
+- CB-6b: FAIL (1/1 assertions failed). independent source audits available=0/1
+- CB-7 lambda: FAIL (1/1 assertions failed). lambda/action:fight+steal: difference=-0.00250 [-0.00743, 0.00243]
+- CB-7 beta: PASS (0/1 assertions failed). beta/entropy: difference=-0.02351 [-0.02432, -0.02269]
+- CB-7 kappa: PASS (0/1 assertions failed). kappa/switches: difference=-0.49000 [-0.54087, -0.43913]
+- CB-7 d: PASS (0/1 assertions failed). d/earlyLossEffect: difference=-4.058e-9 [-4.426e-9, -3.690e-9]
+- CB-7 beta sample: PASS (0/200 assertions failed). beta pairs=200
+- CB-7 lambda sample: PASS (0/200 assertions failed). lambda pairs=200
+- CB-7 gamma sample: PASS (0/200 assertions failed). gamma pairs=200
+- CB-7 eta sample: PASS (0/200 assertions failed). eta pairs=200
+- CB-7 alpha0 sample: PASS (0/200 assertions failed). alpha0 pairs=200
+- CB-7 d sample: PASS (0/200 assertions failed). d pairs=200
+- CB-7 tau sample: PASS (0/200 assertions failed). tau pairs=200
+- CB-7 s sample: PASS (0/200 assertions failed). s pairs=200
+- CB-7 kappa sample: PASS (0/200 assertions failed). kappa pairs=200
+- CB-7 k sample: PASS (0/200 assertions failed). k pairs=200
 - CB-1: every study world restores the initial snapshot and replays cognition and host logs; direct repeated-seed and stream-isolation assertions are in the acceptance suite.
 - CB-2, CB-3, CB-4, CB-5a: the acceptance suite checks distributions/draws, causal outcomes, informative likelihood directions, and every negative prediction error in its diagnostic runs. Failures are not converted to expected failures.
 - CB-5b: 31/200 eligible seeds diverged in later selected actions (200 pairs); share 0.15500, Wilson 95% interval [0.11140, 0.21161].
@@ -52,6 +86,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.14500 [0.11876, 0.17124] | -0.00750 [-0.02099, 0.00599] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.48500 [0.45801, 0.51199] | 0.00875 [-0.00954, 0.02704] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37000 [0.34709, 0.39291] | -0.00125 [-0.01855, 0.01605] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.19250 [0.16396, 0.22104] | 0.00625 [-0.01172, 0.02422] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.27737 [2.27648, 2.27827] | -0.02351 [-0.02432, -0.02269] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.89750 [0.86601, 0.92899] | 0.00000 [-0.02520, 0.02520] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.59076 [0.58354, 0.59798] | 0.00250 [-0.00379, 0.00879] |
@@ -75,6 +110,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15250 [0.12503, 0.17997] | 0.00000 [-0.00605, 0.00605] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.48000 [0.45175, 0.50825] | 0.00375 [-0.00443, 0.01193] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.36750 [0.34488, 0.39012] | -0.00375 [-0.01193, 0.00443] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18375 [0.15591, 0.21159] | -0.00250 [-0.00743, 0.00243] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.29768 [2.29736, 2.29801] | -0.00320 [-0.00343, -0.00296] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.90000 [0.86874, 0.93126] | 0.00250 [-0.00855, 0.01355] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.59014 [0.58285, 0.59743] | 0.00187 [-0.00025, 0.00400] |
@@ -98,6 +134,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15000 [0.12270, 0.17730] | -0.00250 [-0.00743, 0.00243] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.47875 [0.45019, 0.50731] | 0.00250 [-0.00243, 0.00743] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37125 [0.34861, 0.39389] | 0.00000 [0.00000, 0.00000] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18625 [0.15829, 0.21421] | 0.00000 [0.00000, 0.00000] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30127 [2.30118, 2.30137] | 0.00039 [0.00038, 0.00040] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.89750 [0.86601, 0.92899] | 0.00000 [0.00000, 0.00000] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58889 [0.58148, 0.59630] | 0.00063 [-0.00151, 0.00276] |
@@ -121,6 +158,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15000 [0.12293, 0.17707] | -0.00250 [-0.00743, 0.00243] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.48000 [0.45218, 0.50782] | 0.00375 [-0.00175, 0.00925] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37000 [0.34736, 0.39264] | -0.00125 [-0.00677, 0.00427] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18625 [0.15829, 0.21421] | 0.00000 [0.00000, 0.00000] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30140 [2.30139, 2.30141] | 0.00052 [0.00043, 0.00060] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.90000 [0.86874, 0.93126] | 0.00250 [-0.00243, 0.00743] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58951 [0.58216, 0.59686] | 0.00125 [-0.00122, 0.00372] |
@@ -144,6 +182,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15250 [0.12503, 0.17997] | 0.00000 [0.00000, 0.00000] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.47625 [0.44794, 0.50456] | 0.00000 [0.00000, 0.00000] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37125 [0.34861, 0.39389] | 0.00000 [0.00000, 0.00000] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18625 [0.15829, 0.21421] | 0.00000 [0.00000, 0.00000] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30088 [2.30079, 2.30097] | -1.657e-9 [-7.738e-9, 4.424e-9] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.89750 [0.86601, 0.92899] | 0.00000 [0.00000, 0.00000] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58826 [0.58079, 0.59574] | 0.00000 [0.00000, 0.00000] |
@@ -167,6 +206,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15250 [0.12503, 0.17997] | 0.00000 [0.00000, 0.00000] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.47625 [0.44794, 0.50456] | 0.00000 [0.00000, 0.00000] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37125 [0.34861, 0.39389] | 0.00000 [0.00000, 0.00000] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18625 [0.15829, 0.21421] | 0.00000 [0.00000, 0.00000] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30088 [2.30079, 2.30097] | -2.206e-9 [-1.030e-8, 5.889e-9] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.89750 [0.86601, 0.92899] | 0.00000 [0.00000, 0.00000] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58826 [0.58079, 0.59574] | 0.00000 [0.00000, 0.00000] |
@@ -190,6 +230,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15250 [0.12503, 0.17997] | 0.00000 [0.00000, 0.00000] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.47625 [0.44794, 0.50456] | 0.00000 [0.00000, 0.00000] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37125 [0.34861, 0.39389] | 0.00000 [0.00000, 0.00000] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18625 [0.15829, 0.21421] | 0.00000 [0.00000, 0.00000] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30088 [2.30079, 2.30097] | -2.028e-9 [-9.471e-9, 5.414e-9] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.89750 [0.86601, 0.92899] | 0.00000 [0.00000, 0.00000] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58826 [0.58079, 0.59574] | 0.00000 [0.00000, 0.00000] |
@@ -213,6 +254,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.15250 [0.12503, 0.17997] | 0.00000 [0.00000, 0.00000] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.47625 [0.44794, 0.50456] | 0.00000 [0.00000, 0.00000] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.37125 [0.34861, 0.39389] | 0.00000 [0.00000, 0.00000] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.18625 [0.15829, 0.21421] | 0.00000 [0.00000, 0.00000] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30088 [2.30079, 2.30097] | 1.052e-7 [-3.099e-7, 5.202e-7] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.89750 [0.86601, 0.92899] | 0.00000 [0.00000, 0.00000] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58826 [0.58079, 0.59574] | 0.00000 [0.00000, 0.00000] |
@@ -236,6 +278,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.16583 [0.13366, 0.19801] | 0.01333 [-0.00100, 0.02767] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.28417 [0.24553, 0.32281] | -0.19208 [-0.21829, -0.16587] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.55000 [0.50666, 0.59334] | 0.17875 [0.15142, 0.20608] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.19125 [0.15737, 0.22513] | 0.00500 [-0.01537, 0.02537] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30088 [2.30079, 2.30097] | 0.00000 [0.00000, 0.00000] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.40750 [0.35658, 0.45842] | -0.49000 [-0.54087, -0.43913] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.58826 [0.58079, 0.59574] | 0.00000 [0.00000, 0.00000] |
@@ -259,6 +302,7 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 | outcome:good | 0.15250 [0.12503, 0.17997] | 0.17750 [0.14963, 0.20537] | 0.02500 [0.01146, 0.03854] |
 | outcome:bad | 0.47625 [0.44794, 0.50456] | 0.46500 [0.43596, 0.49404] | -0.01125 [-0.02300, 0.00050] |
 | outcome:unfinished | 0.37125 [0.34861, 0.39389] | 0.35750 [0.33445, 0.38055] | -0.01375 [-0.02435, -0.00315] |
+| action:fight+steal | 0.18625 [0.15829, 0.21421] | 0.19375 [0.16505, 0.22245] | 0.00750 [0.00154, 0.01346] |
 | entropy | 2.30088 [2.30079, 2.30097] | 2.30121 [2.30117, 2.30125] | 0.00032 [0.00024, 0.00041] |
 | switches | 0.89750 [0.86601, 0.92899] | 0.90000 [0.86874, 0.93126] | 0.00250 [-0.00243, 0.00743] |
 | hunger | 0.58826 [0.58079, 0.59574] | 0.57576 [0.56665, 0.58488] | -0.01250 [-0.01927, -0.00573] |
@@ -267,11 +311,10 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 
 ### Direction assertions
 
-- lambda / action:fight: FAIL, paired change 0.00000 [-0.00349, 0.00349]; strict decrease required.
-- lambda / action:steal: PASS, paired change -0.00250 [-0.00598, 0.00098]; strict decrease required.
-- beta / entropy: PASS, paired change -0.02351 [-0.02432, -0.02269]; strict decrease required.
-- kappa / switches: PASS, paired change -0.49000 [-0.54087, -0.43913]; strict decrease required.
-- d / earlyLossEffect: PASS, paired change -4.058e-9 [-4.426e-9, -3.690e-9]; strict decrease required.
+- lambda / action:fight+steal: FAIL, paired change -0.00250 [-0.00743, 0.00243]; 95% interval strictly below zero required.
+- beta / entropy: PASS, paired change -0.02351 [-0.02432, -0.02269]; strict mean decrease required.
+- kappa / switches: PASS, paired change -0.49000 [-0.54087, -0.43913]; strict mean decrease required.
+- d / earlyLossEffect: PASS, paired change -4.058e-9 [-4.426e-9, -3.690e-9]; strict mean decrease required.
 
 ## What this does not show
 
@@ -279,4 +322,4 @@ DESIGN §10 V5: no independent data exist for this scene; none are in hand. The 
 The experiment that would test the scene is a laboratory scarcity game with a stronger owner, using dictator/ultimatum and theft-option designs in experimental economics. Compare preregistered action frequencies, outcomes and learning trajectories against held-out human data. This report contains no such data or validation tolerance.
 No sibling repository was changed or tested under the folder-only instruction. Kernel is exercised through the linked public package. Reality, Settlement, Economy and pirate-ship integration remain outside this fixture's evidence.
 
-Regenerate: `node --experimental-strip-types bench/hungry-pair/report.ts`. Run acceptance: `npx vitest run test/bench-acceptance.test.ts`.
+Regenerate: `npm run bench`. Run acceptance: `npx vitest run test/bench-acceptance.test.ts`.
