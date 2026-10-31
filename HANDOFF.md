@@ -1,21 +1,66 @@
 # HANDOFF: cognition
 
 ## State
-Units 2661–2667 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
+Units 2661–2668 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
-exported from `src/index.ts`, plus outcome learning and KL attribution.
+exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
+kernel Runner integration, the cognition process and kernel declarations.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
 Attention implements TVA weights, need-based pertinence and the identity/default personality hook. Perception
 implements equal-variance SDT, categorical identification, Weber noise, declared false alarms and null evidence.
 
 ## Next
-Units 2668–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
+Units 2669–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
 
 ## Blocked
 Nothing.
 
 ## Gotchas
+- Unit 2668: `policy(o, m, n, p, theta, rng, t)` composes observation update, generation, evaluation and selection.
+  `PolicyMemoryState` extends memory with an ephemeral `decision` context (host generation expressions, mind id,
+  counters, context features, current intention). This supplies the affordances/bookkeeping required by §2.4
+  without adding positional arguments or hiding mutable configuration. Its return has the §3 intention/trace/next
+  plus updated counters. Returned memory and traces are serializable; host functions never enter saved state/logs.
+  Observation updates require host-declared priors/support. Existence beliefs for the observed entity also receive
+  detection evidence. Observation domain maps to `none` because the current Observation type has no domain tag.
+- `createMindsState(seed)`, `reduceMinds(state, command, configs)` and `MindsRunner(state, configs)` implement
+  `addMind`, `observe`, `tickNeeds`, `decide`, `outcome`. Configs bind pure generation/learning callbacks and the
+  personality slot by configuration key. Commands contain data only. `addMind` mints mind and belief ids, and
+  remints supplied episode histories into the population counter; `beliefIds` maps store keys to stable ids.
+  `observe` applies evidence once; `decide` uses the resulting memory without applying it a second time.
+  `tickNeeds` persists accumulator levels and accepts optional host-observed goal progress. Body signals remain
+  supplied inputs; no chosen action directly changes physiology or goals.
+- `CognitionProcess({ runner, bus, period, epoch, outcomeTypes, readOutcome, ... })` implements `cognition.tick`.
+  The host MUST declare `cognition.tick` and its resolver ids in the existing default `cognition`/`host` phase lists
+  (kernel defaults intentionally contain empty lists). Period is mandatory host Δ. `kernel.json` uses the symbolic
+  `"period": "host"` for this configurable cadence; process construction supplies the positive integer milliseconds.
+  Supply `position` if a custom scheduler order changes this process's rank; the default is cognition index, slot 0.
+- `epoch` is the host sensory boundary: use its supplied per-mind perception stream with attention/perception,
+  then return observations, need inputs, capacity, context and optional observed goal progress. The reducer records
+  observations and the resulting perception stream word so replay requires no sensory callback. Stream state is
+  owned by MindsState and restored with `streams(runSeed).get(mechanismId, 'cognition/mind.NNNN')`. Policy uses only
+  decision.select: memory expectation uses retrieval probabilities without stochastic rehearsal, as unit 2664 specifies.
+- Intention event payload ids are qualified `cognition/int.NNNN`; kernel EventBus ids are separately `evt.NNNNNN`.
+  Host outcomes MUST cause the latter. The process reads by cursor, records the event-to-local-intention mapping,
+  and logs unknown causes without decoding/applying feedback. Duplicate outcomes are also logged and ignored.
+  `readOutcome` converts a recognized host event to perceived observations and optional completion/failure status;
+  it must not expose objective feedback. Attribution events cause the outcome event. Delayed outcomes retain their
+  original action/context/EU even after a new intention is chosen; commitment emits no duplicate intention event.
+- Snapshot `process.state()` alongside the Runner state and EventBus state; pass it back as `from` when restoring.
+  Cursor/mapping belong to the process/host, consistent with the kernel EventBus contract. Runner log replay by itself
+  reproduces the entire MindsState and reducer emission history, including RNG and ignored-outcome diagnostics.
+- Full `check-registry` is deferred until registry rows are ready, as the unit requests. `kernel.json` declares all
+  14 §5 outputs, §8 baseline input ports, testimony input, and the three mechanism-only stream ids. Shape is tested;
+  no claim of completed registry integration or empirical validation is made. Kernel Scheduler/EventBus/Runner
+  integration is tested. Reality, Settlement and Economy declarations and package links, plus pirate economy adapter
+  references, were reviewed read-only; sibling suites and end-to-end integrations remain with their owners.
+- Unit 2668 scope follows the earlier units: the broad `Don't src/**, test/**` protects unrelated files; the
+  explicitly requested composition modules/tests, public exports and handoff are the authorized exception.
+- Unit 2668 verification: 26 focused tests pass. Final required gate passed: all seven required files present,
+  all 163 tests across 16 files pass, and `npx tsc --noEmit` passes. Tests cover pure policy/subjective type fence,
+  minting, JSON Runner replay, stream isolation, need/goal inputs, commitment/original EU, delayed/duplicate/unknown
+  outcomes, Scheduler host integration, cursor restoration and declaration shape.
 - Unit 2667: `learnOutcome(inputs, memory, view, counters, personality?)` validates the outcome's cause against
   this mind's intention id, computes `r_obs - EU(intention)`, updates declared latents once, attributes the
   largest posterior-to-prior KL, and encodes one episode. Supply the EU saved at intention formation (not a

@@ -1,0 +1,196 @@
+{
+  "processes": [
+    {
+      "id": "cognition.tick",
+      "mechanisms": [
+        "cognition.attention.allocate",
+        "cognition.perception.detect",
+        "cognition.belief.update",
+        "cognition.memory.episodic",
+        "cognition.needs.drive",
+        "cognition.goals.objectives",
+        "cognition.decision.generate",
+        "cognition.decision.evaluate",
+        "cognition.decision.select",
+        "cognition.learning.outcome",
+        "cognition.learning.attribution",
+        "cognition.personality.slot"
+      ],
+      "writes": [
+        "mind.attention_share",
+        "mind.observation",
+        "mind.belief",
+        "mind.episode",
+        "mind.retrieval_p",
+        "mind.need_deficit",
+        "mind.drive",
+        "mind.need_priority",
+        "mind.goal_progress",
+        "mind.candidates",
+        "mind.expected_utility",
+        "mind.intention",
+        "mind.prediction_error",
+        "mind.attribution"
+      ],
+      "reads": [
+        "body.detectability",
+        "body.hunger_signal",
+        "body.pain",
+        "body.capacity_functional",
+        "mind.testimony",
+        "mind.attention_share",
+        "mind.observation",
+        "mind.belief",
+        "mind.episode",
+        "mind.retrieval_p",
+        "mind.need_deficit",
+        "mind.drive",
+        "mind.need_priority",
+        "mind.goal_progress",
+        "mind.candidates",
+        "mind.expected_utility",
+        "mind.intention",
+        "mind.prediction_error",
+        "mind.attribution"
+      ],
+      "period": "host",
+      "phase": "cognition"
+    }
+  ],
+  "ports": [
+    {
+      "mechanism": "cognition.attention.allocate",
+      "quantity": "mind.attention_share",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.perception.detect",
+      "quantity": "mind.observation",
+      "kind": "record",
+      "unit": null,
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.belief.update",
+      "quantity": "mind.belief",
+      "kind": "record",
+      "unit": null,
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.memory.episodic",
+      "quantity": "mind.episode",
+      "kind": "record",
+      "unit": null,
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.memory.episodic",
+      "quantity": "mind.retrieval_p",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.needs.drive",
+      "quantity": "mind.need_deficit",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.needs.drive",
+      "quantity": "mind.drive",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.needs.drive",
+      "quantity": "mind.need_priority",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.goals.objectives",
+      "quantity": "mind.goal_progress",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.decision.generate",
+      "quantity": "mind.candidates",
+      "kind": "record",
+      "unit": null,
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.decision.evaluate",
+      "quantity": "mind.expected_utility",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.decision.select",
+      "quantity": "mind.intention",
+      "kind": "record",
+      "unit": null,
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.learning.outcome",
+      "quantity": "mind.prediction_error",
+      "kind": "quantity",
+      "unit": "1",
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.learning.attribution",
+      "quantity": "mind.attribution",
+      "kind": "record",
+      "unit": null,
+      "direction": "output"
+    },
+    {
+      "mechanism": "cognition.perception.detect",
+      "quantity": "body.detectability",
+      "unit": "1",
+      "direction": "input"
+    },
+    {
+      "mechanism": "cognition.needs.drive",
+      "quantity": "body.hunger_signal",
+      "unit": "1",
+      "direction": "input"
+    },
+    {
+      "mechanism": "cognition.needs.drive",
+      "quantity": "body.pain",
+      "unit": "1",
+      "direction": "input"
+    },
+    {
+      "mechanism": "cognition.decision.generate",
+      "quantity": "body.capacity_functional",
+      "unit": "1",
+      "direction": "input"
+    },
+    {
+      "mechanism": "cognition.belief.update",
+      "quantity": "mind.testimony",
+      "kind": "record",
+      "unit": null,
+      "direction": "input"
+    }
+  ],
+  "streams": [
+    "cognition.perception.detect",
+    "cognition.memory.retrieve",
+    "cognition.decision.select"
+  ]
+}
