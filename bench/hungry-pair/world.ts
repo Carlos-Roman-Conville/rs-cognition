@@ -349,13 +349,16 @@ export class HungryPairWorld {
     return won;
   }
 
-  /** Host resolver; public for direct rule verification. It never selects a mind's action. */
+  /** Host resolver; public for direct rule verification. It never selects a mind's action.
+   * fixture rule (DESIGN §6): outcome rules keyed by action id are host data (COG-21), not a platform mechanism. */
   resolve(event: KernelEvent, ctx: Emitter): void {
     this.hostInputLog.push({ type: "intention", event: structuredClone(event), t: ctx.t });
     const intention = event.payload as Intention;
     const body = this.body(intention.mind);
     const ownJob = this.state.jobs.find((job) => job.actor === body.id);
+    // fixture rule (DESIGN §6): wait always succeeds with no world change.
     if (intention.action === "wait") { this.complete(event, ctx, true, "waited"); return; }
+    // fixture rule (DESIGN §6): keep extends a promise job; break completes it and fails the sponsor.
     if (intention.action === "keep" || intention.action === "break") {
       if (!ownJob || ownJob.stage !== "promise") { this.complete(event, ctx, false, "no outstanding promise"); return; }
       if (intention.action === "keep") {
@@ -367,16 +370,23 @@ export class HungryPairWorld {
       }
       return;
     }
+    // fixture rule (DESIGN §6): owner responses are handled in answer(), not visitor job queue.
     if (body.role === "owner") { this.answer(event, ctx); return; }
+    // fixture rule (DESIGN §6): one outstanding visitor job at a time.
     if (ownJob) { this.complete(event, ctx, false, "busy with an earlier undertaking"); return; }
     switch (intention.action) {
+      // fixture rule (DESIGN §6): social requests enqueue a pending owner response.
       case "ask": case "trade": case "work": case "deceive":
         if (intention.action === "trade" && body.items === 0) this.complete(event, ctx, false, "no tradeable item");
         else this.state.jobs.push({ event, actor: body.id, stage: "request" });
         break;
+      // fixture rule (DESIGN §6): theft enters detection before transfer.
       case "steal": this.state.jobs.push({ event, actor: body.id, stage: "detection" }); break;
+      // fixture rule (DESIGN §6): fight resolves immediately via contest().
       case "fight": this.complete(event, ctx, this.contest(body, this.owner(), ctx), "contest"); break;
+      // fixture rule (DESIGN §6): leave schedules return after FIXTURE.leaveEpochs.
       case "leave": this.state.jobs.push({ event, actor: body.id, stage: "away", due: ctx.t + FIXTURE.leaveEpochs * FIXTURE.epochMs }); break;
+      // fixture rule (DESIGN §6): unknown visitor actions fail closed.
       default: this.complete(event, ctx, false, "unavailable action");
     }
   }
@@ -391,37 +401,46 @@ export class HungryPairWorld {
     const finish = (good: boolean, reason: string, answered = good) => {
       this.complete(job.event, ctx, good, reason); this.complete(event, ctx, answered, reason); this.remove(job);
     };
+    // fixture rule (DESIGN §6): owner may refuse an open request.
     if (action.action === "refuse" && job.stage === "request") { finish(false, "refused", true); return; }
     if (job.stage === "request") {
+      // fixture rule (DESIGN §6): give or trade accepts transfer stock (and item on trade).
       if ((action.action === "give" && request === "ask") || (action.action === "accept_trade" && request === "trade")) {
         const gave = this.transfer(visitor);
         if (gave) { social(); if (request === "trade") { visitor.items--; this.owner().items++; } }
         finish(gave, gave ? "food transferred" : "stock empty"); return;
       }
+      // fixture rule (DESIGN §6): accept_work starts timed labour before pay stage.
       if (action.action === "accept_work" && request === "work") {
         social(); job.stage = "work"; job.due = ctx.t + FIXTURE.workEpochs * FIXTURE.epochMs;
         this.complete(event, ctx, true, "labour accepted"); return;
       }
+      // fixture rule (DESIGN §6): accept_promise advances food and binds a promise job.
       if (action.action === "accept_promise" && request === "deceive") {
         if (!this.transfer(visitor)) { finish(false, "stock empty"); return; }
         social(); this.complete(job.event, ctx, true, "food advanced on promise");
         job.stage = "promise"; job.sponsor = event; return;
       }
     }
+    // fixture rule (DESIGN §6): after work, pay transfers stock or renege closes unpaid.
     if (job.stage === "pay" && ["pay", "renege"].includes(action.action)) {
       const paid = action.action === "pay" && this.transfer(visitor);
       if (paid) social(); finish(paid, paid ? "labour paid" : "labour unpaid", paid || action.action === "renege"); return;
     }
+    // fixture rule (DESIGN §6): caught thief — confront, chase, or let go.
     if (job.stage === "caught" && ["confront", "chase", "let_go"].includes(action.action)) {
+      // fixture rule (DESIGN §6): confront runs contest and clears the theft job.
       if (action.action === "confront") {
         const ownerWon = this.contest(this.owner(), visitor, ctx);
         this.complete(job.event, ctx, !ownerWon, "detected theft contest");
         this.complete(event, ctx, ownerWon, "confronted thief"); this.remove(job); return;
       }
+      // fixture rule (DESIGN §6): chase off or let go may still transfer recovered food.
       const gotFood = action.action === "let_go" && this.transfer(visitor);
       this.complete(job.event, ctx, gotFood, action.action === "chase" ? "chased off" : "let go");
       this.complete(event, ctx, true, action.action); this.remove(job); return;
     }
+    // fixture rule (DESIGN §6): owner action must match job stage and pending request type.
     this.complete(event, ctx, false, "response does not match current request");
   }
 

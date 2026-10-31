@@ -146,6 +146,7 @@ export function makeConfig(owner: boolean, targets: readonly string[], encode = 
   const latents: LearningLatent[] = ["generosity", "vigilance", "trust", "effectiveness"].map((attribute) => ({
     id: attribute, kind: "discrete", about: "owner", attribute, domain: "people",
     likelihood: (e) => {
+      // fixture rule (DESIGN §6): which observed actions inform which owner latent; host data, not a platform rule.
       const relevant = attribute === "effectiveness" ||
         (attribute === "generosity" && ["ask", "trade", "work"].includes(e.intention.action)) ||
         (attribute === "vigilance" && e.intention.action === "steal") ||

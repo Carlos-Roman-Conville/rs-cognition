@@ -389,7 +389,10 @@ law of practice and decay: the universal STATS skill, rust and talent), `cogniti
   behaviour and compared with McCrae & Costa 1989 in T-2 (§9 "Tests of the layer").
 - **Quantities, proposed to the registry (planned):** `mind.conversation_state` (record, the six parts above, per
   partner), `mind.conversation_tolerance` (1, 0–1, the remaining tolerance budget), `mind.engagement_willingness`
-  (1, 0–1).
+  (1, 0–1). Registered 2026-10-31 (planned) with the writer row
+  `cognition.communication.conversation_state` (reads testimony, credibility, drive, episodes and beliefs;
+  consumers `cognition.decision.generate` and `cognition.decision.select`); `cognition.communication.comprehend`
+  keeps one job, writing `mind.testimony`.
 
 DUP-46 (personality, ownership-gap): these rows are the universal home; the pirate charts and STATS sliders stay
 pirate (CTRL-7). `realism.nutrition.hunger_fullness`: Cognition reads it, never writes it; if Reality's row
@@ -867,3 +870,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | DUP-49 recorded (unit 2720): four-owner split — Reality (hunger, satiety, taste perception, digestion and physiological responses); Cognition (food preferences, anticipated enjoyment, appetite-related motivation, the decision to eat); Society (cultural food norms, taboos and learned expectations, unowned until Society exists); the pirate game (period-specific foods, presentation and intentional gameplay rules) |
 | 2026-10-30 | Rex's two directions (dynamic function allocation, the light and the crystal, §9; cultural salience and the zeitgeist, §13b) were recorded as proposed by unit 2721, not built, C-Q11 open |
 | 2026-10-31 | Rex's conversational-plausibility direction recorded in §5 as proposed by unit 2734, not built, C-Q12 open |
+| 2026-10-31 | Fixture inline labels (COG-22) and the conversation-state writer row recorded (unit 2735). |
