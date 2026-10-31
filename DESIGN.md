@@ -624,6 +624,57 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | Rex (a new overlap group, raised by Reality to the registry keeper) |
 | C-G1 | `mind.` scope, 13 rows, 5 reserved rows, 14 quantities + `mind.testimony` | **registered 2026-10-30** (planned); DUP-46's owner still Rex's in batch 5 |
 
+## 13. Attraction and partner selection (Rex, 2026-10-30; placeholder; designed after CB-1…CB-7 pass)
+
+The first integration experiment after the baseline (ENGINES.md, "Attraction and partner selection"). Nothing here
+is built or queued; this section fixes the boundaries so no baseline unit forecloses it.
+
+**Cognition owns (Rex):**
+- **Individual preference structure `P_i`**: three interacting influences, namely biological tendencies
+  (inherited and developmental), social transmission (family, peers, culture, status) and experiential
+  associations (personal history, learned associations).
+- **Interpersonal attraction** `A_ij(t) = F(P_i, X̂_ij, C_i, E_i, R_ij, S_t)`, where `X̂_ij` is the other
+  *as perceived* through §2.1 perception and attention, never the true phenotype. The form of `F` is proposed,
+  not chosen.
+- **Attachment.**
+- **Sexual motivation as a need**: a §2.2 need record, with a category and a source, under the same `M_i` as
+  every other need.
+- **Partner choice as a decision**: attraction weighed against anticipated social consequences (§2.5), with
+  Society's pressures as inputs.
+- **Relationship learning** (§2.4/§2.6 applied to `R_ij`).
+
+**Others own:**
+- **Reality / Life & Species**: the phenotype record that perception reads (face, body, composition, surface,
+  movement, voice, scent, expression).
+- **Society**: beauty ideals, family expectation, peer pressure and status norms, which reach Cognition as inputs
+  only.
+- **Life & Species**: reproduction (fertility, conception).
+
+**Invariants (Rex):**
+1. Attraction ≠ partner choice ≠ sexual behaviour ≠ reproduction. Each is a separate quantity or decision, and
+   none is derived from another by identity.
+2. No universal attractiveness score. Attractiveness exists only as `A_ij`, per perceiver; there is no population
+   norm, so no "girls like X, guys like Y".
+3. Little or no attraction (sexual or romantic) is a valid parameter region, not a defect. Tests must cover it,
+   and nothing may treat it as an error or a fallback.
+4. Personality (§9) shapes attention and weighting only, never a rule like "Se prefers muscular". The §9
+   fingerprint and citation rules apply.
+5. Variety with consistent inherited and transmitted factors. Population-level patterns may only emerge from
+   `P_i` transmission, never be written in.
+
+**Open (to settle when this is designed; nothing registered beyond the registry keeper's rows):**
+- A-Q1: the form of `F` and of `P_i` (feature weights over perceived traits? prototypes? both?), with evidence
+  levels.
+- A-Q2: how social transmission of `P_i` works (a family/peer update rule), and how much belongs to Society versus
+  Cognition.
+- A-Q3: the attachment model and its source (e.g. attachment-theory literature), and whether it is a need, a
+  belief state or both.
+- A-Q4: the sexual-motivation need's source (signal from Reality, appraisal or accumulator, §2.2), and its
+  boundary with Life & Species' physiology.
+- A-Q5: the benchmark scenario and the validation data (a §10-style V-item) before any unit is drafted.
+- A-Q6: which perceived features the §2.1 attention weights cover, and the phenotype port names (agreed with
+  Reality and the registry).
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -645,3 +696,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | Kernel, Reality and registry keepers replied: C-K1, C-K2, C-R1, C-G1 agreed (kernel unit 2660; rows and quantities registered as planned; `body.detectability` rename); C-R2 (appetite and eating rule) raised for Rex |
 | 2026-10-30 | Rex's direction on the personality layer folded into §9: crude cited formulas F1–F13, gaps off, codex fingerprint check, versions side by side, T-2 derived traits; units 2673–2676 |
 | 2026-10-30 | **Approved by Rex** (C-Q1–C-Q8 as proposed, C-Q4 kept, crude-formula plan); §2.2 amended with the universal motivational architecture (`M_i = w_i D_i S_i`, needs as data, Maslow as classification only); marker 2659 released |
+| 2026-10-30 | §13 attraction and partner selection placeholder (Rex, via the controller): boundaries, invariants, open A-Q1–A-Q6; nothing built or registered |
