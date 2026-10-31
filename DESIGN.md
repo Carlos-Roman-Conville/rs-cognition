@@ -391,7 +391,8 @@ law of practice and decay: the universal STATS skill, rust and talent), `cogniti
   still wants contact but has no confident next move (hesitating, repeating, a weak follow-up, staying after the
   other has begun closing). An urgent warning may interrupt anything; an unrelated remark may work between close
   friends; a clumsy person may still be welcomed.
-- **Personality shapes weights only (Rex):** through the four hooks (§9), never a decision. Openness is not
+- **Dispositions influence, the label describes (Rex, corrected 2026-10-31):** dispositions act through the four
+  hooks (§9), never as a decision; the personality label describes the resulting pattern (§14.1). Openness is not
   willingness to talk to a stranger; a reserved person may want company tonight; a lonely one may tolerate a clumsy
   approach or read it as rejection.
 - **Big Five is a measurement, never a driver (Rex):** derived traits are measured from the emergent conversational
@@ -697,6 +698,9 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q3 | "Light and crystal" | **(Rex, 2026-10-30)** named in ENGINES.md ("Dynamic function allocation, the light and the crystal"): the light = the baseline hierarchy B_f, the crystal = learned activation conditions (§9, proposed, not built); still to be written into the personality matrix before any formula cites it; never invented |
 | C-Q11 | The end of Rex's "an inferior function is never prevented from leading a decision" point (his paste was cut off mid-sentence) | open (Rex) |
 | C-Q12 | Conversational plausibility (§5): whether the tolerance budget is a need record under M_i (§2.2) or a separate conversation state | **(Rex, 2026-10-31)** decided: a derived assessment from separate causes, never a need or a draining bar; shared context is a per-mind belief (§5) |
+| C-Q13 | Which memory parameters Reality's neurology constrains (§14.1) | open (Rex, with the Reality keeper) |
+| C-Q14 | The gaze interpretation hypothesis set and its calibration sources (§14.2) | open (Rex) |
+| C-Q15 | Which reasoning-process parameters a substance may move, and each substance's sourced model (§14.5) | open (Rex, with the Reality keeper) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -822,8 +826,9 @@ The model must be able to produce either pathway alone or both, and tests must t
    norm, so no "girls like X, guys like Y".
 3. Little or no attraction (sexual or romantic) is a valid parameter region, not a defect. Tests must cover it,
    and nothing may treat it as an error or a fallback.
-4. Personality (§9) shapes attention and weighting only, never a rule like "Se prefers muscular". The §9
-   fingerprint and citation rules apply.
+4. Dispositions (§9) influence attention and evaluation only, and the personality label describes the resulting
+   pattern (Rex, corrected 2026-10-31, §14.1), never a rule like "Se prefers muscular". The §9 fingerprint and
+   citation rules apply.
 5. Variety with consistent inherited and transmitted factors. Population-level patterns may only emerge from
    `P_i` transmission, never be written in.
 
@@ -850,6 +855,84 @@ behaviour pathway), with replayed seeds as in §6.
 - A-Q5: the benchmark scenario and the validation data (a §10-style V-item) before any unit is drafted.
 - A-Q6: which perceived features the §2.1 attention weights cover, and the phenotype port names (agreed with
   Reality and the registry).
+
+## 14. Five directions (Rex, 2026-10-31; recorded design, not built)
+
+Rex's directions (ENGINES.md, "Five Cognition directions"). Design may be recorded here; no code and no benchmark
+change until the controller releases the baseline follow-up work (T-1/T-2). Row ids are planned registry rows.
+
+### 14.1 Memory sits below personality (Rex)
+
+- **Stages (Rex):** attention (what is noticed: goals, interests, danger, novelty, distraction, existing knowledge;
+  §2.1) → encoding (what becomes a memory, and in what detail) → consolidation (what becomes durable; sleep is a
+  biological influence here, read from Reality) → retrieval (what the situation or another's remark brings back;
+  §2.3's ACT-R activation) → communication (what is mentioned, concealed or questioned). **Remembering and saying are
+  separate acts**: communication is a decision (§2.4), never an automatic read-out of memory.
+- **No type-specific memory rule (Rex):** three witnesses of one dockside argument remember different things through
+  attention, experience, goals and state alone.
+- **Ownership (Rex):** Reality's neuroscience owns the biological constraints; Cognition owns attention and
+  remembering. Which memory parameters Reality constrains is **open** (C-Q13).
+- **The personality label is descriptive (Rex's correction):** dispositions influence behaviour; the label describes
+  the resulting pattern. A measured trait used to predict attention is an empirical approximation, never a neural
+  mechanism. "Grey matter" is not a capacity number.
+- **Rows (planned):** `cognition.memory.encoding`, `cognition.memory.consolidation`, `cognition.memory.retrieval`
+  beside the existing `cognition.memory.episodic`; attention is `cognition.attention.allocate`; saying is the
+  communication subsystem (`cognition.communication.encode`).
+
+### 14.2 Gaze and eye contact (Rex; nonverbal communication)
+
+- **Three separate things (Rex):** the visible behaviour (where, how long, looking away, expression, posture,
+  distance; an intention chosen through §2.4 and carried out by the body), the observer's interpretation (attraction,
+  anger, curiosity, challenge, submission, mere attention) and the response (return, smile, avoid, question,
+  approach, defend; again a §2.4 decision).
+- **Interpretation is several hypotheses with likelihoods (Rex):** each new cue shifts them; they are carried forward
+  and revised, like any belief (§2.3), and may be wrong. Randomness represents uncertainty and never replaces
+  causes. Weights are researched and calibrated: no rule like "three seconds means attraction". Cultural and
+  individual differences and misunderstanding are included. The interpretation feeds attention (§2.1) and the memory
+  of the encounter (14.1).
+- **Open:** the hypothesis set and its calibration sources (C-Q14).
+- **Rows (planned):** `cognition.communication.gaze` (nonverbal interpretation); quantity `mind.gaze_hypotheses`
+  (record per observer and partner: hypotheses with likelihoods).
+
+### 14.3 Intermittent characters: continuity during absence (Rex)
+
+- People whose lives cross the player's only sometimes: regular (an annual visitor, a seasonal worker), irregular but
+  explainable (a ship's route, weather, repairs, business), conditional (family, debt, need, wanting to see you),
+  apparently one-time.
+- **Continuity during absence (Rex):** they return changed, remember the last conversation (14.1) and come for a new
+  reason; they are simulated only enough to account for meaningful change. An expected person may fail to arrive, and
+  that absence matters without becoming a quest.
+- **Ownership:** who these people are, and their schedules, belong to the pirate plugin (its story and town keepers);
+  Cognition supplies the continuity of their minds.
+- **Row (planned):** `cognition.continuity.absence`.
+
+### 14.4 Tattoos, body features and names (Rex; with §13b "Style and presentation")
+
+- Three separate things: the feature; its intended meaning (belonging, religion, rebellion, remembrance, taste), which
+  Society and the bearer supply; and the observer's interpretation (§2.1, §2.3), which may be wrong.
+- **"Exotic" means unfamiliar to this observer (Rex),** never a property of the name or the person: it is read from the
+  observer's own experience (episodes, 14.1).
+- Cultural tattoos may encode rebellion factors (Rex), read through the same three-way split.
+- No new row: perception, belief and §13b's style and presentation cover it.
+
+### 14.5 Drugs alter the person, not only the state (Rex, firmly)
+
+- **Repeated exposure can lastingly change how someone thinks, reacts and relates (Rex),** including the **reasoning
+  process itself**: association speed, what counts as evidence, how certain they become, whether contradictions are
+  noticed, working memory, checking of conclusions, belief updating. The baseline is altered by history and **never
+  reset when the substance wears off**.
+- **Separate processes, each substance its own researched model (Rex):** immediate effects (attention, arousal,
+  inhibition, perception, body); tolerance and dependence, with withdrawal apart from intoxication; learning and
+  craving (people, places and situations associated with relief or reward, through §2.5 and 14.1); longer-term
+  adaptation and recovery on their own timescales with individual variability (lasting ≠ irreversible); injury or
+  illness as a separate pathway.
+- **Ownership (Rex):** Reality's neurology and pharmacokinetics own the biology; Cognition owns the altered processes,
+  read as changes to its own parameters (§3 θ, §2.3 belief updating, §2.1 attention) through a port.
+- The research target is a formula for lasting change in brain chemistry and synapses that later shows as personality
+  presentation; the personality measurement describes the resulting pattern (14.1).
+- **Open:** which reasoning-process parameters a substance may move, and each substance's sourced model (C-Q15).
+- **Rows (planned):** `cognition.substance.adaptation` (lasting changes to reasoning-process parameters); quantity
+  `mind.process_baseline` (record: the mind's reasoning-process parameters as altered by its history).
 
 ## Sources (to be confirmed and expanded by each unit)
 
@@ -883,3 +966,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | Rex's conversational-plausibility direction recorded in §5 as proposed by unit 2734, not built, C-Q12 open |
 | 2026-10-31 | Fixture inline labels (COG-22) and the conversation-state writer row recorded (unit 2735). |
 | 2026-10-31 | C-Q12 decided by Rex (tolerance derived, shared context a per-mind belief), recorded in §5 and §12 (unit 2736); planned, nothing implemented. |
+| 2026-10-31 | Rex's five directions recorded as §14 (memory below personality, gaze, intermittent characters, features and names, lasting drug effects); 'personality weights' wording corrected to descriptive; C-Q13 to C-Q15 open (unit 2737). Not built. |
