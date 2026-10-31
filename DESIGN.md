@@ -2,8 +2,8 @@
 
 **Status: approved (Rex, 2026-10-30)**: C-Q1 to C-Q8 as proposed; C-Q4 kept (personality only after CB-1 to CB-7
 pass); the crude-formula plan of §9; with the universal motivational architecture folded into §2.2. The belt units
-in `Games/Card Games/_agent/queue/cognition/` are released. C-R2 (appetite and the eating rule, DUP-49) still waits
-on Rex in overlap batch 2.
+in `Games/Card Games/_agent/queue/cognition/` are released. C-R2 (appetite and the eating rule) was settled by Rex on
+2026-10-30 (DUP-49, overlap batch 2).
 
 Every item is marked **(Rex)** = Rex's decision, **proposed** = the Cognition keeper's proposal, or **open** = a
 question for Rex or another owner (§12 lists them). Evidence levels are PLATFORM.md §4: (1) physical or
@@ -42,7 +42,7 @@ intentions; it never decides whether an attempt succeeds.
 | Not Cognition's | Owner | How Cognition gets it |
 |---|---|---|
 | Neurological signalling: substances, receptors, arousal, mood bias | Reality, `realism/src/neurology.ts` | read through a port (optional in the baseline; §8) |
-| Hunger's body side: energy stores, appetite physiology | Reality, nutrition (`realism.nutrition.hunger_fullness`, documented-only today) | a hunger signal port; **Cognition owns the felt need and its priority** |
+| Hunger's body side: physiological signals vs eating decisions | **(Rex, 2026-10-30, DUP-49)** Reality owns hunger, satiety and taste perception as signals; Cognition owns food preference, anticipated enjoyment, appetite motivation and the eating decision | hunger, satiety and taste signal ports; **Cognition owns the felt need, its priority, and the eating decision** |
 | Physical capability | Reality, `capacity.functional` (DUP-15) | a capacity port, stub until built |
 | Light and sound reaching an observer | Reality, P2 optics and acoustics | a detectability port, a declared stub until P2 |
 | Whether an action succeeds, and the world's state | the engine that owns that state (Reality, Economy, Settlement, Society, Government) | outcome events back to the mind |
@@ -151,6 +151,12 @@ biological need and applies no duplicate motivational penalty: a physiological `
 through its port, and the drive never feeds back a physiological effect. **Personality never manufactures
 motivations** (§9): its hooks cannot touch `w_i`, `D_i`, setpoints or the need list; an Ne-dominant is not
 automatically more curious or less hungry.
+
+**Appetite and eating (Rex, 2026-10-30, DUP-49).** Eating is an action evaluated and selected like any other
+(`cognition.decision.select`), with the hunger need's deficit read from `body.hunger_signal`. Food preference and
+anticipated enjoyment are Cognition's; their form is §13 preference learning, which is not designed yet. The old
+nutrition-library thresholds (eat if appetite > 0.3 or hunger > 0.8) are **not adopted** as rules. Cultural food
+norms are Society's and unowned until Society exists.
 
 **Needs are data, extensible from the first unit (Rex).** A need is a record, never an enum:
 `{ id, category (Maslow class; SDT tag autonomy | competence | relatedness where it applies), source, setpoint,
@@ -428,7 +434,9 @@ real hungry people choose in this scene. That is stated in the report (§10).
 | Input | Unit | Today | Contract proposed |
 |---|---|---|---|
 | detectability `d'` per observer and cue (sight, sound): `body.detectability` | 1 | none (P2) | **agreed (Reality, registry; renamed from `percept.detectability`, alias recorded):** a host stub until P2 optics and acoustics write it per observer, cue and channel; Reality = signal at the observer, Cognition = attention, criterion, identification, belief. **d' already includes the observer's eyesight and hearing (DUP-37, the capacity combination): perception never applies a sensory-capacity factor again** |
-| hunger signal | 1 (0–1) | `realism.nutrition.hunger_fullness` documented-only | **agreed:** Reality writes `body.hunger_signal` (fullness and hunger stay Reality's signals, built later from gut and energy state); Cognition reads it as the deficit and writes only the felt drive and priority, which never feed back a second physiological effect. Thirst, cold and pain (`body.pain`, written by `realism.medicine.pain`) by the same pattern; for sleep, the **single** sleep-pressure quantity DUP-12 settles on (proposed: neurology's adenosine pressure), never `body.sleep_debt` as well. **New overlap (Reality → registry → Rex):** `nutrition.json`'s `appetite` (hunger × palatability × state) and `eating-rule` (eat if appetite > 0.3 or hunger > 0.8) are decisions, duplicate authority with Cognition's drive and selection; proposed owner Cognition (eating is an action evaluated like any other; palatability a taste percept Reality may keep), the rows becoming restatements; nothing moves until Rex approves (C-R2) |
+| hunger signal | 1 (0–1) | `realism.nutrition.hunger_fullness` documented-only | **agreed:** Reality writes `body.hunger_signal` (fullness and hunger stay Reality's signals, built later from gut and energy state); Cognition reads it as the deficit and writes only the felt drive and priority, which never feed back a second physiological effect. Thirst, cold and pain (`body.pain`, written by `realism.medicine.pain`) by the same pattern; for sleep, the **single** sleep-pressure quantity DUP-12 settles on (proposed: neurology's adenosine pressure), never `body.sleep_debt` as well. **Settled by Rex 2026-10-30 (DUP-49):** the nutrition library's `appetite` and `eating-rule` rows become restatements citing Cognition |
+| satiety signal | 1 (0–1) | registered 2026-10-30 (planned), writer `realism.nutrition.hunger_fullness` (documented-only) | **agreed (DUP-49):** Reality writes `body.satiety_signal`; Cognition reads it as part of the hunger need's deficit; added to `kernel.json` ports when Reality builds the writer |
+| taste percept | 1 (0–1) per taste category (`indexed_by` taste category) | registered 2026-10-30 (planned), writer `realism.perception.taste` (planned, not built) | **agreed (DUP-49):** Reality writes `body.taste_percept` (the sensory half of palatability); Cognition's preferences evaluate it (the evaluative half); until the writer exists the percept is **absent**, never given a default; added to `kernel.json` ports when Reality builds the writer |
 | functional capacity | 1 (0–1 per action class) | DUP-15, planned | Reality writes `body.capacity_functional`; generation reads it; Cognition never computes strength |
 | mood and arousal bias | 1 | `realism.neurology.circuits` writes `body.circuit_outputs` | **not read in the baseline**; when read, as a modulation of `β`, `λ` or pertinence that Reality's row defines, never a second mood model |
 
@@ -623,7 +631,7 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-K1 | Per-mind RNG streams | **agreed 2026-10-30**: `get(mechanismId, entityId)`, kernel unit 2660 (§7) |
 | C-K2 | `cognition` and `host` phases | **agreed 2026-10-30**, kernel unit 2660 (§7) |
 | C-R1 | Port names and the hunger boundary | **agreed 2026-10-30** with Reality and the registry; `percept.detectability` renamed `body.detectability` (§8) |
-| C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | Rex (a new overlap group, raised by Reality to the registry keeper) |
+| C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | **(Rex, 2026-10-30)** DUP-49 approved: four-owner split (§0, §2.2, §8) |
 | C-G1 | `mind.` scope, 13 rows, 5 reserved rows, 14 quantities + `mind.testimony` | **registered 2026-10-30** (planned); DUP-46's owner still Rex's in batch 5 |
 | C-B1 | Baseline acceptance rulings after unit 2670 parked (COG-10 to COG-15): horizon-censored receipts, `r_obs` as the valuation of the perceived outcome, id swap with transported streams, λ on fight + steal combined, the full 500/200-seed studies run as `npm run bench` with verdicts read by the gate, V1's criterion | keeper ruling 2026-10-30; units 2700, 2701 |
 | C-B2 | CB-6b certified by the independent check unit; CB-7 λ asserted at the evaluation level, population effect reported (COG-18, COG-19) | keeper ruling 2026-10-30; unit 2705 |
@@ -766,3 +774,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | §13 reframed as general preference learning (Rex): 13a mechanisms 1–6, baseline `A = Σ P·X̂`, malleability classes with sexual orientation fixed; attraction becomes 13b, the first application |
 | 2026-10-30 | Units 2670/2671 parked honestly; keeper rulings C-B1 (CB-3 censoring, `r_obs` definition, CB-6a transported streams, CB-7 λ combined, bench out of the gate, V1 criterion and the 210/105 count); C-V2 V2 failure recorded |
 | 2026-10-30 | Unit 2700: CB-1 to CB-5 pass, V1 passes (2701). Rulings C-B2: CB-6b belongs to the check unit; CB-7 λ restated as its evaluation-level consequence, population effect reported |
+| 2026-10-30 | DUP-49 recorded (unit 2720): four-owner split — Reality (hunger, satiety, taste perception, digestion and physiological responses); Cognition (food preferences, anticipated enjoyment, appetite-related motivation, the decision to eat); Society (cultural food norms, taboos and learned expectations, unowned until Society exists); the pirate game (period-specific foods, presentation and intentional gameplay rules) |
