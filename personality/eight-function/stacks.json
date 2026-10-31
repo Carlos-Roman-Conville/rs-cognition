@@ -1,0 +1,98 @@
+{
+  "ENTP": [
+    "Ne",
+    "Ti",
+    "Fe",
+    "Si"
+  ],
+  "INTP": [
+    "Ti",
+    "Ne",
+    "Si",
+    "Fe"
+  ],
+  "ESFJ": [
+    "Fe",
+    "Si",
+    "Ne",
+    "Ti"
+  ],
+  "ISFJ": [
+    "Si",
+    "Fe",
+    "Ti",
+    "Ne"
+  ],
+  "ENFJ": [
+    "Fe",
+    "Ni",
+    "Se",
+    "Ti"
+  ],
+  "INFJ": [
+    "Ni",
+    "Fe",
+    "Ti",
+    "Se"
+  ],
+  "ESTP": [
+    "Se",
+    "Ti",
+    "Fe",
+    "Ni"
+  ],
+  "ISTP": [
+    "Ti",
+    "Se",
+    "Ni",
+    "Fe"
+  ],
+  "ENFP": [
+    "Ne",
+    "Fi",
+    "Te",
+    "Si"
+  ],
+  "INFP": [
+    "Fi",
+    "Ne",
+    "Si",
+    "Te"
+  ],
+  "ESTJ": [
+    "Te",
+    "Si",
+    "Ne",
+    "Fi"
+  ],
+  "ISTJ": [
+    "Si",
+    "Te",
+    "Fi",
+    "Ne"
+  ],
+  "ENTJ": [
+    "Te",
+    "Ni",
+    "Se",
+    "Fi"
+  ],
+  "INTJ": [
+    "Ni",
+    "Te",
+    "Fi",
+    "Se"
+  ],
+  "ESFP": [
+    "Se",
+    "Fi",
+    "Te",
+    "Ni"
+  ],
+  "ISFP": [
+    "Fi",
+    "Se",
+    "Ni",
+    "Te"
+  ]
+}

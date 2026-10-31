@@ -9,6 +9,7 @@ export * from "./actions.ts";
 export * from "./evaluate.ts";
 export * from "./select.ts";
 export * from "./personality.ts";
+export * from "./personality/eight-function/v1.ts";
 export * from "./learning.ts";
 export * from "./policy.ts";
 export * from "./mind.ts";

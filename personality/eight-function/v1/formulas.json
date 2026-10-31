@@ -1,0 +1,471 @@
+[
+  {
+    "id": "W",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Stack position and confidence"
+    },
+    "status": "crude",
+    "hook": "stack",
+    "form": "ω_f = (5 − i) / 4        (1, 0.75, 0.5, 0.25);   ω_f = 0 for a function not in positions 1–4",
+    "constants": {
+      "linear_weights": {
+        "value": [
+          1,
+          0.75,
+          0.5,
+          0.25
+        ],
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    }
+  },
+  {
+    "id": "DELTA",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "The ratio."
+    },
+    "status": "crude",
+    "hook": "stack",
+    "form": "Δ = ρ_E − ρ_I        ρ_E = Σ_{f extraverted} ω_f / Σ ω_f,    ρ_I = 1 − ρ_E",
+    "constants": {},
+    "additional_cites": [
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+        "tag": "CARLOS",
+        "item": "Never pure."
+      }
+    ]
+  },
+  {
+    "id": "F1",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Direction of data."
+    },
+    "status": "crude",
+    "hook": "interpret",
+    "form": "`η_obs' = clamp(η·(1 + Δ), η_min, 1)`; `α0' = α0·(1 − Δ)`. External data weighs more for an extraverted tilt, internal theory more for an introverted one. Both channels are always present, because \\|Δ\\| < 1",
+    "constants": {
+      "eta_min": {
+        "value": "required host configuration; DESIGN supplies no value",
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    },
+    "additional_cites": [
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+        "tag": "CARLOS",
+        "item": "The ratio."
+      },
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+        "tag": "CARLOS",
+        "item": "Never pure."
+      }
+    ]
+  },
+  {
+    "id": "F2",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Mastery and scope."
+    },
+    "status": "crude",
+    "hook": "pertinence",
+    "form": "`π_j' = π_j^(1 − Δ)`, renormalised. An extraverted tilt flattens attention (wide, \"scattered\"); an introverted tilt sharpens it (\"focused\")",
+    "constants": {}
+  },
+  {
+    "id": "F3",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Failure and resilience."
+    },
+    "status": "crude",
+    "hook": "interpret",
+    "form": "`λ' = λ·(1 − Δ)·(1 − max(Δ,0)·n_fail/(n_fail + N½))`. `N½ = 10` is a crude constant, not in the source. Extraverts fail more, get used to it and become resilient; introverts fear failure more. Isolation is not a formula: it should emerge from the higher λ on social failures",
+    "constants": {
+      "N_half": {
+        "value": 10,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    }
+  },
+  {
+    "id": "F4",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Systems vs people [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "The shared mechanism"
+    },
+    "status": "crude",
+    "hook": "learning, pertinence",
+    "form": "For domain `d` of extraverted function X (Te → meta, Ne → adaptation, Se → space): `lr_d' = lr·(1 + ω_X)`, and cues tagged `d` get `π' = π·(1 + ω_X)` (\"first to key into it … most aggressive and effective\"). Fe → cohesion is **off**",
+    "constants": {}
+  },
+  {
+    "id": "F5",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Refinement: the introverted form outpaces all [CARLOS, 2026-10-24]",
+      "tag": "CARLOS"
+    },
+    "status": "crude",
+    "hook": "learning",
+    "form": "For domain `d` of introverted function Y (Si → space, Ni → adaptation): `lr_d' = lr_d'·(1 + r·ω_Y)`, `r = 1.5`, a crude constant chosen so Y outpaces X at equal weight. Ti → meta and Fi → cohesion are **off**. The timing claim is [DERIVED] and not encoded",
+    "constants": {
+      "r": {
+        "value": 1.5,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    }
+  },
+  {
+    "id": "F6",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Se — concrete reality observation [CARLOS]",
+      "tag": "CARLOS",
+      "item": "Domain:"
+    },
+    "status": "crude",
+    "hook": "pertinence, interpret",
+    "form": "Cues tagged physical and present: `π' = π·(1 + ω_Se)`. Weber fraction on the **targeted** entity only: `w' = w·(1 − ω_Se/2)`; precision around the target is unchanged. Present observations of people: `η' = η + ω_Se·(1 − η)/2` (\"judgments revised continually by the current moment\")",
+    "constants": {
+      "divisor": {
+        "value": 2,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    },
+    "additional_cites": [
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Se — concrete reality observation [CARLOS]",
+        "tag": "CARLOS",
+        "item": "Time frame:"
+      },
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Se — concrete reality observation [CARLOS]",
+        "tag": "CARLOS",
+        "item": "Precision:"
+      },
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Se — concrete reality observation [CARLOS]",
+        "tag": "CARLOS",
+        "item": "Limit:"
+      },
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/THEORY.md",
+        "heading": "## 1. Core principle — face is truth, MBTI is the backbone   [CARLOS]",
+        "tag": "CARLOS",
+        "item": "focus direction"
+      }
+    ]
+  },
+  {
+    "id": "F7",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Stack position and confidence"
+    },
+    "status": "crude",
+    "hook": "interpret",
+    "form": "Believed own success probability for actions tagged `d`: `P' = P·(0.5 + ω_d/2)`, with `ω_d` the larger weight of the on functions owning `d`. No change if both of the domain's functions are off. \"More likely to avoid\" is not a formula: it should emerge from the lower EU",
+    "constants": {
+      "baseline": {
+        "value": 0.5,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      },
+      "divisor": {
+        "value": 2,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    }
+  },
+  {
+    "id": "F8",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Si — bodily precision [CARLOS]",
+      "tag": "CARLOS",
+      "item": "Mechanism:"
+    },
+    "status": "crude",
+    "hook": "learning",
+    "form": "Episodes tagged body, or about a specific person: `d' = d·(1 − ω_Si/2)` (retained longer). Belief half-life for person attributes: `h_b' = h_b·(1 + ω_Si)` (\"fleshes out the organism\"). B1, whether the weakness emphasis is central, is open, so that emphasis is **off**",
+    "constants": {
+      "divisor": {
+        "value": 2,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    },
+    "additional_cites": [
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Si — bodily precision [CARLOS]",
+        "tag": "CARLOS",
+        "item": "Accumulation:"
+      },
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Si — bodily precision [CARLOS]",
+        "tag": "CARLOS",
+        "item": "Time frame:"
+      }
+    ]
+  },
+  {
+    "id": "F9",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Ne — theoretical recombination [CARLOS]",
+      "tag": "CARLOS",
+      "item": "Mechanism:"
+    },
+    "status": "crude",
+    "hook": "generate",
+    "form": "Add up to `k = round(ω_Ne·K)` two-step compounds (a then b), where a's believed outcome satisfies a precondition of b. `K = 3` is a crude constant. These are candidates only; B2, whether Ne acts or only predicts, is open, and an answer of \"only predicts\" would turn F9 into a prediction-only use",
+    "constants": {
+      "K": {
+        "value": 3,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    }
+  },
+  {
+    "id": "F10",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Ni — self-referenced strategy [CARLOS]",
+      "tag": "CARLOS",
+      "item": "Mechanism:"
+    },
+    "status": "crude",
+    "hook": "generate",
+    "form": "For outcomes that depend on another mind's choice: `P_theory = (1 − ω_Ni)·P_belief + ω_Ni·P_selfsim`. `P_selfsim` runs the mind's own policy in the other's believed situation (\"how would I strategize in their position\")",
+    "constants": {},
+    "additional_cites": [
+      {
+        "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+        "heading": "### Extraverted vs introverted perception — the shared structure [DERIVED]",
+        "tag": "DERIVED"
+      }
+    ]
+  },
+  {
+    "id": "F11",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Ne and Ni — fate [CARLOS, 2026-10-24]",
+      "tag": "CARLOS"
+    },
+    "status": "crude",
+    "hook": "generate",
+    "form": "Commitment `κ' = κ·(1 + ω_Ni − ω_Ne)`, floored at 0 (\"Ni is fate. Ne holds back fate\")",
+    "constants": {}
+  },
+  {
+    "id": "F12",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Interaction: Se with Ni (Se users whose stack includes Ni) [CARLOS]",
+      "tag": "CARLOS"
+    },
+    "status": "crude",
+    "hook": "interpret",
+    "form": "For beliefs about a person: `α0_person' = α0·(1 + ω_Ni)` (a settled idea of who someone is). F6's η raise still applies to present evidence, so the in-the-moment read usually wins. The grudge exception is **off** until B3 (grudge or grip) is answered",
+    "constants": {}
+  },
+  {
+    "id": "F13",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Te — external logic [CARLOS, 2026-10-24]",
+      "tag": "CARLOS"
+    },
+    "status": "crude",
+    "hook": "interpret",
+    "form": "Testimony reliability `r' = r + ω_Te·(1 − r)/2`. \"More examples, quicker meaning\" is covered by F4's meta learning rate. Te with inferior Fi, and lead-Fi contrasts, are **off** (Fi)",
+    "constants": {
+      "divisor": {
+        "value": 2,
+        "sourced": false,
+        "note": "crude constant, not in source"
+      }
+    }
+  },
+  {
+    "id": "OFF-FE",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "## Not yet written",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**Fe, Fi, Ti core functions.** No core definition yet (\"Not yet written\"). The partial statements that exist\n  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries.",
+    "constants": {},
+    "off_reason": "No core definition yet (\"Not yet written\"). The partial statements that exist\n  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries."
+  },
+  {
+    "id": "OFF-FI",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "## Not yet written",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**Fe, Fi, Ti core functions.** No core definition yet (\"Not yet written\"). The partial statements that exist\n  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries.",
+    "constants": {},
+    "off_reason": "No core definition yet (\"Not yet written\"). The partial statements that exist\n  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries."
+  },
+  {
+    "id": "OFF-TI",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "## Not yet written",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**Fe, Fi, Ti core functions.** No core definition yet (\"Not yet written\"). The partial statements that exist\n  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries.",
+    "constants": {},
+    "off_reason": "No core definition yet (\"Not yet written\"). The partial statements that exist\n  (Fe's row in the systems table; Ti and Fi in the refinement table) are held until Rex writes the core entries."
+  },
+  {
+    "id": "OFF-POSITIONS-5-8",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "## Not yet written",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**Positions 5–8.** Not written.",
+    "constants": {},
+    "off_reason": "Not written."
+  },
+  {
+    "id": "OFF-COPING",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Coping exception."
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**The coping exception.** Its \"up to roughly 50/50\" needs a coping state the codex does not define.",
+    "constants": {},
+    "off_reason": "Its \"up to roughly 50/50\" needs a coping state the codex does not define."
+  },
+  {
+    "id": "OFF-CYCLE",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**The advantage–hypocrisy cycle.** It would need communication (`cognition.communication.language`, reserved),\n  and as written it describes moves, so encoding it would risk prescribing behaviour. Held for Rex.",
+    "constants": {},
+    "off_reason": "It would need communication (`cognition.communication.language`, reserved),\n  and as written it describes moves, so encoding it would risk prescribing behaviour. Held for Rex."
+  },
+  {
+    "id": "OFF-ECOSYSTEMS",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Ecosystems: four domains compete [CARLOS, 2026-10-24]",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "**Ecosystems (four domains compete).** That is a Society-level claim (P6), not a mind formula. Cognition supplies\n  only the learning speeds it would rest on.",
+    "constants": {},
+    "off_reason": "That is a Society-level claim (P6), not a mind formula. Cognition supplies\n  only the learning speeds it would rest on."
+  },
+  {
+    "id": "OFF-SI-WEAKNESS",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Si — bodily precision [CARLOS]",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "B1, whether the weakness emphasis is central, is open, so that emphasis is **off**.",
+    "constants": {},
+    "off_reason": "B1 is open."
+  },
+  {
+    "id": "OFF-GRUDGE",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Interaction: Se with Ni (Se users whose stack includes Ni) [CARLOS]",
+      "tag": "CARLOS"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "The grudge exception is **off** until B3 (grudge or grip) is answered.",
+    "constants": {},
+    "off_reason": "B3 is open."
+  },
+  {
+    "id": "OFF-TE-FI",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Te — external logic [CARLOS, 2026-10-24]",
+      "tag": "CARLOS",
+      "item": "Te with its inferior Fi:"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "Te with inferior Fi, and lead-Fi contrasts, are **off** (Fi).",
+    "constants": {},
+    "off_reason": "Fi has no core definition."
+  },
+  {
+    "id": "OFF-REFINEMENT-TIMING",
+    "cite": {
+      "file": "../../Writing/Cognitive Function Diagnostic/personality matrix/FUNCTIONS.md",
+      "heading": "### Refinement: the introverted form outpaces all [CARLOS, 2026-10-24]",
+      "tag": "DERIVED"
+    },
+    "status": "off",
+    "hook": "pertinence, interpret, generate, learning",
+    "form": "The timing claim is [DERIVED] and not encoded.",
+    "constants": {},
+    "off_reason": "Rex stated that the introverted forms outpace all, not when."
+  }
+]

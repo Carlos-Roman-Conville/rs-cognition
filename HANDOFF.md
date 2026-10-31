@@ -1,6 +1,9 @@
 # HANDOFF: cognition
 
 ## State
+Unit 2673 implements the opt-in eight-function personality v1, its 16 stacks, exact source
+citations, explicit off hooks and 48 verification tests. `createEightFunctionV1` is exported;
+the benchmark default remains `nullPersonality` under C-Q4. This is not baseline acceptance.
 Units 2661–2669 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
@@ -77,6 +80,30 @@ baseline as accepted merely because the report exists. No `src/`, DESIGN, rules,
 or sibling repositories were modified to make the assertions pass.
 
 ## Gotchas
+- Unit 2673: `createEightFunctionV1(typeOrStack, { etaMin, context?, compound?, otherMind? })`
+  implements DESIGN §9 W/DELTA/F1–F13. `etaMin` is required because §9 supplies no value.
+  See `personality/eight-function/v1/README.md` for the adapter contracts and composition order.
+  Callers supply subjective failure counts and cue/target/person/testimony tags. F9 requires
+  a host compound model and declared outcome-to-precondition link; F10 requires the own policy
+  run in the other's believed situation and a mapping of choices to outcomes. No compound
+  probability, objective world transition, or extra cognitive formula is invented. Nested F10
+  is disabled during self-simulation. Existing learning's infinite half-life sentinel is retained.
+  Perception/testimony/retrieval/drift call sites are not newly wired or enabled by this unit.
+  Named stacks all have four functions; shorter diagnostic stacks allow the requested all-off
+  Fe/Ti/Fi case (there are only three off core functions), with unchanged ordinal weights.
+  All citation headings and bold items are checked against the actual matrix via read-only fs;
+  F1–F13 manifest forms are checked against DESIGN verbatim. All 16 stacks preserve motivations,
+  weights, deficits and setpoints. Hungry-pair v1 policy runs one epoch and replays identically.
+  T-1–T-3, fingerprinting and version-comparison tooling remain with later units, after the
+  baseline passes. Sibling-repository validation was not run under the folder-only instruction.
+  The explicit new files and public export are the intended exception to the broad Don't globs;
+  no existing cognitive mechanism, DESIGN, rules, or matrix file was changed.
+  Verification: all 48 focused tests and `npx tsc --noEmit` pass. The final required gate
+  ran after correcting a comment caught by the objective-type source guard: required files
+  exist; **259 passed, 6 failed**, 19 test files passed / two failed, 103.96 s. The remaining
+  failures are the existing five unit-2670 acceptance blockers and unit-2671 V1 missing
+  evidence; the source guard and all personality tests pass. The full gate remains blocked
+  by those earlier units, not waived. No benchmark thresholds or existing tests were changed.
 - Unit 2671: reproduce both numerical outputs with
   `node --experimental-strip-types validation/run.ts`; source/provenance and all 120 predictions
   live in `validation/data/`. V1's missing empirical bound is `null`, never a guessed number.
