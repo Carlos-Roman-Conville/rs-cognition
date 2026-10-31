@@ -633,6 +633,9 @@ is built or queued; this section fixes the boundaries so no baseline unit forecl
 - **Individual preference structure `P_i`**: three interacting influences, namely biological tendencies
   (inherited and developmental), social transmission (family, peers, culture, status) and experiential
   associations (personal history, learned associations).
+- **Preference and weight are separate (Rex)**: each mind holds a preference profile and, per preference, a
+  weight for how strongly it influences evaluation. Experience changes the weights; the profile and the weights
+  are distinct state.
 - **Interpersonal attraction** `A_ij(t) = F(P_i, X̂_ij, C_i, E_i, R_ij, S_t)`, where `X̂_ij` is the other
   *as perceived* through §2.1 perception and attention, never the true phenotype. The form of `F` is proposed,
   not chosen.
@@ -642,6 +645,13 @@ is built or queued; this section fixes the boundaries so no baseline unit forecl
 - **Partner choice as a decision**: attraction weighed against anticipated social consequences (§2.5), with
   Society's pressures as inputs.
 - **Relationship learning** (§2.4/§2.6 applied to `R_ij`).
+
+**Social influence has two causal pathways, both real (Rex):**
+- on **attraction**: exposure and learning change what someone finds attractive (`P_i` and its weights move);
+- on **behaviour**: attraction is unchanged, but partner choice changes through anticipated consequences (§2.5
+  with Society's pressures).
+
+The model must be able to produce either pathway alone or both, and tests must tell them apart.
 
 **Others own:**
 - **Reality / Life & Species**: the phenotype record that perception reads (face, body, composition, surface,
@@ -661,6 +671,11 @@ is built or queued; this section fixes the boundaries so no baseline unit forecl
    fingerprint and citation rules apply.
 5. Variety with consistent inherited and transmitted factors. Population-level patterns may only emerge from
    `P_i` transmission, never be written in.
+
+**Planned experiment (Rex):** several minds are given the same potential partners but different inherited
+tendencies, histories and cultural environments. The check is that attraction and partner selection diverge
+coherently, each difference traceable to its cause (inherited, experiential or cultural; the attraction or the
+behaviour pathway), with replayed seeds as in §6.
 
 **Open (to settle when this is designed; nothing registered beyond the registry keeper's rows):**
 - A-Q1: the form of `F` and of `P_i` (feature weights over perceived traits? prototypes? both?), with evidence
@@ -697,3 +712,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | Rex's direction on the personality layer folded into §9: crude cited formulas F1–F13, gaps off, codex fingerprint check, versions side by side, T-2 derived traits; units 2673–2676 |
 | 2026-10-30 | **Approved by Rex** (C-Q1–C-Q8 as proposed, C-Q4 kept, crude-formula plan); §2.2 amended with the universal motivational architecture (`M_i = w_i D_i S_i`, needs as data, Maslow as classification only); marker 2659 released |
 | 2026-10-30 | §13 attraction and partner selection placeholder (Rex, via the controller): boundaries, invariants, open A-Q1–A-Q6; nothing built or registered |
+| 2026-10-30 | §13 refinements (Rex): preference vs weight, two social-influence pathways, the divergence experiment |
