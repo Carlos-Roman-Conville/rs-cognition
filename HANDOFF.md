@@ -1,6 +1,13 @@
 # HANDOFF: cognition
 
 ## State
+Unit 2676 completes the opt-in personality comparison: `bench/personality-versions.ts` and
+`bench/hungry-pair/PERSONALITY-REPORT.md` cover null and all 16 frozen v1 stacks over seeds 1–200.
+The comparison uses a declared 12-epoch horizon, common kernel streams, and the same configuration
+for A, B and O. The existing engine, fixture, frozen formulas and baseline defaults are unchanged.
+Final gate: all 307 tests in 27 files and `npx tsc --noEmit` pass. The prerequisite independent
+audit (`CHECK.md`) and fingerprint verification are now present; earlier absence notes are historical.
+
 Unit 2673 implements the opt-in eight-function personality v1, its 16 stacks, exact source
 citations, explicit off hooks and 48 verification tests. `createEightFunctionV1` is exported;
 the benchmark default remains `nullPersonality` under C-Q4. This is not baseline acceptance.
@@ -17,7 +24,10 @@ Attention implements TVA weights, need-based pertinence and the identity/default
 implements equal-variance SDT, categorical identification, Weber noise, declared false alarms and null evidence.
 
 ## Next
-Unit 2672's independent semantic audit; V2 remains separately parked below. Read each unit's WORK file for scope.
+T-1/T-2 need the domain and trait-indicator scenarios in DESIGN §9. A future frozen version needs
+its public factory and formula-off adapter registered in `bench/personality-models.ts`; discovery
+fails closed for an unsupported version, and reporting automatically compares adjacent versions.
+V2 remains separately parked below. Read each unit's WORK file for scope.
 
 ## Blocked
 Unit 2701 resolves V1's former evidence mismatch using keeper ruling COG-14.
@@ -81,6 +91,25 @@ one-day population study or independent scene validation is claimed. Personality
 remains gated by C-Q4; V2 remains separately parked above.
 
 ## Gotchas
+- Unit 2676: 7,400 full worlds replayed cognition and host logs; 200 repeated-null and 3,200
+  stack/seed all-hook-formulas-off controls passed. Another 41,000 configurations reused an
+  execution only after every recorded public hook invocation returned exactly equivalent output.
+  All non-equivalent ablations reran the world. F1/F2/F3/F12 changed measured metrics; F8 changed
+  diagnostics only. F11 is identity at the unchanged baseline kappa=0. The report describes the
+  absent adapters and unconsumed retention controls; zero effects do not validate those formulas.
+- Unit 2676 learning speed is the start of a final unchanged EU-ranking suffix lasting at least
+  three epochs after the first informative outcome. Unobserved/censored times are missing, with
+  coverage and paired complete-case counts reported. The 12-epoch study is not a 144-epoch day,
+  a T-1/T-2 test, or empirical validation. No sibling-repository audit was performed under the
+  folder-only task restriction. Existing protected paths were preserved; additions implement
+  the explicitly requested runner, report, supporting analysis and verification tests.
+- Unit 2676 briefly encountered missing linked Kernel data JSON files during sampling. Workers
+  had already loaded the dependency; all 200 seeds completed. The dependency recovered before
+  the final full gate, which passed. No Kernel files were changed here. Reporting is independent
+  of live engine imports, so recorded measurements can still be rendered during dependency outages.
+  This run's per-seed measurements and full-trace hashes remain in ignored
+  `.codex-runs/2676-personality-seed-*.json`; the committed runner writes the report directly and
+  does not require that scratch directory. Its measurement digest is recorded in the report.
 - Unit 2705 verification: `npm run bench` passes (83.02 s; unchanged 500/200/200
   seed counts), REPORT.md has no FAIL verdict, and the required full gate passes:
   **272 tests / 22 files**, 30.22 s; `npx tsc --noEmit` passes. Three focused
