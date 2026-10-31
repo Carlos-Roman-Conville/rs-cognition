@@ -276,7 +276,9 @@ candidate, its `P̂`, `EU`, `P(a)`, the beliefs and needs used): the traceable "
 When the host emits an outcome event whose `cause` is the mind's intention event id (kernel causality, §7):
 
 1. **Observe.** The outcome reaches the mind as observations (§2.1): what it perceives of the result, not the result.
-2. **Prediction error.** `δ = r_obs − EU(ι)`: recorded on the episode and in the trace.
+2. **Prediction error.** `δ = r_obs − EU(ι)`: recorded on the episode and in the trace. `r_obs` is the subjective
+   value of the perceived outcome category under the same utility and needs that `EU` uses (keeper ruling
+   2026-10-30, COG-11); there is no second reward channel, so learning and `δ` cannot disagree in sign.
 3. **Encode** the episode (§2.3); its future retrievability now feeds `P̂` for that action and context.
 4. **Update beliefs** about the latent attributes the outcome bears on (the owner's strength, generosity,
    vigilance; a speaker's reliability), by the same update rule as §2.3 with the naive model as likelihood:
@@ -398,11 +400,11 @@ pass criterion; none expects a particular behaviour:
 |---|---|
 | CB-1 determinism and replay | the same seed and parameters give a byte-identical canonical trace; restoring the initial snapshot and replaying the kernel input log reproduces it; a different seed changes only state downstream of a stream |
 | CB-2 selection | every committed intention has a decision trace with ≥ 2 evaluated candidates, `Σ P(a) = 1`, and the chosen action drawn from that distribution |
-| CB-3 consequences | every intention gets exactly one outcome event whose `cause` is its id, and the outcome changes at least one need or one belief |
+| CB-3 consequences | every intention gets exactly one outcome event whose `cause` is its id, and the outcome changes at least one need or one belief; a receipt censored by the run's horizon (unfinished at the end) needs only its causal link (keeper ruling, COG-10) |
 | CB-4 belief update | after each informative outcome the belief it bears on moves (KL > 0) in the direction its likelihood implies (verification) |
 | CB-5 later decisions change | (a) when `δ < 0` for action `a`, `EU(a)` in the same context is lower at the next evaluation, all cases; (b) with common random numbers, runs with learning on vs frozen (`η = 0`, no encoding) diverge after the first informative outcome in a stated share of seeds, reported |
-| CB-6 no script | (a) A and B with identical parameters have statistically indistinguishable action distributions over 500 seeds (χ², p > 0.01), and swapping their ids swaps their traces exactly; (b) the fixture and the engine contain no branch on an agent id or parameter value that picks an action or an outcome (a Haiku check unit reads the code); (c) across seeds the default-parameter runs show more than one action sequence |
-| CB-7 controlled comparisons | for each θ dimension, paired runs differing only in it over 200 seeds with common random numbers, reported as action frequencies and outcomes with 95 % intervals; direction checks the mathematics implies: higher `λ` → fewer fight and steal choices; higher `β` → lower choice entropy; higher `κ` → fewer intention switches; higher `d` → a smaller effect of an early loss on late choices |
+| CB-6 no script | (a) A and B with identical parameters have statistically indistinguishable action distributions over 500 seeds (χ², p > 0.01), and swapping their ids, each mind keeping its own stream (stream keys travel with the mind), swaps their traces exactly, which tests that no code reads the id label (keeper ruling, COG-12); (b) the fixture and the engine contain no branch on an agent id or parameter value that picks an action or an outcome (a Haiku check unit reads the code); (c) across seeds the default-parameter runs show more than one action sequence |
+| CB-7 controlled comparisons | for each θ dimension, paired runs differing only in it over 200 seeds with common random numbers, reported as action frequencies and outcomes with 95 % intervals; direction checks the mathematics implies: higher `λ` → fewer fight and steal choices combined (the paired difference's 95 % interval below zero; per-action frequencies reported, not asserted; keeper ruling, COG-13); higher `β` → lower choice entropy; higher `κ` → fewer intention switches; higher `d` → a smaller effect of an early loss on late choices |
 | P7-3 swap | swapping the null personality for a test model that only changes `pertinence` changes the traces, with no file outside `cognition/` touched |
 
 CB-7's directions are consequences of the formulas (verification), **not validation**: no independent data says how
@@ -581,7 +583,7 @@ for zero counts, probabilities stay in [0, 1] and normalised, activation of an e
 
 | Id | Validation against independent data | Data | Tolerance (proposed) |
 |---|---|---|---|
-| V1 forgetting | retention as a function of delay from the memory mechanism alone | Rubin & Wenzel 1996 (105 retention data sets, power and related functions); Ebbinghaus 1885 savings | the fitted power exponent of simulated retention lies within the published range for comparable materials |
+| V1 forgetting | retention as a function of delay from the memory mechanism alone | Rubin & Wenzel 1996 (210 retention data sets, 105 functions); Wixted & Ebbesen 1991; Ebbinghaus 1885 savings | the simulated retention curve is fit by the power function at least as well as the median power-function R² Rubin & Wenzel report; the fitted exponent is compared with published power exponents for comparable materials (Wixted & Ebbesen 1991) when fetched, otherwise reported, not asserted (keeper ruling, COG-14: Rubin & Wenzel give no exponent range) |
 | V2 learning and choice | repeated decisions from experience with feedback, the engine's evaluation + selection + memory on the published problems | Technion Prediction Tournament (Erev et al. 2010), the competing model IBL (Gonzalez & Dutt 2011) | mean squared deviation of the risky-choice rate no worse than the published IBL baseline × 1.5 (open: data access, C-Q7) |
 | V3 detection | ROC of the perception mechanism | Green & Swets 1966 (the equal-variance model's ROC shape) | exact: verification, not validation |
 | V4 loss aversion | the evaluation on mixed gambles | Tversky & Kahneman 1992 acceptance data | acceptance boundary at the configured λ (verification); validation pending |
@@ -623,6 +625,8 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-R1 | Port names and the hunger boundary | **agreed 2026-10-30** with Reality and the registry; `percept.detectability` renamed `body.detectability` (§8) |
 | C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | Rex (a new overlap group, raised by Reality to the registry keeper) |
 | C-G1 | `mind.` scope, 13 rows, 5 reserved rows, 14 quantities + `mind.testimony` | **registered 2026-10-30** (planned); DUP-46's owner still Rex's in batch 5 |
+| C-B1 | Baseline acceptance rulings after unit 2670 parked (COG-10 to COG-15): horizon-censored receipts, `r_obs` as the valuation of the perceived outcome, id swap with transported streams, λ on fight + steal combined, the full 500/200-seed studies run as `npm run bench` with verdicts read by the gate, V1's criterion | keeper ruling 2026-10-30; units 2700, 2701 |
+| C-V2 | V2 fails on default θ (trial-MSD lower bound .00527 > 1.5 × IBL .0005). Reported, not tuned; fitting θ to the TPT estimation set is a reviewed parameter change (PLATFORM §11a) after the baseline | open (keeper review; Rex sees the report) |
 
 ## 13. Preference learning (Rex, 2026-10-30; placeholder; designed after CB-1…CB-7 pass)
 
@@ -759,3 +763,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | §13 refinements (Rex): preference vs weight, two social-influence pathways, the divergence experiment |
 | 2026-10-30 | §13 style and presentation (Rex): presentation choice and observer interpretation are Cognition's; goods Economy's, meaning Society's |
 | 2026-10-30 | §13 reframed as general preference learning (Rex): 13a mechanisms 1–6, baseline `A = Σ P·X̂`, malleability classes with sexual orientation fixed; attraction becomes 13b, the first application |
+| 2026-10-30 | Units 2670/2671 parked honestly; keeper rulings C-B1 (CB-3 censoring, `r_obs` definition, CB-6a transported streams, CB-7 λ combined, bench out of the gate, V1 criterion and the 210/105 count); C-V2 V2 failure recorded |
