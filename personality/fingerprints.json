@@ -1,0 +1,163 @@
+{
+  "version": "v1",
+  "matrix_dir": "../../Writing/Cognitive Function Diagnostic/personality matrix",
+  "sections": [
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]",
+      "sha256": "6bc7dfa06381309d6b0a295e7d1222ee177c7a4a3a3dff429d1a35189af672e6"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]",
+      "sha256": "86b5a7383cafbff4896914aba5661ddcdb664e3d47576bedf143b903e538417b"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Systems vs people [CARLOS, 2026-10-24]",
+      "sha256": "2f88d0bd1b386bb53004d7d8581220d82ca2ab6963754188571654b95c742d07"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Refinement: the introverted form outpaces all [CARLOS, 2026-10-24]",
+      "sha256": "f65848a02e66df774cca0f1270211a230f9af7fcd4c04059f411a6af722ce9d9"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Se — concrete reality observation [CARLOS]",
+      "sha256": "761470dd67a4fc253f161bfa1d40ac51e1dea7090521ed7a247484b1d2375861"
+    },
+    {
+      "file": "THEORY.md",
+      "heading": "## 1. Core principle — face is truth, MBTI is the backbone   [CARLOS]",
+      "sha256": "bade419f4f8cfff3fe543900cc403570197e074cac9846e12ca5664e6abdc055"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Si — bodily precision [CARLOS]",
+      "sha256": "2e721ccf4afae8e466a69170f109af16113493b4fd67825fe9f80d0303fd6abc"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Ne — theoretical recombination [CARLOS]",
+      "sha256": "56a21a1c104189d300e6bc4c7f621ddfd4ff2fa5168f4173b6300c27d9b5e432"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Ni — self-referenced strategy [CARLOS]",
+      "sha256": "8a7106820798bd7625bbb29e835b6026176cd543629a5150a7985768485bd856"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Extraverted vs introverted perception — the shared structure [DERIVED]",
+      "sha256": "1fa5dd433a51d2d361ec16247b6093660248edc80c165c5354d35b040d0956ca"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Ne and Ni — fate [CARLOS, 2026-10-24]",
+      "sha256": "11ac28323312ff49d9e63b1af7a070a37c489d7099976eb26163055fb6010d5f"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Interaction: Se with Ni (Se users whose stack includes Ni) [CARLOS]",
+      "sha256": "d5e9acb2b3ffb499b9badc7b7ae9308c46e7f311d2edb89a86b66a4bed27caf7"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Te — external logic [CARLOS, 2026-10-24]",
+      "sha256": "51438f96791459fcc576e7bf5a1c7f7a4675f9746a0c29e81854370c23440355"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "## Not yet written",
+      "sha256": "ce14bcc0b25008e4007ac030d94b116e3309a12be8080c591dafdba9ea95e84c"
+    },
+    {
+      "file": "FUNCTIONS.md",
+      "heading": "### Ecosystems: four domains compete [CARLOS, 2026-10-24]",
+      "sha256": "a217b894f633e548473b845633e241552b8b90e91f5dd4d9c7dfbc318cc263c5"
+    }
+  ],
+  "formulas": {
+    "W": [
+      "FUNCTIONS.md#### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]"
+    ],
+    "DELTA": [
+      "FUNCTIONS.md#### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]"
+    ],
+    "F1": [
+      "FUNCTIONS.md#### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]"
+    ],
+    "F2": [
+      "FUNCTIONS.md#### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]"
+    ],
+    "F3": [
+      "FUNCTIONS.md#### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]"
+    ],
+    "F4": [
+      "FUNCTIONS.md#### Systems vs people [CARLOS, 2026-10-24]"
+    ],
+    "F5": [
+      "FUNCTIONS.md#### Refinement: the introverted form outpaces all [CARLOS, 2026-10-24]"
+    ],
+    "F6": [
+      "FUNCTIONS.md#### Se — concrete reality observation [CARLOS]",
+      "THEORY.md### 1. Core principle — face is truth, MBTI is the backbone   [CARLOS]"
+    ],
+    "F7": [
+      "FUNCTIONS.md#### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]"
+    ],
+    "F8": [
+      "FUNCTIONS.md#### Si — bodily precision [CARLOS]"
+    ],
+    "F9": [
+      "FUNCTIONS.md#### Ne — theoretical recombination [CARLOS]"
+    ],
+    "F10": [
+      "FUNCTIONS.md#### Ni — self-referenced strategy [CARLOS]",
+      "FUNCTIONS.md#### Extraverted vs introverted perception — the shared structure [DERIVED]"
+    ],
+    "F11": [
+      "FUNCTIONS.md#### Ne and Ni — fate [CARLOS, 2026-10-24]"
+    ],
+    "F12": [
+      "FUNCTIONS.md#### Interaction: Se with Ni (Se users whose stack includes Ni) [CARLOS]"
+    ],
+    "F13": [
+      "FUNCTIONS.md#### Te — external logic [CARLOS, 2026-10-24]"
+    ],
+    "OFF-FE": [
+      "FUNCTIONS.md### Not yet written"
+    ],
+    "OFF-FI": [
+      "FUNCTIONS.md### Not yet written"
+    ],
+    "OFF-TI": [
+      "FUNCTIONS.md### Not yet written"
+    ],
+    "OFF-POSITIONS-5-8": [
+      "FUNCTIONS.md### Not yet written"
+    ],
+    "OFF-COPING": [
+      "FUNCTIONS.md#### Attitudes: extraverted vs introverted, for all eight functions [CARLOS, 2026-10-24]"
+    ],
+    "OFF-CYCLE": [
+      "FUNCTIONS.md#### The advantage–hypocrisy cycle [CARLOS, 2026-10-24]"
+    ],
+    "OFF-ECOSYSTEMS": [
+      "FUNCTIONS.md#### Ecosystems: four domains compete [CARLOS, 2026-10-24]"
+    ],
+    "OFF-SI-WEAKNESS": [
+      "FUNCTIONS.md#### Si — bodily precision [CARLOS]"
+    ],
+    "OFF-GRUDGE": [
+      "FUNCTIONS.md#### Interaction: Se with Ni (Se users whose stack includes Ni) [CARLOS]"
+    ],
+    "OFF-TE-FI": [
+      "FUNCTIONS.md#### Te — external logic [CARLOS, 2026-10-24]"
+    ],
+    "OFF-REFINEMENT-TIMING": [
+      "FUNCTIONS.md#### Refinement: the introverted form outpaces all [CARLOS, 2026-10-24]"
+    ]
+  }
+}

@@ -8,6 +8,7 @@
   "scripts": {
     "test": "vitest run",
     "bench": "node --experimental-strip-types bench/hungry-pair/report.ts",
+    "codex-check": "node --experimental-strip-types scripts/codex-fingerprint.ts --check",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
