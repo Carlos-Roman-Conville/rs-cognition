@@ -559,6 +559,37 @@ standard alternating stack, Δ = +0.2 for an extraverted dominant and −0.2 for
 - The Cognition keeper runs the check at the start of every turn. A Haiku unit checks the script on a fixture copy
   of the matrix.
 
+### Dynamic function allocation: the light and the crystal (Rex, 2026-10-30; proposed, not built)
+
+Rex's direction (ENGINES.md, "Dynamic function allocation, the light and the crystal"). Nothing here changes v1,
+which stays frozen; this is the shape of a later version, built only after the baseline is stable and the
+controller releases it.
+
+- **The type hierarchy is a baseline, never a fixed allocation per decision (Rex).** An ESTP generally favours Se,
+  but Ti, Fe or Ni can be the primary influence on a given decision through situation, experience and motivation.
+  The variation emerges from the mathematics, never from hardcoded exceptions.
+- **Active influence, proposed (provisional, level 5):**
+  `A_f(t) = B_f·R_f(t)·L_f(t)·M_f(t) / Σ_j B_j·R_j(t)·L_j(t)·M_j(t)`, with `B_f` the baseline preference
+  (**the light**), `R_f` the function's relevance to the situation, `L_f` learned competence and habit (part of
+  **the crystal**), `M_f` motivational and emotional modulation. A softmax over function scores is preferred in
+  implementation (Rex).
+- **Experience changes the activation conditions (the crystal; Rex).** Repeated consequences raise how strongly a
+  situation activates a function (a painful record of appearance-led partner choices raises future-oriented
+  evaluation in later partner choices). **Misattribution is allowed**: the lesson learned can be the wrong one (an
+  aversion to a feature instead of a lesson about compatibility), through the attribution step of §2.5. One
+  baseline therefore gives different trajectories.
+- **Attention allocation ≠ evaluation influence (Rex).** A function can receive most of the processing without
+  deciding the action. Proposed: two allocations, one weighting the `pertinence` hook (attention) and one weighting
+  `interpret` and `generate` (evaluation), each of the form above.
+- **Where it attaches (proposed):** the same four v1 hooks (`pertinence`, `interpret`, `generate`, `learning`);
+  `A_f(t)` would replace v1's fixed stack-position weights as the weight on each function's hook contribution, and
+  `learning` would update `L_f`. Personality still never touches needs.
+- **Registry rows (planned, registered 2026-10-30):** mechanisms `cognition.personality.function_allocation` and
+  `cognition.personality.function_sensitivity` (evidence level 5); quantity `mind.function_allocation`.
+- **A dominant function has a statistical tendency toward more allocation; an inferior function is never prevented
+  from leading a decision (Rex).** Rex's statement of this point was cut off mid-sentence; the rest is **open**
+  (C-Q11). Nothing is completed or inferred here.
+
 ### Tests of the layer (after the baseline passes; level-5 hypothesis tests, a negative result is a result)
 
 - **T-1 Stable differences across situations.** Run each configuration through `S` scenarios: the hungry pair, plus
@@ -617,7 +648,8 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 |---|---|---|
 | C-Q1 | The hungry-pair fixture world (§6): owner as a mind, the stub rules and their numbers, labelled fixture | Rex (approve as a test fixture) |
 | C-Q2 | The cognitive parameters varied (§3 θ) and that needs weights are *not* varied (Rex: identical needs) | Rex |
-| C-Q3 | "Light and crystal" | **(Rex, 2026-10-30)** not written yet; open until he writes it into the matrix; never invented |
+| C-Q3 | "Light and crystal" | **(Rex, 2026-10-30)** named in ENGINES.md ("Dynamic function allocation, the light and the crystal"): the light = the baseline hierarchy B_f, the crystal = learned activation conditions (§9, proposed, not built); still to be written into the personality matrix before any formula cites it; never invented |
+| C-Q11 | The end of Rex's "an inferior function is never prevented from leading a decision" point (his paste was cut off mid-sentence) | open (Rex) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -704,6 +736,31 @@ grooming, accessories, a personal aesthetic, behavioural presentation.
 
 The model must be able to produce either pathway alone or both, and tests must tell them apart.
 
+**Cultural salience and the zeitgeist in attraction (Rex, 2026-10-30; proposed, not built).** Rex's direction
+(ENGINES.md, "Cultural salience and the zeitgeist in attraction"):
+- **Two independent inputs to attraction (Rex):** perceived **social valuation** `V_i` (what the surrounding
+  community admires, endorses or rewards; Society supplies it, read as a social input, 13a mechanism 4) and
+  perceived **sensory appeal** `S_i` (what is visibly fashionable or physically appealing, read from the phenotype
+  and style *as perceived*).
+- **Cultural salience** is how often and how prominently a characteristic appears in a person's environment.
+  Society decides what is prominent or rewarded; Cognition decides what each individual notices (§2.1), how it is
+  interpreted and whether it moves attraction.
+- **Baseline shape, proposed:** `A_i = F(V_i, S_i, C_i, E_i)`, with `C_i` the cognitive-function weighting and
+  `E_i` experience and learned associations. Its relation to the 13a sum `A_ij = Σ_k P_i,k · X̂_ij,k` and the form
+  of `F` are open, to be designed with §13.
+- **Function sensitivities are hypotheses, never laws (Rex):** Fe to collective valuation, Se to sensory
+  presentation, Fi to personal significance, Si to familiarity and remembered ideals, Ne to novelty, Ni to symbolic
+  meaning and anticipated trajectory, Te to demonstrated competence, Ti to coherence of thought. Each is a level-5
+  hypothesis tested like T-1 and T-2. Fe and Se shape *sensitivity*, never conformity.
+- **Four separate outcomes (Rex):** awareness of a trend, personal evaluation of it, willingness to conform to it,
+  and attraction toward people displaying it. A style can be fashionable without a person liking it, and attractive
+  to someone despite their community's disapproval.
+- **Feedback loop (Rex):** people adopt styles, others react, the reactions move social popularity, and popularity
+  moves future preferences.
+- **Registry rows (planned, registered 2026-10-30):** mechanisms `cognition.attraction.social_valuation`,
+  `cognition.attraction.sensory_appeal` and Society's `society.culture.salience`; quantities
+  `mind.perceived_social_valuation`, `mind.perceived_sensory_appeal`, `mind.cultural_salience`.
+
 **Others own:**
 - **Reality / Life & Species**: the phenotype record that perception reads (face, body, composition, surface,
   movement, voice, scent, expression).
@@ -775,3 +832,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | Units 2670/2671 parked honestly; keeper rulings C-B1 (CB-3 censoring, `r_obs` definition, CB-6a transported streams, CB-7 λ combined, bench out of the gate, V1 criterion and the 210/105 count); C-V2 V2 failure recorded |
 | 2026-10-30 | Unit 2700: CB-1 to CB-5 pass, V1 passes (2701). Rulings C-B2: CB-6b belongs to the check unit; CB-7 λ restated as its evaluation-level consequence, population effect reported |
 | 2026-10-30 | DUP-49 recorded (unit 2720): four-owner split — Reality (hunger, satiety, taste perception, digestion and physiological responses); Cognition (food preferences, anticipated enjoyment, appetite-related motivation, the decision to eat); Society (cultural food norms, taboos and learned expectations, unowned until Society exists); the pirate game (period-specific foods, presentation and intentional gameplay rules) |
+| 2026-10-30 | Rex's two directions (dynamic function allocation, the light and the crystal, §9; cultural salience and the zeitgeist, §13b) were recorded as proposed by unit 2721, not built, C-Q11 open |
