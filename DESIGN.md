@@ -701,6 +701,8 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q13 | Which memory parameters Reality's neurology constrains (§14.1) | open (Rex, with the Reality keeper) |
 | C-Q14 | The gaze interpretation hypothesis set and its calibration sources (§14.2) | open (Rex) |
 | C-Q15 | Which reasoning-process parameters a substance may move, and each substance's sourced model (§14.5) | open (Rex, with the Reality keeper) |
+| C-Q16 | §16.2 memory profiles for Se, Ne and Te (how each stores, what triggers recall, articulation) | open (Rex) |
+| C-Q17 | §16.4 the episode detail vector and the cue-type retrieval weights, and their sources | open (keeper proposal; Rex and the personality matrix) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -964,6 +966,93 @@ written "none stated".
 | `cognition.personality.slot` | Structural null model: identity on pertinence, interpret, generate and learning hooks (§9 `nullPersonality`; DESIGN §5 registry n/a). | Baseline adds no failure beyond the hooked rows; when a non-null model is configured, hooks may mis-modulate `π`, `η`, `κ`, learning rate and `d` (§9). |
 | `cognition.personality.eight_function` | Switched on only after baseline CB-1–CB-7 (§9 C-Q4); v1 adjusts declared parameters through the four hooks when configured (`personality/eight-function/v1.ts`). | Hypothesis-level wrong modulation when enabled (§9 level 5); invalid stack or parameters throw in v1 (`personality/eight-function/v1.ts`). |
 
+## 16. The experience pipeline and memory profiles (Rex, 2026-10-31; recorded design, not built)
+
+Rex's model, given to the Cognition keeper directly on 2026-10-31. It is a piece of the whole: it fixes the order
+in which an experience is processed and how it is kept, and it dictates what a person later says and how. Nothing
+here is built; §14.1's stages and §9's hooks are where it attaches.
+
+### 16.1 The pipeline (Rex)
+
+1. **Perception filter: the extraverted function.** The scene contains everything; the dominant extraverted function
+decides which parts of the data are weighted. Se and Fe pull the raw content of the image (a police beating of
+protesters: the violence, the people, what is literally happening), reading it more closely to what the image is; Te
+and Ne weight other features (logistics, possibilities, what it implies). Attaches to §2.1 attention and §14.1
+attention.
+2. **Encoding: the introverted function.** The filtered data is processed into the mind's internal format (§14.1
+encoding).
+3. **Chemical response.** That interpretation triggers the body's chemistry (Reality's neurology and endocrine layer,
+read through §8's ports; Cognition never computes the chemistry).
+4. **Re-interpretation.** The body state is read again, externally (how it makes you react) and internally (how it
+makes you feel). That second read is what becomes the emotion: the data goes to the brain, the brain interprets it
+and determines a response, and the response is re-interpreted as emotion.
+5. **Experience feeds stages 1, 2 and 4.** Two people with the same functions still react differently; the key to the
+differences is not just the function but experience.
+
+**What is stored (Rex):** the event, plus the interpretation, plus the body state at the time. A retrieved memory can
+re-trigger the chemistry: a remembered betrayal still raises the heart rate years later. (Retrieval therefore has an
+output back to Reality's neurology, proposed as a port; nothing built.)
+
+**The objective output (Rex):** the description of an emotion is irrelevant to the objective output. What matters is
+what the person responds with and how: after an experience, what they talk about and in what manner. The pipeline must
+dictate responses for everything; emotion words are at most a measurement of the pattern (§14.1, descriptive label).
+
+### 16.2 Memory is three values, not one (Rex)
+
+- **Stored:** did the brain keep it? (§14.1 encoding and consolidation)
+- **Retrievable:** what cue brings it back? (§14.1 retrieval; §2.3 activation)
+- **Articulable:** can the person explain it? (§14.1 communication; a separate act from remembering)
+
+Memory is not Si's. Si is the stereotypical example because it details the self and the situation physically, but
+every function stores, recalls and articulates in its own way, and **functions in a stack modify each other's memory**:
+a person's recall is the stack interacting, never the dominant function's profile alone (Ni with Te organises the
+lattice that Ni alone cannot recall concretely).
+
+| Function | How it stores | What triggers recall | Articulation |
+|---|---|---|---|
+| **Si** | physical detail, the self in the situation | sensory similarity | high, concrete |
+| **Fi** | deep, experiential | emotional resonance | low: it remembers but cannot explain well |
+| **Ti** | connective: what links to its structure sticks | logical connection to existing pieces | high when connected, weak for isolated facts |
+| **Ni** | abstract lattice (crystal structure) | pattern match | low concrete recall unless Te organises it |
+| **Fe** | comprehension of what it is looking at | social or situational meaning | grasps what it saw |
+| **Se** | **open** (C-Q16) | **open** | **open** |
+| **Ne** | **open** (C-Q16) | **open** | **open** |
+| **Te** | **open** (C-Q16); organises Ni's lattice when both are in the stack | **open** | **open** |
+
+These profiles are **hypotheses in Rex's theory** (§9: function sensitivities are hypotheses, never laws), to be
+expressed as hooks on the memory stages and tested like T-1 and T-2, never as a rule "type X remembers more". §9's
+fingerprint and citation rules apply once Rex writes them into the personality matrix.
+
+### 16.3 Requirements (Rex)
+
+- **The chemistry must be present:** the brain's and the body's chemicals, with their cited physiological effects, must
+exist in the simulation for this to work. That is Reality's (neurology, endocrine, pharmacokinetics; §8); Cognition
+reads the state and never a summary "mood number" in its place. Raised with the Reality keeper.
+- **Next after this:** how memory affects interpretation (stages 1, 2 and 4 reading retrieved memories), to be
+designed on top of this section.
+
+### 16.4 A mathematical form (keeper, proposed; Rex asked how this could become mathematics)
+
+Nothing new is needed below the hooks; each stage already has a quantity:
+- Stage 1 is attention weight `w_c` per cue (§2.1); the extraverted function's profile is a `pertinence` hook that
+reweights cue categories (already v1's F2 shape).
+- Stage 2 is what the episode record carries: **encoding writes a detail vector** per episode (physical detail, felt
+valence, structural links, abstract pattern, social meaning), and the introverted function's profile sets how much of
+each dimension is encoded (an `interpret`-stage hook on §14.1 encoding).
+- Stage 3 is Reality's: `body.circuit_outputs` (§8) and the endocrine state, written by Reality from the appraisal
+Cognition emits (a proposed output `mind.appraisal`).
+- Stage 4 is perception again: the body state enters as a stimulus (interoception, §2.1) and is interpreted through
+beliefs (§2.3); the emotion is the belief the mind forms about its own state, descriptive.
+- **Retrievable** is §2.3's activation with **cue-type weights**: the trigger column says which similarity (sensory,
+emotional, logical, pattern, social) spreads activation to the episode, per function profile.
+- **Articulable** is a communication-stage limit: how much of the stored detail vector the mind can put into testimony
+(`cognition.communication.encode`), per profile; Fi and Ni low, Si and Ti (when connected) high.
+- **Stored = event + interpretation + body state**, so the episode record gains the body state at encoding, and
+retrieval emits it back to Reality as a re-trigger (proposed port `mind.recalled_body_state`).
+- **Stack interaction:** the hooks of every function in the stack apply, weighted by §9's dynamic allocation
+`A_f(t)`, which is how Te organises Ni's recall without a special case.
+Open: the form of the detail vector and the cue-type weights, and their sources (C-Q17).
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -998,3 +1087,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | C-Q12 decided by Rex (tolerance derived, shared context a per-mind belief), recorded in §5 and §12 (unit 2736); planned, nothing implemented. |
 | 2026-10-31 | Rex's five directions recorded as §14 (memory below personality, gaze, intermittent characters, features and names, lasting drug effects); 'personality weights' wording corrected to descriptive; C-Q13 to C-Q15 open (unit 2737). Not built. |
 | 2026-10-31 | §14.1 memory writer split (keeper proposal) and §15 contract fields for the 13 built rows recorded (unit 2739; COG-33). |
+| 2026-10-31 | Rex's experience pipeline and memory profiles recorded as §16 (perception filter → encoding → chemical response → re-interpretation; memory as stored / retrievable / articulable; function profiles; stack interaction); C-Q16, C-Q17 open (unit 2746). Not built. |
