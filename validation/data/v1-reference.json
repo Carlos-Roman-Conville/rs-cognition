@@ -1,0 +1,9 @@
+{
+  "citation": "Rubin & Wenzel (1996), Psychological Review 103(4), 734-760",
+  "doi": "10.1037/0033-295X.103.4.734",
+  "url": "https://users.cs.northwestern.edu/~paritosh/papers/KIP/100YearsOfForgetting.pdf",
+  "accessed": "2026-10-30",
+  "tablesInspected": "Tables 1-9; especially Table 4 (recall), pp.744-745; Table 3 (recognition), p.743; Table 5 (savings), p.746",
+  "exponentRange": null,
+  "blockedReason": "No published power-exponent range in these tables: Log(m) reports logarithmic slopes and Pwr reports r-squared. Neither is a power exponent. Keeper must supply a comparable published range or approve a different validation criterion."
+}

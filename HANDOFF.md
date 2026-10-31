@@ -6,6 +6,8 @@ needs/goals, host-data action generation, expected-utility evaluation, selection
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
 kernel Runner integration, the cognition process and kernel declarations, plus the hungry-pair fixture and headless CLI.
 Unit 2670's acceptance tests and generated report are committed as a parked unit; see Blocked below.
+Unit 2671's V1/V2 studies, source data and reports are present; acceptance remains parked (V1 evidence
+mismatch, V2 failure). No cognitive default or source mechanism was changed.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
 Attention implements TVA weights, need-based pertinence and the identity/default personality hook. Perception
@@ -15,6 +17,26 @@ implements equal-variance SDT, categorical identification, Weber noise, declared
 Units 2670–2672, in order. Read each unit's WORK file for its scope.
 
 ## Blocked
+Unit 2671 is **parked**, not accepted:
+
+- **V1 / DESIGN §10 source mismatch:** default single-episode retention gives power exponent
+  1.2460205614 (raw-scale fit, 1 minute–365 days). Rubin & Wenzel (1996), Table 4 pp.744–745,
+  reports logarithmic slopes under Log(m) and R² under Pwr, not a power-exponent range.
+  Tables 3/5 do not supply it either. `test/validation-v1.test.ts` fails explicitly on unavailable
+  bounds; no invented tolerance, skip or expected-failure marker. Supply a comparable sourced
+  range or approve another empirical criterion. DESIGN also says 105 datasets; the paper has
+  210 datasets / 105 functions. The specification was not edited.
+- **V2 / C-Q7:** recovered all 120 TPT problem/aggregate-rate rows from Erev (2010), Tables 1a/1b;
+  executed 200 participants × 100 trials per problem with default theta. Competition problem MSD
+  is .03190005779. Gonzalez & Dutt (2011) Table 4's IBL .0005 is a different, trial-level MSD.
+  Exact comparison is parked pending raw human trial trajectories or an approved same-metric
+  baseline. A rounding-aware Jensen lower bound on the trial MSD is .005269671056 > .00075
+  (1.5 × IBL), so the current run **fails** even without the missing exact score. Both original
+  Technion HTTP/HTTPS URLs timed out; paper-table data were fetched, not fabricated.
+  Competition problem 14 is .21 in Erev, .20 in G&D; the original .21 is retained with sensitivity
+  documented. Monetary appraisal, zero prior and one-second trials are proposed host conventions,
+  not fitted defaults. See `validation/V1-forgetting.md` and `validation/V2-repeated-choice.md`.
+
 Unit 2670 is **parked**, not accepted. The approved DESIGN is unchanged. New executable
 acceptance assertions and the generated `bench/hungry-pair/REPORT.md` expose these blockers:
 
@@ -55,6 +77,19 @@ baseline as accepted merely because the report exists. No `src/`, DESIGN, rules,
 or sibling repositories were modified to make the assertions pass.
 
 ## Gotchas
+- Unit 2671: reproduce both numerical outputs with
+  `node --experimental-strip-types validation/run.ts`; source/provenance and all 120 predictions
+  live in `validation/data/`. V1's missing empirical bound is `null`, never a guessed number.
+  Focused checks: 6 passed, 1 failed (V1 missing evidence); `npx tsc --noEmit` passes.
+  Final required gate ran: all three required files exist; **211 passed, 6 failed**, 18 test files
+  passed / two failed, 94.43 s. Failures are V1 plus the same five unit-2670 blockers (CB-3,
+  CB-5a, exact CB-6a ID swap, CB-7 fight direction, runtime: 93.49 s > 60 s). The gate is
+  FAILED, not waived. Final TypeScript and staged whitespace checks pass.
+  The unit's “V1 test passes” condition is unmet; neither report existence nor infrastructure
+  tests certify empirical validity. Source defaults, DESIGN and rules are unchanged.
+  The explicitly requested validation/test files are the narrow exception to the task's broad
+  Don't globs, consistent with prior units. Sibling-repository audits were not performed under
+  the folder-only restriction. No servers, subagents, remote push, merge or branch switch.
 - Unit 2670 final verification: focused acceptance suite **25 passed, 5 failed** (109.51 s);
   final required full gate **205 passed, 5 failed**, 17 files passed / one failed (99.94 s).
   All 180 pre-existing tests pass. The five failures are CB-3, CB-5a, exact CB-6a ID swap,

@@ -1,0 +1,97 @@
+{
+  "params": {
+    "beta": 1,
+    "lambda": 2.25,
+    "gamma": 0.99,
+    "eta": 1,
+    "alpha0": 1,
+    "d": 0.5,
+    "tau": 0,
+    "s": 0.4,
+    "kappa": 0,
+    "k": 0,
+    "n": 4,
+    "m": 3
+  },
+  "points": [
+    {
+      "seconds": 60,
+      "retention": 0.005952754380610417
+    },
+    {
+      "seconds": 120,
+      "retention": 0.0025114893709671715
+    },
+    {
+      "seconds": 300,
+      "retention": 0.0008002961511360389
+    },
+    {
+      "seconds": 600,
+      "retention": 0.00033663921998552693
+    },
+    {
+      "seconds": 1200,
+      "retention": 0.0001415669763575569
+    },
+    {
+      "seconds": 3600,
+      "retention": 0.00003585967094721339
+    },
+    {
+      "seconds": 10800,
+      "retention": 0.000009082729097056653
+    },
+    {
+      "seconds": 21600,
+      "retention": 0.000003818837271240834
+    },
+    {
+      "seconds": 43200,
+      "retention": 0.0000016056268395076253
+    },
+    {
+      "seconds": 86400,
+      "retention": 6.750835549834503e-7
+    },
+    {
+      "seconds": 172800,
+      "retention": 2.8383778174152237e-7
+    },
+    {
+      "seconds": 604800,
+      "retention": 5.9290518204411725e-8
+    },
+    {
+      "seconds": 1209600,
+      "retention": 2.4928592964906876e-8
+    },
+    {
+      "seconds": 2592000,
+      "retention": 9.615154107788144e-9
+    },
+    {
+      "seconds": 7776000,
+      "retention": 2.435312422197467e-9
+    },
+    {
+      "seconds": 15552000,
+      "retention": 1.0239227443695004e-9
+    },
+    {
+      "seconds": 31536000,
+      "retention": 4.2314746276677247e-10
+    }
+  ],
+  "rawScaleFit": {
+    "exponent": 1.246020561352545,
+    "sse": 6.152345028447996e-12,
+    "amplitude": 0.9780527277531238,
+    "rSquared": 0.9999998331585509
+  },
+  "logScaleFit": {
+    "exponent": 1.2497889098412165,
+    "amplitude": 0.9971740551883242
+  },
+  "empiricalStatus": "parked-no-published-range"
+}

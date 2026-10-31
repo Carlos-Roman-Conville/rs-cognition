@@ -1,0 +1,1092 @@
+{
+  "source": {
+    "citation": "Erev et al. (2010), Journal of Behavioral Decision Making 23, 15–47, Tables 1a and 1b, pp. 19–20 and 22–23",
+    "url": "https://openscholar.huji.ac.il/sites/default/files/agri_economics/files/2010_prediction_competition_dm_0.pdf",
+    "doi": "10.1002/bdm.683",
+    "accessed": "2026-10-30",
+    "measure": "E-repeated R-rate, averaged over 20 participants and 100 trials; rounded to two decimal places",
+    "extraction": "Table numeric rows via web PDF text; U+0001 denotes minus, U+0002 a dominance footnote. Retained H,pH,L,M,E-repeated columns only."
+  },
+  "problems": [
+    {
+      "set": "estimation",
+      "id": 1,
+      "H": -0.3,
+      "pH": 0.96,
+      "L": -2.1,
+      "M": -0.3,
+      "humanRiskRate": 0.33
+    },
+    {
+      "set": "estimation",
+      "id": 2,
+      "H": -0.9,
+      "pH": 0.95,
+      "L": -4.2,
+      "M": -1,
+      "humanRiskRate": 0.5
+    },
+    {
+      "set": "estimation",
+      "id": 3,
+      "H": -6.3,
+      "pH": 0.3,
+      "L": -15.2,
+      "M": -12.2,
+      "humanRiskRate": 0.24
+    },
+    {
+      "set": "estimation",
+      "id": 4,
+      "H": -10,
+      "pH": 0.2,
+      "L": -29.2,
+      "M": -25.6,
+      "humanRiskRate": 0.32
+    },
+    {
+      "set": "estimation",
+      "id": 5,
+      "H": -1.7,
+      "pH": 0.9,
+      "L": -3.9,
+      "M": -1.9,
+      "humanRiskRate": 0.45
+    },
+    {
+      "set": "estimation",
+      "id": 6,
+      "H": -6.3,
+      "pH": 0.99,
+      "L": -15.7,
+      "M": -6.4,
+      "humanRiskRate": 0.68
+    },
+    {
+      "set": "estimation",
+      "id": 7,
+      "H": -5.6,
+      "pH": 0.7,
+      "L": -20.2,
+      "M": -11.7,
+      "humanRiskRate": 0.37
+    },
+    {
+      "set": "estimation",
+      "id": 8,
+      "H": -0.7,
+      "pH": 0.1,
+      "L": -6.5,
+      "M": -6,
+      "humanRiskRate": 0.27
+    },
+    {
+      "set": "estimation",
+      "id": 9,
+      "H": -5.7,
+      "pH": 0.95,
+      "L": -16.3,
+      "M": -6.1,
+      "humanRiskRate": 0.43
+    },
+    {
+      "set": "estimation",
+      "id": 10,
+      "H": -1.5,
+      "pH": 0.92,
+      "L": -6.4,
+      "M": -1.8,
+      "humanRiskRate": 0.44
+    },
+    {
+      "set": "estimation",
+      "id": 11,
+      "H": -1.2,
+      "pH": 0.02,
+      "L": -12.3,
+      "M": -12.1,
+      "humanRiskRate": 0.26
+    },
+    {
+      "set": "estimation",
+      "id": 12,
+      "H": -5.4,
+      "pH": 0.94,
+      "L": -16.8,
+      "M": -6.4,
+      "humanRiskRate": 0.55
+    },
+    {
+      "set": "estimation",
+      "id": 13,
+      "H": -2,
+      "pH": 0.05,
+      "L": -10.4,
+      "M": -9.4,
+      "humanRiskRate": 0.11
+    },
+    {
+      "set": "estimation",
+      "id": 14,
+      "H": -8.8,
+      "pH": 0.6,
+      "L": -19.5,
+      "M": -15.5,
+      "humanRiskRate": 0.66
+    },
+    {
+      "set": "estimation",
+      "id": 15,
+      "H": -8.9,
+      "pH": 0.08,
+      "L": -26.3,
+      "M": -25.4,
+      "humanRiskRate": 0.19
+    },
+    {
+      "set": "estimation",
+      "id": 16,
+      "H": -7.1,
+      "pH": 0.07,
+      "L": -19.6,
+      "M": -18.7,
+      "humanRiskRate": 0.34
+    },
+    {
+      "set": "estimation",
+      "id": 17,
+      "H": -9.7,
+      "pH": 0.1,
+      "L": -24.7,
+      "M": -23.8,
+      "humanRiskRate": 0.37
+    },
+    {
+      "set": "estimation",
+      "id": 18,
+      "H": -4,
+      "pH": 0.2,
+      "L": -9.3,
+      "M": -8.1,
+      "humanRiskRate": 0.34
+    },
+    {
+      "set": "estimation",
+      "id": 19,
+      "H": -6.5,
+      "pH": 0.9,
+      "L": -17.5,
+      "M": -8.4,
+      "humanRiskRate": 0.49
+    },
+    {
+      "set": "estimation",
+      "id": 20,
+      "H": -4.3,
+      "pH": 0.6,
+      "L": -16.1,
+      "M": -4.5,
+      "humanRiskRate": 0.08
+    },
+    {
+      "set": "estimation",
+      "id": 21,
+      "H": 2,
+      "pH": 0.1,
+      "L": -5.7,
+      "M": -4.6,
+      "humanRiskRate": 0.11
+    },
+    {
+      "set": "estimation",
+      "id": 22,
+      "H": 9.6,
+      "pH": 0.91,
+      "L": -6.4,
+      "M": 8.7,
+      "humanRiskRate": 0.41
+    },
+    {
+      "set": "estimation",
+      "id": 23,
+      "H": 7.3,
+      "pH": 0.8,
+      "L": -3.6,
+      "M": 5.6,
+      "humanRiskRate": 0.39
+    },
+    {
+      "set": "estimation",
+      "id": 24,
+      "H": 9.2,
+      "pH": 0.05,
+      "L": -9.5,
+      "M": -7.5,
+      "humanRiskRate": 0.08
+    },
+    {
+      "set": "estimation",
+      "id": 25,
+      "H": 7.4,
+      "pH": 0.02,
+      "L": -6.6,
+      "M": -6.4,
+      "humanRiskRate": 0.19
+    },
+    {
+      "set": "estimation",
+      "id": 26,
+      "H": 6.4,
+      "pH": 0.05,
+      "L": -5.3,
+      "M": -4.9,
+      "humanRiskRate": 0.2
+    },
+    {
+      "set": "estimation",
+      "id": 27,
+      "H": 1.6,
+      "pH": 0.93,
+      "L": -8.3,
+      "M": 1.2,
+      "humanRiskRate": 0.5
+    },
+    {
+      "set": "estimation",
+      "id": 28,
+      "H": 5.9,
+      "pH": 0.8,
+      "L": -0.8,
+      "M": 4.6,
+      "humanRiskRate": 0.58
+    },
+    {
+      "set": "estimation",
+      "id": 29,
+      "H": 7.9,
+      "pH": 0.92,
+      "L": -2.3,
+      "M": 7,
+      "humanRiskRate": 0.51
+    },
+    {
+      "set": "estimation",
+      "id": 30,
+      "H": 3,
+      "pH": 0.91,
+      "L": -7.7,
+      "M": 1.4,
+      "humanRiskRate": 0.41
+    },
+    {
+      "set": "estimation",
+      "id": 31,
+      "H": 6.7,
+      "pH": 0.95,
+      "L": -1.8,
+      "M": 6.4,
+      "humanRiskRate": 0.52
+    },
+    {
+      "set": "estimation",
+      "id": 32,
+      "H": 6.7,
+      "pH": 0.93,
+      "L": -5,
+      "M": 5.6,
+      "humanRiskRate": 0.49
+    },
+    {
+      "set": "estimation",
+      "id": 33,
+      "H": 7.3,
+      "pH": 0.96,
+      "L": -8.5,
+      "M": 6.8,
+      "humanRiskRate": 0.65
+    },
+    {
+      "set": "estimation",
+      "id": 34,
+      "H": 1.3,
+      "pH": 0.05,
+      "L": -4.3,
+      "M": -4.1,
+      "humanRiskRate": 0.3
+    },
+    {
+      "set": "estimation",
+      "id": 35,
+      "H": 3,
+      "pH": 0.93,
+      "L": -7.2,
+      "M": 2.2,
+      "humanRiskRate": 0.44
+    },
+    {
+      "set": "estimation",
+      "id": 36,
+      "H": 5,
+      "pH": 0.08,
+      "L": -9.1,
+      "M": -7.9,
+      "humanRiskRate": 0.09
+    },
+    {
+      "set": "estimation",
+      "id": 37,
+      "H": 2.1,
+      "pH": 0.8,
+      "L": -8.4,
+      "M": 1.3,
+      "humanRiskRate": 0.28
+    },
+    {
+      "set": "estimation",
+      "id": 38,
+      "H": 6.7,
+      "pH": 0.07,
+      "L": -6.2,
+      "M": -5.1,
+      "humanRiskRate": 0.29
+    },
+    {
+      "set": "estimation",
+      "id": 39,
+      "H": 7.4,
+      "pH": 0.3,
+      "L": -8.2,
+      "M": -6.9,
+      "humanRiskRate": 0.58
+    },
+    {
+      "set": "estimation",
+      "id": 40,
+      "H": 6,
+      "pH": 0.98,
+      "L": -1.3,
+      "M": 5.9,
+      "humanRiskRate": 0.61
+    },
+    {
+      "set": "estimation",
+      "id": 41,
+      "H": 18.8,
+      "pH": 0.8,
+      "L": 7.6,
+      "M": 15.5,
+      "humanRiskRate": 0.52
+    },
+    {
+      "set": "estimation",
+      "id": 42,
+      "H": 17.9,
+      "pH": 0.92,
+      "L": 7.2,
+      "M": 17.1,
+      "humanRiskRate": 0.48
+    },
+    {
+      "set": "estimation",
+      "id": 43,
+      "H": 22.9,
+      "pH": 0.06,
+      "L": 9.6,
+      "M": 9.2,
+      "humanRiskRate": 0.88
+    },
+    {
+      "set": "estimation",
+      "id": 44,
+      "H": 10,
+      "pH": 0.96,
+      "L": 1.7,
+      "M": 9.9,
+      "humanRiskRate": 0.56
+    },
+    {
+      "set": "estimation",
+      "id": 45,
+      "H": 2.8,
+      "pH": 0.8,
+      "L": 1,
+      "M": 2.2,
+      "humanRiskRate": 0.48
+    },
+    {
+      "set": "estimation",
+      "id": 46,
+      "H": 17.1,
+      "pH": 0.1,
+      "L": 6.9,
+      "M": 8,
+      "humanRiskRate": 0.32
+    },
+    {
+      "set": "estimation",
+      "id": 47,
+      "H": 24.3,
+      "pH": 0.04,
+      "L": 9.7,
+      "M": 10.6,
+      "humanRiskRate": 0.25
+    },
+    {
+      "set": "estimation",
+      "id": 48,
+      "H": 18.2,
+      "pH": 0.98,
+      "L": 6.9,
+      "M": 18.1,
+      "humanRiskRate": 0.59
+    },
+    {
+      "set": "estimation",
+      "id": 49,
+      "H": 13.4,
+      "pH": 0.5,
+      "L": 3.8,
+      "M": 9.9,
+      "humanRiskRate": 0.13
+    },
+    {
+      "set": "estimation",
+      "id": 50,
+      "H": 5.8,
+      "pH": 0.04,
+      "L": 2.7,
+      "M": 2.8,
+      "humanRiskRate": 0.35
+    },
+    {
+      "set": "estimation",
+      "id": 51,
+      "H": 13.1,
+      "pH": 0.94,
+      "L": 3.8,
+      "M": 12.8,
+      "humanRiskRate": 0.52
+    },
+    {
+      "set": "estimation",
+      "id": 52,
+      "H": 3.5,
+      "pH": 0.09,
+      "L": 0.1,
+      "M": 0.5,
+      "humanRiskRate": 0.26
+    },
+    {
+      "set": "estimation",
+      "id": 53,
+      "H": 25.7,
+      "pH": 0.1,
+      "L": 8.1,
+      "M": 11.5,
+      "humanRiskRate": 0.11
+    },
+    {
+      "set": "estimation",
+      "id": 54,
+      "H": 16.5,
+      "pH": 0.01,
+      "L": 6.9,
+      "M": 7,
+      "humanRiskRate": 0.18
+    },
+    {
+      "set": "estimation",
+      "id": 55,
+      "H": 11.4,
+      "pH": 0.97,
+      "L": 1.9,
+      "M": 11,
+      "humanRiskRate": 0.66
+    },
+    {
+      "set": "estimation",
+      "id": 56,
+      "H": 26.5,
+      "pH": 0.94,
+      "L": 8.3,
+      "M": 25.2,
+      "humanRiskRate": 0.53
+    },
+    {
+      "set": "estimation",
+      "id": 57,
+      "H": 11.5,
+      "pH": 0.6,
+      "L": 3.7,
+      "M": 7.9,
+      "humanRiskRate": 0.45
+    },
+    {
+      "set": "estimation",
+      "id": 58,
+      "H": 20.8,
+      "pH": 0.99,
+      "L": 8.9,
+      "M": 20.7,
+      "humanRiskRate": 0.63
+    },
+    {
+      "set": "estimation",
+      "id": 59,
+      "H": 10.1,
+      "pH": 0.3,
+      "L": 4.2,
+      "M": 6,
+      "humanRiskRate": 0.32
+    },
+    {
+      "set": "estimation",
+      "id": 60,
+      "H": 8,
+      "pH": 0.92,
+      "L": 0.8,
+      "M": 7.7,
+      "humanRiskRate": 0.44
+    },
+    {
+      "set": "competition",
+      "id": 1,
+      "H": -8.7,
+      "pH": 0.06,
+      "L": -22.8,
+      "M": -21.4,
+      "humanRiskRate": 0.25
+    },
+    {
+      "set": "competition",
+      "id": 2,
+      "H": -2.2,
+      "pH": 0.09,
+      "L": -9.6,
+      "M": -8.7,
+      "humanRiskRate": 0.27
+    },
+    {
+      "set": "competition",
+      "id": 3,
+      "H": -2,
+      "pH": 0.1,
+      "L": -11.2,
+      "M": -9.5,
+      "humanRiskRate": 0.25
+    },
+    {
+      "set": "competition",
+      "id": 4,
+      "H": -1.4,
+      "pH": 0.02,
+      "L": -9.1,
+      "M": -9,
+      "humanRiskRate": 0.33
+    },
+    {
+      "set": "competition",
+      "id": 5,
+      "H": -0.9,
+      "pH": 0.07,
+      "L": -4.8,
+      "M": -4.7,
+      "humanRiskRate": 0.37
+    },
+    {
+      "set": "competition",
+      "id": 6,
+      "H": -4.7,
+      "pH": 0.91,
+      "L": -18.1,
+      "M": -6.8,
+      "humanRiskRate": 0.63
+    },
+    {
+      "set": "competition",
+      "id": 7,
+      "H": -9.7,
+      "pH": 0.06,
+      "L": -24.8,
+      "M": -24.2,
+      "humanRiskRate": 0.3
+    },
+    {
+      "set": "competition",
+      "id": 8,
+      "H": -5.7,
+      "pH": 0.96,
+      "L": -20.6,
+      "M": -6.4,
+      "humanRiskRate": 0.66
+    },
+    {
+      "set": "competition",
+      "id": 9,
+      "H": -5.6,
+      "pH": 0.1,
+      "L": -19.4,
+      "M": -18.1,
+      "humanRiskRate": 0.31
+    },
+    {
+      "set": "competition",
+      "id": 10,
+      "H": -2.5,
+      "pH": 0.6,
+      "L": -5.5,
+      "M": -3.6,
+      "humanRiskRate": 0.34
+    },
+    {
+      "set": "competition",
+      "id": 11,
+      "H": -5.8,
+      "pH": 0.97,
+      "L": -16.4,
+      "M": -6.6,
+      "humanRiskRate": 0.61
+    },
+    {
+      "set": "competition",
+      "id": 12,
+      "H": -7.2,
+      "pH": 0.05,
+      "L": -16.1,
+      "M": -15.6,
+      "humanRiskRate": 0.25
+    },
+    {
+      "set": "competition",
+      "id": 13,
+      "H": -1.8,
+      "pH": 0.93,
+      "L": -6.7,
+      "M": -2,
+      "humanRiskRate": 0.44
+    },
+    {
+      "set": "competition",
+      "id": 14,
+      "H": -6.4,
+      "pH": 0.2,
+      "L": -22.4,
+      "M": -18,
+      "humanRiskRate": 0.21
+    },
+    {
+      "set": "competition",
+      "id": 15,
+      "H": -3.3,
+      "pH": 0.97,
+      "L": -10.5,
+      "M": -3.2,
+      "humanRiskRate": 0.16
+    },
+    {
+      "set": "competition",
+      "id": 16,
+      "H": -9.5,
+      "pH": 0.1,
+      "L": -24.5,
+      "M": -23.5,
+      "humanRiskRate": 0.39
+    },
+    {
+      "set": "competition",
+      "id": 17,
+      "H": -2.2,
+      "pH": 0.92,
+      "L": -11.5,
+      "M": -3.4,
+      "humanRiskRate": 0.47
+    },
+    {
+      "set": "competition",
+      "id": 18,
+      "H": -1.4,
+      "pH": 0.93,
+      "L": -4.7,
+      "M": -1.7,
+      "humanRiskRate": 0.41
+    },
+    {
+      "set": "competition",
+      "id": 19,
+      "H": -8.6,
+      "pH": 0.1,
+      "L": -26.5,
+      "M": -26.3,
+      "humanRiskRate": 0.49
+    },
+    {
+      "set": "competition",
+      "id": 20,
+      "H": -6.9,
+      "pH": 0.06,
+      "L": -20.5,
+      "M": -20.3,
+      "humanRiskRate": 0.25
+    },
+    {
+      "set": "competition",
+      "id": 21,
+      "H": 1.8,
+      "pH": 0.6,
+      "L": -4.1,
+      "M": 1.7,
+      "humanRiskRate": 0.08
+    },
+    {
+      "set": "competition",
+      "id": 22,
+      "H": 9,
+      "pH": 0.97,
+      "L": -6.7,
+      "M": 9.1,
+      "humanRiskRate": 0.14
+    },
+    {
+      "set": "competition",
+      "id": 23,
+      "H": 5.5,
+      "pH": 0.06,
+      "L": -3.4,
+      "M": -2.6,
+      "humanRiskRate": 0.28
+    },
+    {
+      "set": "competition",
+      "id": 24,
+      "H": 1,
+      "pH": 0.93,
+      "L": -7.1,
+      "M": 0.6,
+      "humanRiskRate": 0.46
+    },
+    {
+      "set": "competition",
+      "id": 25,
+      "H": 3,
+      "pH": 0.2,
+      "L": -1.3,
+      "M": -0.1,
+      "humanRiskRate": 0.21
+    },
+    {
+      "set": "competition",
+      "id": 26,
+      "H": 8.9,
+      "pH": 0.1,
+      "L": -1.4,
+      "M": -0.9,
+      "humanRiskRate": 0.23
+    },
+    {
+      "set": "competition",
+      "id": 27,
+      "H": 9.4,
+      "pH": 0.95,
+      "L": -6.3,
+      "M": 8.5,
+      "humanRiskRate": 0.67
+    },
+    {
+      "set": "competition",
+      "id": 28,
+      "H": 3.3,
+      "pH": 0.91,
+      "L": -3.5,
+      "M": 2.7,
+      "humanRiskRate": 0.58
+    },
+    {
+      "set": "competition",
+      "id": 29,
+      "H": 5,
+      "pH": 0.4,
+      "L": -6.9,
+      "M": -3.8,
+      "humanRiskRate": 0.39
+    },
+    {
+      "set": "competition",
+      "id": 30,
+      "H": 2.1,
+      "pH": 0.06,
+      "L": -9.4,
+      "M": -8.4,
+      "humanRiskRate": 0.33
+    },
+    {
+      "set": "competition",
+      "id": 31,
+      "H": 0.9,
+      "pH": 0.2,
+      "L": -5,
+      "M": -5.3,
+      "humanRiskRate": 0.88
+    },
+    {
+      "set": "competition",
+      "id": 32,
+      "H": 9.9,
+      "pH": 0.05,
+      "L": -8.7,
+      "M": -7.6,
+      "humanRiskRate": 0.21
+    },
+    {
+      "set": "competition",
+      "id": 33,
+      "H": 7.7,
+      "pH": 0.02,
+      "L": -3.1,
+      "M": -3,
+      "humanRiskRate": 0.28
+    },
+    {
+      "set": "competition",
+      "id": 34,
+      "H": 2.5,
+      "pH": 0.96,
+      "L": -2,
+      "M": 2.3,
+      "humanRiskRate": 0.52
+    },
+    {
+      "set": "competition",
+      "id": 35,
+      "H": 9.2,
+      "pH": 0.91,
+      "L": -0.7,
+      "M": 8.2,
+      "humanRiskRate": 0.56
+    },
+    {
+      "set": "competition",
+      "id": 36,
+      "H": 2.9,
+      "pH": 0.98,
+      "L": -9.4,
+      "M": 2.9,
+      "humanRiskRate": 0.34
+    },
+    {
+      "set": "competition",
+      "id": 37,
+      "H": 2.9,
+      "pH": 0.05,
+      "L": -6.5,
+      "M": -5.7,
+      "humanRiskRate": 0.3
+    },
+    {
+      "set": "competition",
+      "id": 38,
+      "H": 7.8,
+      "pH": 0.99,
+      "L": -9.3,
+      "M": 7.6,
+      "humanRiskRate": 0.62
+    },
+    {
+      "set": "competition",
+      "id": 39,
+      "H": 6.5,
+      "pH": 0.8,
+      "L": -4.8,
+      "M": 6.2,
+      "humanRiskRate": 0.32
+    },
+    {
+      "set": "competition",
+      "id": 40,
+      "H": 5,
+      "pH": 0.9,
+      "L": -3.8,
+      "M": 4.1,
+      "humanRiskRate": 0.46
+    },
+    {
+      "set": "competition",
+      "id": 41,
+      "H": 20.1,
+      "pH": 0.95,
+      "L": 6.5,
+      "M": 19.6,
+      "humanRiskRate": 0.5
+    },
+    {
+      "set": "competition",
+      "id": 42,
+      "H": 5.2,
+      "pH": 0.5,
+      "L": 1.4,
+      "M": 5.1,
+      "humanRiskRate": 0.08
+    },
+    {
+      "set": "competition",
+      "id": 43,
+      "H": 12,
+      "pH": 0.5,
+      "L": 2.4,
+      "M": 9,
+      "humanRiskRate": 0.17
+    },
+    {
+      "set": "competition",
+      "id": 44,
+      "H": 20.7,
+      "pH": 0.9,
+      "L": 9.1,
+      "M": 19.8,
+      "humanRiskRate": 0.44
+    },
+    {
+      "set": "competition",
+      "id": 45,
+      "H": 8.4,
+      "pH": 0.07,
+      "L": 1.2,
+      "M": 1.6,
+      "humanRiskRate": 0.2
+    },
+    {
+      "set": "competition",
+      "id": 46,
+      "H": 22.6,
+      "pH": 0.4,
+      "L": 7.2,
+      "M": 12.4,
+      "humanRiskRate": 0.41
+    },
+    {
+      "set": "competition",
+      "id": 47,
+      "H": 23.4,
+      "pH": 0.93,
+      "L": 7.6,
+      "M": 22.1,
+      "humanRiskRate": 0.72
+    },
+    {
+      "set": "competition",
+      "id": 48,
+      "H": 17.2,
+      "pH": 0.09,
+      "L": 5,
+      "M": 5.9,
+      "humanRiskRate": 0.24
+    },
+    {
+      "set": "competition",
+      "id": 49,
+      "H": 18.9,
+      "pH": 0.9,
+      "L": 6.7,
+      "M": 17.7,
+      "humanRiskRate": 0.57
+    },
+    {
+      "set": "competition",
+      "id": 50,
+      "H": 12.8,
+      "pH": 0.04,
+      "L": 4.7,
+      "M": 4.9,
+      "humanRiskRate": 0.26
+    },
+    {
+      "set": "competition",
+      "id": 51,
+      "H": 19.1,
+      "pH": 0.03,
+      "L": 4.8,
+      "M": 5.2,
+      "humanRiskRate": 0.22
+    },
+    {
+      "set": "competition",
+      "id": 52,
+      "H": 12.3,
+      "pH": 0.91,
+      "L": 1.3,
+      "M": 12.1,
+      "humanRiskRate": 0.41
+    },
+    {
+      "set": "competition",
+      "id": 53,
+      "H": 6.8,
+      "pH": 0.9,
+      "L": 3,
+      "M": 6.7,
+      "humanRiskRate": 0.41
+    },
+    {
+      "set": "competition",
+      "id": 54,
+      "H": 22.6,
+      "pH": 0.3,
+      "L": 9.2,
+      "M": 11,
+      "humanRiskRate": 0.6
+    },
+    {
+      "set": "competition",
+      "id": 55,
+      "H": 6.4,
+      "pH": 0.09,
+      "L": 0.5,
+      "M": 1.5,
+      "humanRiskRate": 0.28
+    },
+    {
+      "set": "competition",
+      "id": 56,
+      "H": 15.3,
+      "pH": 0.06,
+      "L": 5.9,
+      "M": 7.1,
+      "humanRiskRate": 0.17
+    },
+    {
+      "set": "competition",
+      "id": 57,
+      "H": 5.3,
+      "pH": 0.9,
+      "L": 1.5,
+      "M": 4.7,
+      "humanRiskRate": 0.66
+    },
+    {
+      "set": "competition",
+      "id": 58,
+      "H": 21.9,
+      "pH": 0.5,
+      "L": 8.1,
+      "M": 12.6,
+      "humanRiskRate": 0.47
+    },
+    {
+      "set": "competition",
+      "id": 59,
+      "H": 27.5,
+      "pH": 0.7,
+      "L": 9.2,
+      "M": 21.9,
+      "humanRiskRate": 0.42
+    },
+    {
+      "set": "competition",
+      "id": 60,
+      "H": 4.4,
+      "pH": 0.2,
+      "L": 0.7,
+      "M": 1.1,
+      "humanRiskRate": 0.38
+    }
+  ]
+}
