@@ -359,6 +359,38 @@ Later P7 rows, not in this baseline (planned, named so nobody else builds them):
 law of practice and decay: the universal STATS skill, rust and talent), `cognition.emotion.appraisal`,
 `cognition.communication.language`, `cognition.relationship.trust`, `cognition.planning.lookahead`.
 
+**Conversational plausibility, organic flow (Rex, 2026-10-31; proposed, not built).** Rex's direction (ENGINES.md,
+"Conversational plausibility, organic flow"), part of the planned communication subsystem
+(`cognition.communication.*`). Recorded only; designed when the controller releases it.
+- **A reply answers why this is being said, why now and how it fits between us, never a keyword (Rex).** Saying
+  "buried treasure" to a stranger unlocks nothing: they may ask "what?", assume a pitch, grow suspicious, laugh or
+  wait for an explanation. Coherence earns no trust by itself.
+- **Conversation state, beside personality (Rex):** one record per mind and partner with six parts: shared context
+  (what both know, what was just said, whether the remark has an understandable link); perceived intention (help,
+  flirting, threat, joke, fishing, time-wasting), read through beliefs (§2.3) and possibly wrong; willingness to
+  engage (want of company, somewhere to be, safety, interest); relationship and boundaries (what may be asked of
+  this person, how much explanation they expect, how readily they forgive awkwardness); current emotional and bodily
+  state (loneliness, embarrassment, irritation, fatigue, fear, urgency, distraction; the bodily part read from
+  Reality's ports, §8); conversational history (interruptions, ignored answers, unexplained topic changes, shown
+  listening, repairs).
+- **Tolerance budget (Rex: "willingness to put up with bullshit"):** the effort a mind will spend understanding the
+  other before disengaging, set by affection, curiosity, obligation, expected benefit, available attention and how
+  the exchange has gone. Whether it is a need record under `M_i` (§2.2) or a separate state is **open** (C-Q12).
+- **The next utterance is a choice (Rex):** answer, ask for clarification, interpret, redirect, challenge or leave,
+  evaluated and selected through the existing `cognition.decision.select` (§2.4), never a scripted reply.
+- **Emergent, never scripted (Rex):** awkwardness arises when expectations do not line up; lingering when someone
+  still wants contact but has no confident next move (hesitating, repeating, a weak follow-up, staying after the
+  other has begun closing). An urgent warning may interrupt anything; an unrelated remark may work between close
+  friends; a clumsy person may still be welcomed.
+- **Personality shapes weights only (Rex):** through the four hooks (§9), never a decision. Openness is not
+  willingness to talk to a stranger; a reserved person may want company tonight; a lonely one may tolerate a clumsy
+  approach or read it as rejection.
+- **Big Five is a measurement, never a driver (Rex):** derived traits are measured from the emergent conversational
+  behaviour and compared with McCrae & Costa 1989 in T-2 (§9 "Tests of the layer").
+- **Quantities, proposed to the registry (planned):** `mind.conversation_state` (record, the six parts above, per
+  partner), `mind.conversation_tolerance` (1, 0–1, the remaining tolerance budget), `mind.engagement_willingness`
+  (1, 0–1).
+
 DUP-46 (personality, ownership-gap): these rows are the universal home; the pirate charts and STATS sliders stay
 pirate (CTRL-7). `realism.nutrition.hunger_fullness`: Cognition reads it, never writes it; if Reality's row
 includes "appetite as felt priority", the boundary is the deficit signal (Reality) vs the drive and priority
@@ -650,6 +682,7 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q2 | The cognitive parameters varied (§3 θ) and that needs weights are *not* varied (Rex: identical needs) | Rex |
 | C-Q3 | "Light and crystal" | **(Rex, 2026-10-30)** named in ENGINES.md ("Dynamic function allocation, the light and the crystal"): the light = the baseline hierarchy B_f, the crystal = learned activation conditions (§9, proposed, not built); still to be written into the personality matrix before any formula cites it; never invented |
 | C-Q11 | The end of Rex's "an inferior function is never prevented from leading a decision" point (his paste was cut off mid-sentence) | open (Rex) |
+| C-Q12 | Conversational plausibility (§5): whether the tolerance budget is a need record under M_i (§2.2) or a separate conversation state | open (Rex; designed when the controller releases the communication subsystem) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -833,3 +866,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | Unit 2700: CB-1 to CB-5 pass, V1 passes (2701). Rulings C-B2: CB-6b belongs to the check unit; CB-7 λ restated as its evaluation-level consequence, population effect reported |
 | 2026-10-30 | DUP-49 recorded (unit 2720): four-owner split — Reality (hunger, satiety, taste perception, digestion and physiological responses); Cognition (food preferences, anticipated enjoyment, appetite-related motivation, the decision to eat); Society (cultural food norms, taboos and learned expectations, unowned until Society exists); the pirate game (period-specific foods, presentation and intentional gameplay rules) |
 | 2026-10-30 | Rex's two directions (dynamic function allocation, the light and the crystal, §9; cultural salience and the zeitgeist, §13b) were recorded as proposed by unit 2721, not built, C-Q11 open |
+| 2026-10-31 | Rex's conversational-plausibility direction recorded in §5 as proposed by unit 2734, not built, C-Q12 open |
