@@ -486,6 +486,15 @@ real hungry people choose in this scene. That is stated in the report (§10).
 | taste percept | 1 (0–1) per taste category (`indexed_by` taste category) | registered 2026-10-30 (planned), writer `realism.perception.taste` (planned, not built) | **agreed (DUP-49):** Reality writes `body.taste_percept` (the sensory half of palatability); Cognition's preferences evaluate it (the evaluative half); until the writer exists the percept is **absent**, never given a default; added to `kernel.json` ports when Reality builds the writer |
 | functional capacity | 1 (0–1 per action class) | DUP-15, planned | Reality writes `body.capacity_functional`; generation reads it; Cognition never computes strength |
 | mood and arousal bias | 1 | `realism.neurology.circuits` writes `body.circuit_outputs` | **not read in the baseline**; when read, as a modulation of `β`, `λ` or pertinence that Reality's row defines, never a second mood model |
+| transmitter levels | by transmitter row | planned (Reality neurology, 2026-10-31) | **agreed (planned, §16):** Reality writes `body.transmitter_levels`, indexed by its neurology transmitter rows (gaba, glutamate, serotonin, noradrenaline, opioid, …); Cognition reads it at §16.1 stage 4 as an interoceptive stimulus (§2.1), never as a mood number; **absent, no default, until Reality's researched units land** |
+| hormone levels | by hormone id | planned (Reality neurology, 2026-10-31) | **agreed (planned, §16):** Reality writes `body.hormone_levels`, indexed by hormone id (cortisol, adrenaline, oxytocin, …); each hormone exists only with a researched row giving its cited effect and kinetics; read at stage 4 like the transmitters; **absent, no default, until those units land** |
+
+**Outputs to Reality (planned, 2026-10-31; §16):** `mind.appraisal` (record: the interpretation a mind forms of an
+event, §16.1 stage 2; writer the reserved row `cognition.emotion.appraisal`, registered planned) and
+`mind.recalled_body_state` (record: the body state stored with an episode, re-emitted on retrieval, §16.1; writer
+`cognition.memory.retrieval`, planned). Both are ports on Reality's neurology. Which appraisal moves which substance,
+and by how much, comes from sources: Reality's post-P1 research units, one per substance family. Neither is in
+`kernel.json` until built.
 
 Until Reality writes these, the benchmark fixture supplies them, labelled fixture.
 
@@ -1040,7 +1049,8 @@ reweights cue categories (already v1's F2 shape).
 valence, structural links, abstract pattern, social meaning), and the introverted function's profile sets how much of
 each dimension is encoded (an `interpret`-stage hook on §14.1 encoding).
 - Stage 3 is Reality's: `body.circuit_outputs` (§8) and the endocrine state, written by Reality from the appraisal
-Cognition emits (a proposed output `mind.appraisal`).
+Cognition emits (the output `mind.appraisal`, registered planned 2026-10-31 with writer `cognition.emotion.appraisal`; the
+endocrine state is `body.transmitter_levels` and `body.hormone_levels`, §8).
 - Stage 4 is perception again: the body state enters as a stimulus (interoception, §2.1) and is interpreted through
 beliefs (§2.3); the emotion is the belief the mind forms about its own state, descriptive.
 - **Retrievable** is §2.3's activation with **cue-type weights**: the trigger column says which similarity (sensory,
@@ -1088,3 +1098,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | Rex's five directions recorded as §14 (memory below personality, gaze, intermittent characters, features and names, lasting drug effects); 'personality weights' wording corrected to descriptive; C-Q13 to C-Q15 open (unit 2737). Not built. |
 | 2026-10-31 | §14.1 memory writer split (keeper proposal) and §15 contract fields for the 13 built rows recorded (unit 2739; COG-33). |
 | 2026-10-31 | Rex's experience pipeline and memory profiles recorded as §16 (perception filter → encoding → chemical response → re-interpretation; memory as stored / retrievable / articulable; function profiles; stack interaction); C-Q16, C-Q17 open (unit 2746). Not built. |
+| 2026-10-31 | §8 gains Reality's `body.transmitter_levels` and `body.hormone_levels` (planned, absent until researched) and the outputs `mind.appraisal` / `mind.recalled_body_state` for §16 (unit 2747). |
