@@ -878,6 +878,14 @@ change until the controller releases the baseline follow-up work (T-1/T-2). Row 
 - **Rows (planned):** `cognition.memory.encoding`, `cognition.memory.consolidation`, `cognition.memory.retrieval`
   beside the existing `cognition.memory.episodic`; attention is `cognition.attention.allocate`; saying is the
   communication subsystem (`cognition.communication.encode`).
+- **Writer split (keeper proposal, 2026-10-31; Rex may overrule):** today the built `cognition.memory.episodic` is
+  the only writer of `mind.episode` and `mind.retrieval_p`, and its retrieval noise draws from the kernel stream
+  `cognition.memory.retrieve` (a registry alias of episodic, kept so seeded runs do not change). The three stages
+  write nothing until they are built. When built: encoding writes `mind.episode` (which events become episodes, and
+  in what detail); consolidation writes a new `mind.memory_durability` (per-episode durability; sleep is a Reality
+  input); retrieval writes `mind.retrieval_p` and takes over the stream alias; episodic then becomes an alias of the
+  three stages, and `kernel.json` changes in the same commit. Continuity during absence (14.3) writes nothing of its
+  own: it advances the existing needs, beliefs and episodes at coarse resolution.
 
 ### 14.2 Gaze and eye contact (Rex; nonverbal communication)
 
@@ -934,6 +942,58 @@ change until the controller releases the baseline follow-up work (T-1/T-2). Row 
 - **Rows (planned):** `cognition.substance.adaptation` (lasting changes to reasoning-process parameters); quantity
   `mind.process_baseline` (record: the mind's reasoning-process parameters as altered by its history).
 
+## 15. Contract fields: rate limiter and failure mode (registry schema 4; keeper, proposed 2026-10-31)
+
+The registry (schema 4, Rex 2026-10-31) asks every built row what limits its rate and what makes it fail; these
+entries describe the built code and DESIGN, they add no new mechanism, and a field the design does not state is
+written "none stated".
+
+| Row | Rate limiter | Failure mode |
+|---|---|---|
+| `cognition.attention.allocate` | Attention shares `a_c = w_c/Σ w'` sum to 1 per mind per tick (§2.1 Bundesen;
+  `allocateAttention` renormalises; proposed zero-total convention: no attended cues). | No allocation when total
+  weight is zero (proposed); invalid salience, relevance or hook output throws (`attention.ts`). |
+| `cognition.perception.detect` | One detection pass per attended stimulus per tick; effective sensitivity
+  `d'_eff = d'_c·√a_c` (§2.1) bounded by declared `d'` and the attention share. | Misses and false alarms by SDT
+  (`P_H`, `P_FA`, §2.1); wrong categorical or Weber-noisy real reports; explicit null observations when not detected;
+  invalid shares, criterion or stream draw throws (`perception.ts`). |
+| `cognition.belief.update` | Conservatism `η ∈ (0,1]` on each update (§2.3); between observations, categorical
+  relaxation `λ_b` and real drift `q_k·Δt` (§2.3). | Wrong or false priors by design (§2.3); under-update when
+  `η < 1`; testimony weighted by reliability `r_j`; kind or support mismatch throws (`beliefs.ts`). |
+| `cognition.memory.episodic` | Retrieval probability from activation `B_e`, threshold `τ`, noise `s`, decay `d`
+  (§2.3 ACT-R); one stream draw per retrieval attempt (`cognition.memory.retrieve`, §7). | Forgetting and failed
+  retrieval when the draw exceeds `P_retrieve(e)`; `P̂` underweights irretrievable episodes (§2.3); invalid decay,
+  context or stream throws (`memory.ts`). |
+| `cognition.needs.drive` | Motivational priorities `priority_i = M_i/Σ_j M_j` with `M_i = w_i D_i S_i` (§2.2);
+  drive `D(h)` uses host parameters `n`, `m`. | Mis-priorities from wrong deficits (Reality signals, appraisal
+  beliefs, accumulator `dh/dt = 1/τ_soc`, §2.2); missing inputs or non-unit deficits throw (`needs.ts`). |
+| `cognition.goals.objectives` | Host standing goals with `p_g ∈ [0,1]`; reward term `V_g·Δp_g` per update (§2.2;
+  `goalReward`). | Progress and reward follow host-supplied `goalProgress`, not ground truth; out-of-range progress
+  throws (`needs.ts`, `mind.ts`). |
+| `cognition.decision.generate` | Candidates are repertoire entries whose believed preconditions meet `θ_pre`
+  (proposed 0.5) and whose capacity `≤ body.capacity_functional` (§2.4); personality hook may reorder or add
+  compounds (§9). | Actions omitted when preconditions or capacity fail; invalid repertoire or hook output throws
+  (`actions.ts`). |
+| `cognition.decision.evaluate` | One `EU(a)` per candidate with one-step lookahead and discount `γ` (§2.4); `P̂`
+  from theory plus retrievable episodes (§2.3). | Wrong expected utility from mistaken beliefs and `P_theory`; loss
+  aversion `λ` on negative outcomes (§2.4); unknown predicted need or goal throws (`evaluate.ts`). |
+| `cognition.decision.select` | At most one newly minted intention per re-choice; softmax with `β` (§2.4 Luce);
+  commitment keeps the current intention while `max_a EU(a) − EU(ι) ≤ κ` (§2.4, §5). | A worse action chosen by the
+  softmax draw; kept intention when advantage within `κ`; invalid utilities, `κ`, or stream draw throws (`select.ts`).
+| `cognition.learning.outcome` | Runs when an outcome event's `cause` is this mind's intention id (§2.5, §7); records
+  `δ = r_obs − EU(ι)` and optionally encodes an episode. | Wrong learning signal from misperceived outcomes (§2.5);
+  unknown or already-settled intentions get empty feedback (`process.ts`); timeline or outcome-space mismatch throws
+  (`learning.ts`). |
+| `cognition.learning.attribution` | Attributed cause is the latent with largest KL move from its prior, else
+  "chance" if no move exceeds `ε_attr` (§2.5); ties by declared latent order. | Misattribution when the wrong latent
+  wins or none clears `ε_attr`; duplicate latent ids or invalid reliability update throws (`learning.ts`). |
+| `cognition.personality.slot` | Structural null model: identity on pertinence, interpret, generate and learning
+  hooks (§9 `nullPersonality`; DESIGN §5 registry n/a). | Baseline adds no failure beyond the hooked rows; when a
+  non-null model is configured, hooks may mis-modulate `π`, `η`, `κ`, learning rate and `d` (§9). |
+| `cognition.personality.eight_function` | Switched on only after baseline CB-1–CB-7 (§9 C-Q4); v1 adjusts declared
+  parameters through the four hooks when configured (`personality/eight-function/v1.ts`). | Hypothesis-level wrong
+  modulation when enabled (§9 level 5); invalid stack or parameters throw in v1 (`personality/eight-function/v1.ts`). |
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -967,3 +1027,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | Fixture inline labels (COG-22) and the conversation-state writer row recorded (unit 2735). |
 | 2026-10-31 | C-Q12 decided by Rex (tolerance derived, shared context a per-mind belief), recorded in §5 and §12 (unit 2736); planned, nothing implemented. |
 | 2026-10-31 | Rex's five directions recorded as §14 (memory below personality, gaze, intermittent characters, features and names, lasting drug effects); 'personality weights' wording corrected to descriptive; C-Q13 to C-Q15 open (unit 2737). Not built. |
+| 2026-10-31 | §14.1 memory writer split (keeper proposal) and §15 contract fields for the 13 built rows recorded (unit 2739; COG-33). |
