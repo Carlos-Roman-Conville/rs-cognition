@@ -24,13 +24,16 @@ describe("V1 independent retention validation (DESIGN §10)", () => {
     expect(fitPower(points.map((p) => ({ ...p, seconds: p.seconds / 60 }))).exponent).toBeCloseTo(0.37, 7);
   });
 
-  it("places the fitted exponent inside a sourced Rubin & Wenzel range for comparable materials", () => {
-    const exponent = fitPower(retentionCurve()).exponent;
-    const range = reference.exponentRange as readonly [number, number] | null;
-    // Deliberately fails closed; no invented bounds, skip, or expected-failure marker.
-    expect(range, `V1 PARKED: fitted exponent=${exponent}. ${reference.blockedReason}`).not.toBeNull();
-    if (range === null) throw new Error(reference.blockedReason);
-    expect(exponent).toBeGreaterThanOrEqual(range[0]);
-    expect(exponent).toBeLessThanOrEqual(range[1]);
+  it("meets the Table 4 median power-function R-squared criterion (COG-14)", () => {
+    const sorted = reference.powerFit.rows.map((row) => row.rSquared).sort((a, b) => a - b);
+    expect(sorted).toHaveLength(51);
+    expect(sorted.length).toBe(reference.powerFit.datasetCount);
+    const middle = Math.floor(sorted.length / 2);
+    const median = sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
+    expect(median).toBe(reference.powerFit.medianRSquared);
+    const fit = fitPower(retentionCurve());
+    expect(fit.rSquared, `V1: R-squared=${fit.rSquared}; Table 4 median=${median}`)
+      .toBeGreaterThanOrEqual(median);
+    // Wixted & Ebbesen exponents are descriptive only; no empirical exponent tolerance.
   });
 });

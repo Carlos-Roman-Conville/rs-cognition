@@ -18,11 +18,16 @@
 - `v1-reference.json`: Rubin & Wenzel (1996), DOI
   [10.1037/0033-295X.103.4.734](https://doi.org/10.1037/0033-295X.103.4.734),
   [paper](https://users.cs.northwestern.edu/~paritosh/papers/KIP/100YearsOfForgetting.pdf).
-  Tables 1–9 list fit statistics and logarithmic slopes, not the requested power-exponent
-  range. `null` records unavailable evidence, never a zero or an invented bound.
+  Unit 2701: Table 4, Pwr column, printed pp.744-745, all 51 recall-dataset rows;
+  unweighted median R-squared = 0.92, excluding M (mean = 0.88). Both pages visually checked.
+  Row-level transcription and aggregation rule are stored in the reference JSON.
+- Descriptive exponent context: [Wixted & Ebbesen (1991)](https://wixtedlab.ucsd.edu/publications/wixted/Wixted_and_Ebbesen_(1991).pdf),
+  DOI 10.1111/j.1467-9280.1991.tb00175.x, Figure 1 p.411: word recall exponents 0.12
+  (5-second study) and 0.14 (1-second study), visually checked. These figure-equation
+  parameters are not Table 2 fit quality and are never asserted validation bounds.
 - `v1-results.json` / `v2-results.json` are **simulated output**, not human data.
   Regenerate from the repository root with `node --experimental-strip-types validation/run.ts`.
-  Runs have no wall-clock/random seed dependence. The script overwrites these two outputs.
+  Add `--v1-only` to regenerate only V1. Runs have no wall-clock/random seed dependence. The script overwrites these two outputs.
 
 The original TPT HTTP/HTTPS competition URLs were also attempted; see V2's access log.
 Temporary downloaded papers were used for table inspection, not included as whole-paper copies.

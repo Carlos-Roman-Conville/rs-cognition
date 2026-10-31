@@ -93,5 +93,6 @@
     "exponent": 1.2497889098412165,
     "amplitude": 0.9971740551883242
   },
-  "empiricalStatus": "parked-no-published-range"
+  "referenceMedianRSquared": 0.92,
+  "empiricalStatus": "PASS"
 }

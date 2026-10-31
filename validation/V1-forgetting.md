@@ -1,9 +1,8 @@
 # V1: single-episode forgetting (2026-10-30)
 
-**PARKED: simulation and fitting completed; the specified empirical acceptance range is unavailable
-in the cited tables.** The raw-scale fitted decay exponent is **1.2460205614**, but no honest
-in-range/out-of-range judgment can be made. The required empirical assertion fails explicitly
-on missing evidence. This is not a passing validation or evidence of an empirical exponent failure.
+**PASS under COG-14:** raw-scale power-fit R-squared **0.9999998331585509** exceeds the
+Table 4 median **0.92**. Exponent **1.2460205614** is descriptive, not asserted.
+Default theta and unit-2671 delays are unchanged.
 
 ## Method and data
 
@@ -41,21 +40,28 @@ Under DESIGN §2.3, a single encoding gives `B=-d*ln(t)` and hence
 not the activation-decay parameter `d=0.5`. A strong power fit is mathematical consistency,
 not independent human validation; neither A nor b is used to retune the engine.
 
-## Source audit and blocked comparison
+## Independent reference and descriptive exponent comparison
 
-[Rubin & Wenzel (1996), DOI 10.1037/0033-295X.103.4.734](https://users.cs.northwestern.edu/~paritosh/papers/KIP/100YearsOfForgetting.pdf)
-fits 210 datasets with 105 functions (DESIGN reverses these counts). Its p.736 explains fitting
-untransformed retention. Tables 1–9 report fit statistics. In particular, **Table 4, pp.744–745
-(recall)**, is the closest broad task family; **Table 3, p.743 (recognition)** and **Table 5,
-p.746 (savings, including Ebbinghaus)** do not supply a power-exponent range either.
-The `Pwr` entries are **R²**. The parenthesized `m` belongs to **Log(m)**, the logarithmic
-function, not the power function. Table 4 and Table 5 were visually checked, not inferred
-from ambiguous extracted columns. Those numbers cannot be relabeled as exponents.
+[Rubin & Wenzel (1996)](https://users.cs.northwestern.edu/~paritosh/papers/KIP/100YearsOfForgetting.pdf),
+**Table 4, printed pp.744-745 (PDF pages 11-12), Pwr column**, supplies 51 recall-dataset
+R-squared values. Their unweighted median is **0.92** (26th sorted value). The summary row M is
+excluded: its **0.88** is a mean. This is the specified Table 4 reference, not a median
+over all 210 datasets. Published two-decimal values are used without an added tolerance.
+Both pages were visually checked. Dataset identifiers, pages, values and aggregation rule
+are in [`data/v1-reference.json`](data/v1-reference.json). Pwr contains fit quality;
+Log(m) contains logarithmic slopes, not power exponents.
 
-The machine-readable evidence record is [`data/v1-reference.json`](data/v1-reference.json),
-with `exponentRange: null`. HANDOFF Blocked requests a comparable, sourced exponent range,
-or keeper approval to replace this criterion with an independently fitted human retention dataset.
-No alternative paper, savings-to-recall mapping, material grouping, or tolerance was silently substituted.
+[Wixted & Ebbesen (1991)](https://wixtedlab.ucsd.edu/publications/wixted/Wixted_and_Ebbesen_(1991).pdf),
+**Figure 1, printed p.411**, labels word-recall power curves with positive decay exponents
+**0.12** (5-second study) and **0.14** (1-second study). These were fetched and visually
+checked, not estimated from plotted points. Table 2 supplies fit quality, not exponents;
+the figure equations are descriptive context only. The asserted reference comes exclusively
+from Rubin & Wenzel Table 4.
+
+The simulated exponent **1.2460205614** is larger than both. This is not a matched protocol:
+the human task uses six-word lists, distractors and 2.5-40-second delays; the model uses
+a generic single episode and 1-minute to 365-day delays. No exponent range or tolerance
+is asserted, and this comparison does not establish material-specific human calibration.
 
 ## Uncertainty, verification and reproduction
 
@@ -66,13 +72,13 @@ calibration, or one-year extrapolation validation here. A single generic episode
 define a laboratory recall/recognition task. Retrieval strengthens an episode in the engine; testing
 the same episode repeatedly would answer a different question.
 
-`npx vitest run test/validation-v1.test.ts`: **2 passed, 1 failed**. The failing assertion is the
-requested empirical-range check; it has no skip or expected-failure marker. Passing checks verify
-the delay coverage and fit an independent known power curve, including invariance of b to time units.
-Regenerate numeric output with `node --experimental-strip-types validation/run.ts` (also runs V2).
-No source/default/specification changes were made. The unit's “V1 test passes” completion condition
-is **not met** and cannot be certified without resolving the evidence mismatch.
+Run `npx vitest run test/validation-v1.test.ts`. Reproduce V1 alone with
+`node --experimental-strip-types validation/run.ts --v1-only`; omitting the flag also runs V2.
+The test recomputes the median from the transcribed rows and asserts R-squared >= median.
+No source/default/specification changes were made. V2 remains parked under C-V2.
 
-Final required full gate: **211 passed, 6 failed** in 94.43 s. This V1 evidence assertion is
-one failure; the other five are the pre-existing unit-2670 benchmark blockers documented in
-HANDOFF. All three required gate files exist. `npx tsc --noEmit` passes.
+Verification: focused V1 tests **3 passed**; required gate **235 passed across 20 files**
+(19.00 s), excluding `test/bench-acceptance.test.ts` as instructed. Report existence and
+Verdict-line checks pass. `npx tsc --noEmit` passes.
+
+Verdict V1: PASS

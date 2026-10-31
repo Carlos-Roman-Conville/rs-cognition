@@ -9,8 +9,7 @@ needs/goals, host-data action generation, expected-utility evaluation, selection
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
 kernel Runner integration, the cognition process and kernel declarations, plus the hungry-pair fixture and headless CLI.
 Unit 2670's acceptance tests and generated report are committed as a parked unit; see Blocked below.
-Unit 2671's V1/V2 studies, source data and reports are present; acceptance remains parked (V1 evidence
-mismatch, V2 failure). No cognitive default or source mechanism was changed.
+Unit 2671's V1/V2 studies, source data and reports are present; V1 passes COG-14 after unit 2701; V2 remains parked (C-V2). No cognitive default or source mechanism was changed.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
 Attention implements TVA weights, need-based pertinence and the identity/default personality hook. Perception
@@ -20,16 +19,13 @@ implements equal-variance SDT, categorical identification, Weber noise, declared
 Units 2670–2672, in order. Read each unit's WORK file for its scope.
 
 ## Blocked
-Unit 2671 is **parked**, not accepted:
+Unit 2701 resolves V1's former evidence mismatch using keeper ruling COG-14.
+V1 passes: power-fit R-squared 0.9999998331585509 >= Table 4 median 0.92 (51 recall datasets,
+Rubin & Wenzel 1996, pp.744-745). Exponent 1.2460205614 is descriptive, compared with
+Wixted & Ebbesen Figure 1 p.411 exponents 0.12/0.14; no exponent tolerance is asserted.
+Unit 2671 remains **parked** for V2 only; its data, result and tests are unchanged.
 
-- **V1 / DESIGN §10 source mismatch:** default single-episode retention gives power exponent
-  1.2460205614 (raw-scale fit, 1 minute–365 days). Rubin & Wenzel (1996), Table 4 pp.744–745,
-  reports logarithmic slopes under Log(m) and R² under Pwr, not a power-exponent range.
-  Tables 3/5 do not supply it either. `test/validation-v1.test.ts` fails explicitly on unavailable
-  bounds; no invented tolerance, skip or expected-failure marker. Supply a comparable sourced
-  range or approve another empirical criterion. DESIGN also says 105 datasets; the paper has
-  210 datasets / 105 functions. The specification was not edited.
-- **V2 / C-Q7:** recovered all 120 TPT problem/aggregate-rate rows from Erev (2010), Tables 1a/1b;
+- **V2 / C-V2 (C-Q7 data access):** recovered all 120 TPT problem/aggregate-rate rows from Erev (2010), Tables 1a/1b;
   executed 200 participants × 100 trials per problem with default theta. Competition problem MSD
   is .03190005779. Gonzalez & Dutt (2011) Table 4's IBL .0005 is a different, trial-level MSD.
   Exact comparison is parked pending raw human trial trajectories or an approved same-metric
@@ -80,6 +76,13 @@ baseline as accepted merely because the report exists. No `src/`, DESIGN, rules,
 or sibling repositories were modified to make the assertions pass.
 
 ## Gotchas
+- Unit 2701 verification: focused V1 **3 passed**; required gate **235 passed / 20 files**
+  (19.00 s), excluding the parked benchmark suite as instructed; typecheck and report
+  Verdict-line checks pass. V2 remains C-V2.
+- Unit 2701: V1 reference JSON records every Table 4 Pwr value, exact pages and median.
+  `node --experimental-strip-types validation/run.ts --v1-only` reproduces V1 without
+  rerunning V2. Historical 2671 missing-range statements below describe the superseded
+  criterion. Source/default/spec files are unchanged.
 - Unit 2673: `createEightFunctionV1(typeOrStack, { etaMin, context?, compound?, otherMind? })`
   implements DESIGN §9 W/DELTA/F1–F13. `etaMin` is required because §9 supplies no value.
   See `personality/eight-function/v1/README.md` for the adapter contracts and composition order.

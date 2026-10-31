@@ -3,7 +3,350 @@
   "doi": "10.1037/0033-295X.103.4.734",
   "url": "https://users.cs.northwestern.edu/~paritosh/papers/KIP/100YearsOfForgetting.pdf",
   "accessed": "2026-10-30",
-  "tablesInspected": "Tables 1-9; especially Table 4 (recall), pp.744-745; Table 3 (recognition), p.743; Table 5 (savings), p.746",
-  "exponentRange": null,
-  "blockedReason": "No published power-exponent range in these tables: Log(m) reports logarithmic slopes and Pwr reports r-squared. Neither is a power exponent. Keeper must supply a comparable published range or approve a different validation criterion."
+  "criterion": "COG-14: raw-scale power-fit R-squared >= median of Table 4 Pwr dataset rows",
+  "powerFit": {
+    "table": 4,
+    "title": "Description of Recall Data Sets With Fits to Selected Functions",
+    "printedPages": [
+      744,
+      745
+    ],
+    "pdfPagesOneBased": [
+      11,
+      12
+    ],
+    "column": "Pwr",
+    "statistic": "R-squared",
+    "aggregation": "Unweighted median of all 51 dataset rows; excludes the M (mean) summary row. Uses published two-decimal values, without an added tolerance.",
+    "medianRSquared": 0.92,
+    "datasetCount": 51,
+    "rows": [
+      {
+        "study": "Bean (1912)",
+        "dataset": "6",
+        "page": 744,
+        "rSquared": 0.92
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1as",
+        "page": 744,
+        "rSquared": 0.94
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1ag",
+        "page": 744,
+        "rSquared": 0.94
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1ap",
+        "page": 744,
+        "rSquared": 0.91
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1ac",
+        "page": 744,
+        "rSquared": 0.93
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1bs",
+        "page": 744,
+        "rSquared": 0.97
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1bg",
+        "page": 744,
+        "rSquared": 0.95
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1bp",
+        "page": 744,
+        "rSquared": 0.95
+      },
+      {
+        "study": "Bregman (1968)",
+        "dataset": "1bc",
+        "page": 744,
+        "rSquared": 0.96
+      },
+      {
+        "study": "Burtt & Dobell (1925)",
+        "dataset": "1",
+        "page": 744,
+        "rSquared": 0.99
+      },
+      {
+        "study": "Conway et al. (1991)",
+        "dataset": "2c",
+        "page": 744,
+        "rSquared": 0.95
+      },
+      {
+        "study": "Fioravanti & Di Cesare (1992)",
+        "dataset": "2s",
+        "page": 744,
+        "rSquared": 0.67
+      },
+      {
+        "study": "Krueger (1929)",
+        "dataset": "2o",
+        "page": 744,
+        "rSquared": 0.98
+      },
+      {
+        "study": "Krueger (1929)",
+        "dataset": "2of",
+        "page": 744,
+        "rSquared": 0.97
+      },
+      {
+        "study": "Krueger (1929)",
+        "dataset": "2t",
+        "page": 744,
+        "rSquared": 0.95
+      },
+      {
+        "study": "Lavach (1971)",
+        "dataset": "11",
+        "page": 744,
+        "rSquared": 0.82
+      },
+      {
+        "study": "Longmore & Knight (1988)",
+        "dataset": "1c",
+        "page": 744,
+        "rSquared": 0.87
+      },
+      {
+        "study": "Longmore & Knight (1988)",
+        "dataset": "1d",
+        "page": 744,
+        "rSquared": 0.86
+      },
+      {
+        "study": "Longmore & Knight (1988)",
+        "dataset": "1k",
+        "page": 744,
+        "rSquared": 0.92
+      },
+      {
+        "study": "Luh (1922)",
+        "dataset": "6 AR",
+        "page": 744,
+        "rSquared": 0.97
+      },
+      {
+        "study": "Luh (1922)",
+        "dataset": "6 SR",
+        "page": 744,
+        "rSquared": 0.94
+      },
+      {
+        "study": "Luh (1922)",
+        "dataset": "11",
+        "page": 744,
+        "rSquared": 0.97
+      },
+      {
+        "study": "Luh (1922)",
+        "dataset": "15o",
+        "page": 744,
+        "rSquared": 0.96
+      },
+      {
+        "study": "Luh (1922)",
+        "dataset": "15s",
+        "page": 744,
+        "rSquared": 0.91
+      },
+      {
+        "study": "Luh (1922)",
+        "dataset": "15t",
+        "page": 744,
+        "rSquared": 0.96
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "1c",
+        "page": 744,
+        "rSquared": 0.89
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "1w",
+        "page": 744,
+        "rSquared": 0.73
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "1wt",
+        "page": 744,
+        "rSquared": 0.93
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "3z",
+        "page": 744,
+        "rSquared": 0.84
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "3th",
+        "page": 744,
+        "rSquared": 0.84
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "3s",
+        "page": 744,
+        "rSquared": 0.97
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "3n",
+        "page": 744,
+        "rSquared": 0.92
+      },
+      {
+        "study": "Murdock (1961)",
+        "dataset": "3t",
+        "page": 744,
+        "rSquared": 0.86
+      },
+      {
+        "study": "Nelson et al. (1980)",
+        "dataset": "1a",
+        "page": 744,
+        "rSquared": 0.93
+      },
+      {
+        "study": "Peterson & Peterson (1959)",
+        "dataset": "3",
+        "page": 744,
+        "rSquared": 0.89
+      },
+      {
+        "study": "Rubin (1989)",
+        "dataset": "1",
+        "page": 744,
+        "rSquared": 0.88
+      },
+      {
+        "study": "Runquist (1983)",
+        "dataset": "1tt",
+        "page": 744,
+        "rSquared": 0.58
+      },
+      {
+        "study": "Runquist (1983)",
+        "dataset": "1ot",
+        "page": 744,
+        "rSquared": 0.56
+      },
+      {
+        "study": "Runquist (1983)",
+        "dataset": "1tu",
+        "page": 744,
+        "rSquared": 0.85
+      },
+      {
+        "study": "Runquist (1983)",
+        "dataset": "1ou",
+        "page": 744,
+        "rSquared": 0.81
+      },
+      {
+        "study": "Schonfield (1969)",
+        "dataset": "1ya",
+        "page": 744,
+        "rSquared": 0.94
+      },
+      {
+        "study": "Schonfield (1969)",
+        "dataset": "1ea",
+        "page": 744,
+        "rSquared": 0.9
+      },
+      {
+        "study": "Staats et al. (1970)",
+        "dataset": "1p",
+        "page": 744,
+        "rSquared": 0.8
+      },
+      {
+        "study": "Staats et al. (1970)",
+        "dataset": "1n",
+        "page": 744,
+        "rSquared": 0.77
+      },
+      {
+        "study": "Turvey & Weeks (1975)",
+        "dataset": "1",
+        "page": 744,
+        "rSquared": 0.85
+      },
+      {
+        "study": "Turvey & Weeks (1975)",
+        "dataset": "3s",
+        "page": 744,
+        "rSquared": 0.75
+      },
+      {
+        "study": "Turvey & Weeks (1975)",
+        "dataset": "3z",
+        "page": 744,
+        "rSquared": 0.82
+      },
+      {
+        "study": "Waugh & Norman (1965)",
+        "dataset": "1o",
+        "page": 745,
+        "rSquared": 0.86
+      },
+      {
+        "study": "Waugh & Norman (1965)",
+        "dataset": "1f",
+        "page": 745,
+        "rSquared": 0.56
+      },
+      {
+        "study": "Wixted & Ebbesen (1991)",
+        "dataset": "1f",
+        "page": 745,
+        "rSquared": 0.99
+      },
+      {
+        "study": "Wixted & Ebbesen (1991)",
+        "dataset": "1o",
+        "page": 745,
+        "rSquared": 0.98
+      }
+    ]
+  },
+  "exponentComparison": {
+    "citation": "Wixted & Ebbesen (1991), On the Form of Forgetting, Psychological Science 2(6), 409-415",
+    "doi": "10.1111/j.1467-9280.1991.tb00175.x",
+    "url": "https://wixtedlab.ucsd.edu/publications/wixted/Wixted_and_Ebbesen_(1991).pdf",
+    "accessed": "2026-10-30",
+    "location": "Figure 1, printed p.411 (PDF page 3); protocol p.410. Table 2 p.411 reports fit quality, not exponents.",
+    "exponents": [
+      {
+        "material": "six-word lists, 5-second study",
+        "positiveDecayExponent": 0.12
+      },
+      {
+        "material": "six-word lists, 1-second study",
+        "positiveDecayExponent": 0.14
+      }
+    ],
+    "asserted": false,
+    "tolerance": null,
+    "comparability": "Human free recall of word lists over 2.5-40 seconds with distractors; closest recall comparison, not a matched material or delay protocol for the generic single episode over 1 minute-365 days. Figure equations are descriptive context only; the asserted reference comes exclusively from Rubin & Wenzel Table 4."
+  }
 }
