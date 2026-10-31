@@ -5,6 +5,7 @@ Units 2661–2669 done: package scaffold, shared subjective types and belief sto
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
 kernel Runner integration, the cognition process and kernel declarations, plus the hungry-pair fixture and headless CLI.
+Unit 2670's acceptance tests and generated report are committed as a parked unit; see Blocked below.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
 Attention implements TVA weights, need-based pertinence and the identity/default personality hook. Perception
@@ -14,9 +15,73 @@ implements equal-variance SDT, categorical identification, Weber noise, declared
 Units 2670–2672, in order. Read each unit's WORK file for its scope.
 
 ## Blocked
-Nothing.
+Unit 2670 is **parked**, not accepted. The approved DESIGN is unchanged. New executable
+acceptance assertions and the generated `bench/hungry-pair/REPORT.md` expose these blockers:
+
+- **CB-3 vs horizon censoring:** seed 1, two epochs, `int.0001` (`ask`, unfinished) and
+  `int.0006` (`accept_promise`, unfinished) produce their one causal receipt but change no
+  need or belief. Seed 19, eight epochs, also has an unchanged unfinished trade receipt.
+  Encoding an episode is not a need/belief change. Decide how censoring fits the literal
+  "every outcome" requirement; the acceptance test does not exempt it.
+- **CB-5a is not guaranteed by the implemented formulas:** 8 of 21 negative prediction
+  errors in diagnostic seeds 1/19 fail the strict same-context EU decrease. For example,
+  seed 1 `pay` has delta -1.09581561454814 but EU rises from -0.7127784299659629 to
+  -0.356420900145876 after learning. The probe holds needs, repertoire, capabilities,
+  context and evaluation time fixed, varying only learned beliefs/episodes. Learning
+  stores a categorical outcome, while delta uses the observed scalar reward; encoding
+  that outcome need not lower the expected utility of its forecast. This needs a design
+  or mechanism decision, not a weaker assertion or an action-specific penalty.
+- **CB-6a exact ID swap vs DESIGN §7 ID-keyed streams:** an actual A/B ID exchange
+  (state/references/owner repertoire targets) changes the first selection draw from
+  0.021017447812482715 to 0.3518915353342891, seed 1. Statistical symmetry passes, but
+  pathwise identity requires an explicit convention for transporting stream identities
+  with renamed agents. No RNG contract was changed here.
+- **CB-7 lambda direction:** over seeds 1–200, lambda 2.25→4.5 leaves fight frequency
+  at .08875 and lowers steal .09750→.09500. The strict per-action fight decrease fails;
+  the combined fight+steal frequency does decrease. Clarify whether the design means
+  each action or their combined share, and whether finite-sample equality is acceptable.
+- **Runtime:** the 500-seed symmetry / 200-pair-per-dimension study still exceeded 60 s
+  with only two epochs and eight local computational workers. Seed counts were never
+  reduced. Two epochs are the minimum used here to observe a post-feedback decision;
+  the late-loss direction is a separate fixed-context probe one day after an early loss.
+  Performance work or an agreed protocol/budget change is needed; a one-day comparison
+  study has not passed. See the generated report and test results below for timings.
+- **CB-6b:** the required independent Haiku semantic source audit remains with its
+  designated check unit. The task prohibited subagents; a limited literal-ID branch
+  guard in this suite is explicitly not independent certification.
+
+The personality layer remains gated by Rex's C-Q4. Do not treat this unit or the
+baseline as accepted merely because the report exists. No `src/`, DESIGN, rules,
+or sibling repositories were modified to make the assertions pass.
 
 ## Gotchas
+- Unit 2670 final verification: focused acceptance suite **25 passed, 5 failed** (109.51 s);
+  final required full gate **205 passed, 5 failed**, 17 files passed / one failed (99.94 s).
+  All 180 pre-existing tests pass. The five failures are CB-3, CB-5a, exact CB-6a ID swap,
+  CB-7's strict fight decrease, and the 60 s runtime assertion (98.94 s in the final gate).
+  Required report/test files and the CB-7 marker exist. `npx tsc --noEmit` and staged
+  whitespace checks pass. The native report generator completed (94.68 s study time).
+  The gate is intentionally reported FAILED, not waived: no expected-failure/skip markers.
+- Unit 2670 adds `test/bench-acceptance.test.ts`, shared executable diagnostics in
+  `bench/hungry-pair/acceptance.ts`, and `report.ts` with minimal host Node declarations.
+  Regenerate with `node --experimental-strip-types bench/hungry-pair/report.ts`.
+  It executes 500 default seeds, 200 paired runs for each of all ten §3 theta dimensions,
+  and 200 learning-frozen controls. All worlds run the existing Kernel/host replay checks.
+  Eight Node worker threads are numerical workers, not AI subagents; results are ordered
+  by seed. No persistent cache or precomputed result substitutes for test execution.
+- CB-7 reports visitor action frequencies, causal success/failure/unfinished rates,
+  final hunger/pain, entropy, switches and an isolated late-memory probe. Means and
+  paired differences have approximate 95% intervals clustered by seed (t=1.972).
+  CB-5b uses a Wilson interval: 31/200 seeds diverge after informative feedback (15.5%);
+  32 pairs already differ by the first informative outcome because eta=0 freezes
+  sensory belief updates as well. This contrast is not an isolated outcome-learning effect.
+  CB-6a pooled Pearson chi-square p=.369723; repeated decisions and interacting A/B
+  violate independent-draw assumptions, so its p-value is labelled descriptive.
+- The report's "What this does not show" follows V5: no independent data, directions
+  are consequences of formulas, and a laboratory scarcity game with a stronger owner
+  (dictator/ultimatum and theft-option designs) is the proposed independent experiment.
+  Reality, Settlement, Economy and pirate-ship validation was not possible under the
+  folder-only scope; Kernel integration is exercised through the linked public package.
 - Unit 2669: `bench/hungry-pair/world.ts` exports `HungryPairWorld`, `runHungryPair`, `FIXTURE` and
   `fightProbability`. `models.ts` contains the host repertoire, belief-only naive models, proposed priors,
   learning adapters and subjective outcome forecasts. `run.ts` runs 144 ten-minute epochs and writes canonical
