@@ -646,6 +646,16 @@ is built or queued; this section fixes the boundaries so no baseline unit forecl
   Society's pressures as inputs.
 - **Relationship learning** (§2.4/§2.6 applied to `R_ij`).
 
+**Style and presentation (Rex, 2026-10-30; ENGINES.md "Style and presentation"):** between the phenotype and
+perceived attractiveness sits how a person chooses or learns to present themselves: clothing from inventory,
+grooming, accessories, a personal aesthetic, behavioural presentation.
+- **Cognition owns the choice**: a decision (§2.5) over the available materials, money, climate, norms, the
+  mind's preferences and what it has learned attracts others. A mind may change its presentation deliberately to
+  change how it is perceived.
+- **Cognition owns the observer's interpretation**: style emits signals that the observer reads through their own
+  beliefs (§2.3), rightly or wrongly. Style is never a guaranteed indicator of personality.
+- **Economy** owns the garments and accessories as goods; **Society** owns their cultural meaning.
+
 **Social influence has two causal pathways, both real (Rex):**
 - on **attraction**: exposure and learning change what someone finds attractive (`P_i` and its weights move);
 - on **behaviour**: attraction is unchanged, but partner choice changes through anticipated consequences (§2.5
@@ -713,3 +723,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | **Approved by Rex** (C-Q1–C-Q8 as proposed, C-Q4 kept, crude-formula plan); §2.2 amended with the universal motivational architecture (`M_i = w_i D_i S_i`, needs as data, Maslow as classification only); marker 2659 released |
 | 2026-10-30 | §13 attraction and partner selection placeholder (Rex, via the controller): boundaries, invariants, open A-Q1–A-Q6; nothing built or registered |
 | 2026-10-30 | §13 refinements (Rex): preference vs weight, two social-influence pathways, the divergence experiment |
+| 2026-10-30 | §13 style and presentation (Rex): presentation choice and observer interpretation are Cognition's; goods Economy's, meaning Society's |
