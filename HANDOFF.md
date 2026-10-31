@@ -1,22 +1,51 @@
 # HANDOFF: cognition
 
 ## State
-Units 2661–2668 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
+Units 2661–2669 done: package scaffold, shared subjective types and belief store, attention, perception, episodic memory,
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
-kernel Runner integration, the cognition process and kernel declarations.
+kernel Runner integration, the cognition process and kernel declarations, plus the hungry-pair fixture and headless CLI.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
 Attention implements TVA weights, need-based pertinence and the identity/default personality hook. Perception
 implements equal-variance SDT, categorical identification, Weber noise, declared false alarms and null evidence.
 
 ## Next
-Units 2669–2672, in order, each adding its exports to `src/index.ts`. Read each unit's WORK file for its scope.
+Units 2670–2672, in order. Read each unit's WORK file for its scope.
 
 ## Blocked
 Nothing.
 
 ## Gotchas
+- Unit 2669: `bench/hungry-pair/world.ts` exports `HungryPairWorld`, `runHungryPair`, `FIXTURE` and
+  `fightProbability`. `models.ts` contains the host repertoire, belief-only naive models, proposed priors,
+  learning adapters and subjective outcome forecasts. `run.ts` runs 144 ten-minute epochs and writes canonical
+  JSON; use `node --experimental-strip-types bench/hungry-pair/run.ts --seed 1 [--param beta=2]` on Node 24.
+  The README labels every stand-in and its future owner. No `src/`, spec or rule files were changed.
+- All three participants are engine minds. Owner responses and later keep/break choices are intentions;
+  requests, three-epoch work, six-epoch travel, perception-based theft detection, Bradley–Terry contests and
+  two-day injuries resolve only in the host. Outcomes cause Kernel intention event ids; payloads also carry
+  the qualified Cognition id. At horizon, unresolved actions are explicitly censored as `unfinished`, and
+  feedback is flushed without a 145th physiology/decision epoch. Censored jobs remain visible in final state.
+- The fixture composes public belief drift and subjective forecast projection before the public reducer.
+  Complete diagnostics live outside the frequently cloned Runner state; completed intention records are
+  removed after feedback, while unresolved records retain their original EU. The append-only command/event
+  logs preserve all decisions/outcomes. This fixture-specific compaction does not change the engine reducer.
+- Every run restores the initial snapshot, replays the Kernel cognition input log and checks decisions,
+  reducer events/state, then replays the host input log (including sensory detection results) and checks
+  world history, outcomes and fixture RNG state. No simulation randomness comes from wall time or Math.random.
+- Proposed conventions requiring future replacement are documented in the fixture README: eating at hunger
+  >= .25, .3 pain, additive injury, sensory/receipt parameters, volatile opportunity beliefs, learning
+  likelihoods and finite-horizon censoring. The eating trigger is not a resolution of pending C-R2. Owner
+  goal normalization preserves one value per stock unit, including recovered food beyond the original six.
+- Unit 2669 verification: 17 focused tests pass; final required gate passes (180 tests across 17 files,
+  required files present, `npx tsc --noEmit`). The native Node CLI also completed 144 epochs with seed 1 and
+  `--param beta=2`, including replay. Food conservation, hunger bounds, one causal outcome per intention,
+  delayed interactions, all resolution branches, sensory theft detection and canonical determinism are tested.
+  These are verification, not validation. Larger CB-5/CB-6/CB-7 studies and sibling-engine integration remain
+  with later units/owners; no sibling repository suites were run under the folder-only task scope.
+- Unit 2669 follows prior scope interpretation: explicitly requested benchmark/test files are exceptions to
+  the broad Don't globs. Only the final required gate ran the entire suite; development runs used the new test.
 - Unit 2668: `policy(o, m, n, p, theta, rng, t)` composes observation update, generation, evaluation and selection.
   `PolicyMemoryState` extends memory with an ephemeral `decision` context (host generation expressions, mind id,
   counters, context features, current intention). This supplies the affordances/bookkeeping required by §2.4
