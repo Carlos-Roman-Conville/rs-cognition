@@ -1,10 +1,10 @@
 # Hungry-pair acceptance report
 
-Status: **parked**: acceptance failures remain; see HANDOFF.md Blocked. Requirements remain failing assertions.
+Status: All bench acceptance checks passed; CB-6b certification belongs to unit 2672's CHECK.md (COG-18).
 
 Verification only; no claim of independent validation.
 
-Git commit: 2380b5c966559c2a7041f6364caa8c2b0bb9ec66
+Git commit: 1e5cd0d6a3b45432457b359246698c2f891331b3
 Source SHA256: 0bfb10cb903e1d60af952d572a7ef4678fd1634e6ea4257e927cd7919ab49cf3
 The git commit is the base revision executed with the working source tree identified by SHA256 above.
 Seed count symmetry: 500
@@ -16,13 +16,13 @@ Verdict CB-2: PASS (0/90 assertions failed)
 Verdict CB-3: PASS (0/62 assertions failed)
 Verdict CB-4: PASS (0/39 assertions failed)
 Verdict CB-5: PASS (0/215 assertions failed)
-Verdict CB-6: FAIL (1/1002 assertions failed)
-Verdict CB-7: FAIL (1/2004 assertions failed)
+Verdict CB-6: PASS (0/1001 assertions failed; covers (a) symmetry/ID swap and (c) sequence diversity only; (b) independent semantic audit is certified separately by unit 2672's CHECK.md)
+Verdict CB-7: PASS (0/242881 assertions failed)
 
 Protocol: seeds 1–500 for CB-6; seeds 1–200 for every CB-7 dimension and CB-5b.
 Diagnostic checks use two fixed seeds: 1 (two epochs) and 19 (eight epochs); exact ID swap uses seed 1. Vitest study smoke checks use 16 fixed seeds, 1–16.
 Each world uses 2 ten-minute epochs instead of 144 to reduce runtime. All runs include Scheduler, EventBus, named streams, initial-snapshot Runner replay and host replay.
-Study wall time: 82.77 s, outside vitest under C-B1. Two epochs cannot test completed six-epoch journeys or one-day behavior.
+Study wall time: 83.02 s, outside vitest under C-B1. Two epochs cannot test completed six-epoch journeys or one-day behavior.
 CB-7's late-loss metric is a separate fixed-context early-loss probe at +1 day, not a completed one-day world run.
 Paired worlds share seed and per-mind stream names. Conditional draws can desynchronize after histories diverge.
 
@@ -33,13 +33,14 @@ Paired worlds share seed and per-mind stream names. Conditional draws can desync
 - CB-3: PASS (0/62 assertions failed).
 - CB-4: PASS (0/39 assertions failed).
 - CB-5a: PASS (0/15 assertions failed).
+- CB-7 lambda fixed context: PASS (0/444 assertions failed).
 - CB-6a exact ID swap: PASS (0/1 assertions failed).
 - P7-3: PASS (0/1 assertions failed).
 - CB-5b: PASS (0/200 assertions failed). 31/200 diverged; pairs=200; Wilson=[0.11139636927689314,0.21160690592342077]
 - CB-6a symmetry: PASS (0/500 assertions failed). seeds=500; chi-square=9.766430187464717; df=9; p=0.3697229536485609; min expected=90.5
 - CB-6c: PASS (0/500 assertions failed). distinct sequences=486
-- CB-6b: FAIL (1/1 assertions failed). independent source audits available=0/1
-- CB-7 lambda: FAIL (1/1 assertions failed). lambda/action:fight+steal: difference=-0.00250 [-0.00743, 0.00243]
+- CB-7 lambda fixed context: PASS (0/240433 assertions failed).
+- CB-7 lambda coverage: PASS (0/1 assertions failed). all 16200 recorded study decisions; 221400 candidates; 19033 strict and 0 equal-probability maxima; max EU residual=2.220446049250313e-16
 - CB-7 beta: PASS (0/1 assertions failed). beta/entropy: difference=-0.02351 [-0.02432, -0.02269]
 - CB-7 kappa: PASS (0/1 assertions failed). kappa/switches: difference=-0.49000 [-0.54087, -0.43913]
 - CB-7 d: PASS (0/1 assertions failed). d/earlyLossEffect: difference=-4.058e-9 [-4.426e-9, -3.690e-9]
@@ -59,12 +60,14 @@ Paired worlds share seed and per-mind stream names. Conditional draws can desync
   32 pairs already differed by the first informative outcome: eta=0 also freezes sensory belief updates, so this contrast does not isolate outcome learning alone.
 - CB-6a: Pearson chi-square=9.76643, df=9, p=0.369723; required p>0.01. Minimum expected cell=90.50.
   Action counts pool repeated epochs within seeds as DESIGN specifies; that chi-square p-value is descriptive because the repeated choices and A/B interaction are dependent. Exact ID-swap is a separate assertion.
-- CB-6b: independent Haiku source audit remains with the designated check unit; no subagents were run. The acceptance suite includes a limited literal-ID branch guard, not a substitute for that audit.
+- CB-6b: independent semantic audit certification belongs to unit 2672's CHECK.md, not this report, and contributes no bench assertion or failure. The limited literal-ID guard does not certify it. No CHECK.md is present in this checkout; this report does not claim the audit has completed.
 - CB-6c: 486 distinct default action sequences across 500 seeds.
 - CB-7: all ten theta dimensions from DESIGN §3 appear below. Shared drive exponents n,m are held fixed; they are not theta dimensions.
 - P7-3: the suite swaps only pertinence; other hooks remain the null model's identical functions.
 
 ## CB-7 paired comparisons
+
+COG-19: population fight, steal and fight + steal frequencies and their intervals are reported, not asserted. Lambda is asserted only in fixed-context evaluation below.
 
 Each entry is mean [95% interval]. Frequencies count visitor A/B decisions (including retained intentions); outcome fractions count their emitted causal receipts, including unfinished censoring. Hunger and pain are final visitor averages. Entropy uses the pre-commitment Luce distribution in nats; switches count action/target changes between epochs.
 The seed is the independent unit: intervals use the 200 seed-level means and t=1.972. Difference intervals use paired seed differences. Intervals are pointwise, approximate, and not corrected for multiple comparisons; zero variance is reported honestly.
@@ -311,10 +314,25 @@ The seed is the independent unit: intervals use the 200 seed-level means and t=1
 
 ### Direction assertions
 
-- lambda / action:fight+steal: FAIL, paired change -0.00250 [-0.00743, 0.00243]; 95% interval strictly below zero required.
 - beta / entropy: PASS, paired change -0.02351 [-0.02432, -0.02269]; strict mean decrease required.
 - kappa / switches: PASS, paired change -0.49000 [-0.54087, -0.43913]; strict mean decrease required.
 - d / earlyLossEffect: PASS, paired change -4.058e-9 [-4.426e-9, -3.690e-9]; strict mean decrease required.
+
+### Lambda fixed-context verification (COG-19)
+
+For every recorded study decision (all minds, baseline, all ten interventions and frozen controls), re-evaluate at lambda 2.25 and 4.5 while holding needs, generated repertoire, beliefs, episodes, time and every other parameter fixed. No decision subset is selected.
+Define positive discounted expected loss L = -discount × Σ P(o) min(0, net). Assert EU(4.5) - EU(2.25) = -2.25 L for every candidate (relative/absolute tolerance 1e-10). Assert a strict decrease in the pre-commitment Luce probability of every maximum-L candidate when beta > 0 and losses differ; otherwise assert equality. Commitment can retain an intention independently of that Luce probability.
+- lambda: PASS; 16200 decisions, 221400 candidate EU checks, 19033 strict probability checks, 0 equality checks; maximum absolute EU residual 2.220446049250313e-16.
+
+### Why fight frequency is invariant
+
+- baseline paired worlds: 71 chosen visitor fight decisions; discounted expected loss L mean 0.02618, range [0.00618, 0.19637]; zero-loss decisions 0.
+  All-alternative availability: 71/71 have a positive-probability alternative; 71/71 have an alternative whose Luce probability moves under lambda. Fight P mean 0.09865 -> 0.09740, delta range [-0.02123, 0.00230].
+  Retained by commitment: 0; non-retained choices whose recorded draw still selects fight at lambda 4.5 in the same context: 70/71.
+- changed paired worlds: 71 chosen visitor fight decisions; discounted expected loss L mean 0.02522, range [0.00618, 0.19637]; zero-loss decisions 0.
+  All-alternative availability: 71/71 have a positive-probability alternative; 71/71 have an alternative whose Luce probability moves under lambda. Fight P mean 0.09883 -> 0.09772, delta range [-0.02123, 0.00230].
+  Retained by commitment: 0; non-retained choices whose recorded draw still selects fight at lambda 4.5 in the same context: 71/71.
+Paired visitor decision positions changing fight/non-fight status: 2; 1 fight choices lost and 1 gained. Their cancellation explains the equal realized frequencies in this finite-seed fixture; it is not a structural invariance of fight's utility or probability. Fight can gain Luce probability even while its EU falls when competing actions lose more EU. Population frequencies and intervals above are descriptive. Lambda reaches fight's evaluator (covered by every-candidate checks). No evaluator fix or fixture tuning was needed.
 
 ## What this does not show
 

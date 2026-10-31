@@ -8,7 +8,8 @@ Units 2661–2669 done: package scaffold, shared subjective types and belief sto
 needs/goals, host-data action generation, expected-utility evaluation, selection/commitment and the null personality slot,
 exported from `src/index.ts`, plus outcome learning and KL attribution, policy composition, the population reducer,
 kernel Runner integration, the cognition process and kernel declarations, plus the hungry-pair fixture and headless CLI.
-Unit 2700 applies the keeper rulings to unit 2670; baseline acceptance remains parked for CB-7 lambda and the separate CB-6b audit, below.
+Unit 2705 applies COG-18/COG-19 (C-B2): bench CB-1 through CB-7 pass. CB-6b's independent
+semantic certification belongs to unit 2672's CHECK.md, absent from this checkout; this unit does not certify it.
 Unit 2671's V1/V2 studies, source data and reports are present; V1 passes COG-14 after unit 2701; V2 remains parked (C-V2). No cognitive default or source mechanism was changed.
 DESIGN.md approved by Rex (2026-10-30). Beliefs have conservative categorical Bayes, scalar Kalman updates,
 detection/miss evidence, Beta-weighted testimony, time drift and posterior-to-prior KL attribution readout.
@@ -16,7 +17,7 @@ Attention implements TVA weights, need-based pertinence and the identity/default
 implements equal-variance SDT, categorical identification, Weber noise, declared false alarms and null evidence.
 
 ## Next
-Units 2670–2672, in order. Read each unit's WORK file for its scope.
+Unit 2672's independent semantic audit; V2 remains separately parked below. Read each unit's WORK file for scope.
 
 ## Blocked
 Unit 2701 resolves V1's former evidence mismatch using keeper ruling COG-14.
@@ -36,20 +37,28 @@ Unit 2671 remains **parked** for V2 only; its data, result and tests are unchang
   documented. Monetary appraisal, zero prior and one-second trials are proposed host conventions,
   not fitted defaults. See `validation/V1-forgetting.md` and `validation/V2-repeated-choice.md`.
 
-Unit 2700 is **parked**, not baseline acceptance. COG-10 through COG-13 and C-B1
-are implemented without changing DESIGN, defaults, physical consequences or the Kernel
-stream contract. `bench/hungry-pair/REPORT.md` records the remaining blockers:
+Unit 2705 resolves unit 2700's benchmark blockers under C-B2 without changing DESIGN,
+src/, defaults, physical consequences, seed counts or the Kernel stream contract.
 
-- **CB-7 / COG-13 lambda:** over unchanged paired seeds 1-200, lambda 2.25 to 4.5
-  changes fight + steal frequency from .18625 to .18375: difference -.00250,
-  approximate 95% interval [-.00743, +.00243]. The interval crosses zero, so the
-  ruled interval-below-zero criterion is **FAIL**. Fight stays .08875; steal falls
-  .09750 to .09500. Per-action frequencies are reported, not asserted. No tuning,
-  extra seeds, favorable subset or weaker threshold was used.
-- **CB-6b independent audit:** zero of one required independent Haiku semantic source
-  audits is available. This task prohibits subagents; the audit remains with its
-  designated check unit. The literal-ID guard passes but does not certify this
-  requirement. Aggregate CB-6 is **FAIL** despite passing all its numerical checks.
+- **CB-7 / COG-19 lambda:** the fixed-context formula passes at all 16,200 recorded
+  study decisions (all minds, baseline, ten interventions, frozen controls): 221,400
+  candidate EU checks and 19,033 maximum-loss probability checks. Maximum absolute
+  EU residual is 2.220446049250313e-16. Diagnostic runs are also checked. Hand-computed
+  tests cover mixed gains/losses, effort, discount, episodes and equality boundaries.
+  The probability is the pre-commitment Luce probability; beta=0 or equal losses imply
+  equality, not strict decrease. Every maximum-loss candidate is checked, including ties.
+- **Fight diagnosis:** 71/800 visitor decisions at both lambdas (.08875); one fight
+  choice is lost and one gained. All 71 baseline chosen fights have positive discounted
+  expected loss (mean .02618, range [.00618, .19637]) and moving-probability alternatives.
+  Mean same-context fight probability moves .09865 -> .09740; 70/71 original draws still
+  choose fight at higher lambda. No retained fight commitments occur. Lambda reaches
+  evaluation correctly; the equal frequency is finite-sample cancellation, not an
+  evaluator bug or a guaranteed fixture invariance. No src/evaluate.ts fix was needed.
+  Fight + steal remains .18625 -> .18375, difference -.00250, 95% interval
+  [-.00743, +.00243]. Fight, steal and combined frequencies are reported, not asserted.
+- **CB-6b independent audit:** certification belongs to unit 2672's CHECK.md. No such
+  artifact is present here. Per COG-18 the report's CB-6 verdict covers only (a) and (c)
+  and counts no assertion for (b). The literal-ID guard is not semantic certification.
 
 Resolved: CB-3 exempts only explicit receipts censored at the actual run horizon;
 unchanged non-horizon receipts still fail. CB-5a passes all 15 negative prediction-error
@@ -62,8 +71,8 @@ Beta, kappa and d directions pass.
 Full studies now run through `npm run bench`: 500 symmetry seeds, 200 paired seeds for
 each of ten dimensions, 200 frozen controls. The command writes REPORT.md and exits
 nonzero for failed criteria. Vitest uses fixed study seeds 1-16 plus diagnostic seeds
-1 (2 epochs) and 19 (8 epochs). Strict lambda and persisted-report assertions remain
-failing, never skipped or marked expected failures. The report gate checks verdicts,
+1 (2 epochs) and 19 (8 epochs). Lambda's fixed-context and persisted-report assertions
+pass without skipped or expected failures. The report gate checks verdicts,
 minimum 500/200/200 counts, git revision and a recursive SHA256 of current src/ paths
 and text; the runner rejects source edits during a study. Its git revision is the
 base commit; its source hash identifies the working source committed with the report.
@@ -72,6 +81,12 @@ one-day population study or independent scene validation is claimed. Personality
 remains gated by C-Q4; V2 remains separately parked above.
 
 ## Gotchas
+- Unit 2705 verification: `npm run bench` passes (83.02 s; unchanged 500/200/200
+  seed counts), REPORT.md has no FAIL verdict, and the required full gate passes:
+  **272 tests / 22 files**, 30.22 s; `npx tsc --noEmit` passes. Three focused
+  hand-computed/boundary tests pass. `git diff --check` passes. No src/, DESIGN,
+  rules, defaults or fixture parameters changed. No servers, subagents, branch
+  changes, merges or remote push. Earlier unit verification failures below are historical.
 - Unit 2700 API: `LearningInputs.evaluation` replaces scalar `expectedUtility`.
   Supply the selected `Evaluation` saved with the intention; `appraise` returns only
   `{ outcome }`. Reward is discount times the saved category utility; prediction error

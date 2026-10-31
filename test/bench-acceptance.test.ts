@@ -10,6 +10,7 @@ import {
 } from "../bench/hungry-pair/report.ts";
 import { reportErrors, sourceHash } from "../bench/hungry-pair/report-integrity.ts";
 import type { Dimension, SeedResult } from "../bench/hungry-pair/report.ts";
+import { mergeLambdaChecks } from "../bench/hungry-pair/lambda.ts";
 
 // C-B1: 16 fixed seeds (1..16) exercise every numerical study path in vitest.
 // Population assertions retain 500/200 samples in npm run bench and the report gate.
@@ -106,12 +107,18 @@ describe("DESIGN §6 hungry-pair acceptance CB-1–CB-7 and P7-3", () => {
       }
     }
   });
-  it("CB-7 higher lambda lowers fight + steal combined with its paired 95% interval below zero", () => {
+  it("CB-7 COG-19 asserts lambda at every recorded fixed context; population fight + steal is reported only", () => {
     for (const row of rows) for (const values of [row.baseline, row.changed!.lambda])
       expect(values["action:fight+steal"]).toBe(values["action:fight"] + values["action:steal"]);
     const delta = rows.map((row) => row.changed!.lambda["action:fight+steal"] - row.baseline["action:fight+steal"]);
     expect(comparison(rows, "lambda", "action:fight+steal").difference).toEqual(interval(delta));
-    expect(interval(delta).high).toBeLessThan(0);
+    const result = mergeLambdaChecks(rows.map((row) => row.lambda));
+    expect(result.decisions).toBe(SMOKE_SEEDS * EPOCHS * 3 * (Object.keys(DIMENSIONS).length + 2));
+    expect(result.candidates).toBeGreaterThan(result.decisions);
+    expect(result.strict).toBeGreaterThan(0);
+    expect(result.check.cases).toBe(result.candidates + result.strict + result.equal);
+    expect(result.check.failures, result.check.examples.join("\n")).toBe(0);
+    requireCheck("CB-7 lambda fixed context");
   });
   it("CB-7 higher beta yields lower choice entropy", () => {
     expect(comparison(rows, "beta", "entropy").difference.mean).toBeLessThan(0);
@@ -141,6 +148,9 @@ describe("DESIGN §6 hungry-pair acceptance CB-1–CB-7 and P7-3", () => {
     expect(report).toContain("no independent data");
     expect(report).toContain("consequences of the formulas");
     expect(report).toContain("laboratory scarcity game with a stronger owner");
+    expect(report.split("\n").find((line) => line.startsWith("Verdict CB-6:"))).toContain("unit 2672's CHECK.md");
+    expect(report).not.toContain("- CB-6b: FAIL");
+    expect(report).toContain("reported, not asserted");
   });
 });
 

@@ -10,6 +10,7 @@ import type {
 import { forecastConfig, makeConfig } from "./models.ts";
 import { FIXTURE, HungryPairWorld, reduceFixtureMinds, runHungryPair } from "./world.ts";
 import type { RunOptions } from "./world.ts";
+import { lambdaChecks } from "./lambda.ts";
 
 export interface Check {
   id: string;
@@ -126,7 +127,7 @@ export function diagnosticRun(options: RunOptions) {
     }
     return result;
   }, undefined, initial);
-  return { run, checks: Object.values(checks), replayMatches: canonical(replay.state) === canonical(world.runner.state) &&
+  return { run, checks: [...Object.values(checks), lambdaChecks(run.decisions, `diagnostic seed ${options.seed}`).check], replayMatches: canonical(replay.state) === canonical(world.runner.state) &&
     canonical(replay.events) === canonical(world.runner.events) && canonical(replayDecisions) === canonical(run.decisions) };
 }
 

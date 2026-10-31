@@ -10,6 +10,8 @@ import { cognitiveParams, VISITOR_REPERTOIRE } from "./models.ts";
 import { FIXTURE, runHungryPair } from "./world.ts";
 import type { Outcome } from "./world.ts";
 import { basicChecks } from "./acceptance.ts";
+import { fightPoints, lambdaChecks, mergeLambdaChecks } from "./lambda.ts";
+import type { FightPoint, LambdaChecks } from "./lambda.ts";
 
 export type Run = ReturnType<typeof runHungryPair>;
 // Proposed experiment settings, not calibrated model defaults. DESIGN §6 permits shorter
@@ -70,6 +72,9 @@ export interface SeedResult {
   baseline: Record<string, number>;
   counts: number[][];
   sequence: string;
+  recordedDecisions: number;
+  lambda: LambdaChecks;
+  fights?: { baseline: FightPoint[]; changed: FightPoint[]; lost: number; gained: number };
   changed?: Record<Dimension, Record<string, number>>;
   learning?: { eligible: boolean; diverged: boolean; beforeOutcomeDiffers: boolean };
 }
@@ -79,11 +84,26 @@ export function runSeed(seed: number, epochs = EPOCHS): SeedResult {
   const result: SeedResult = { seed, baseline: summarize(baseline),
     counts: ["mind.0001", "mind.0002"].map((mind) => ACTIONS.map((action) => baseline.decisions
       .filter((row) => row.mind.endsWith(mind) && row.intention.action === action).length)),
-    sequence: canonical(baseline.decisions.filter((row) => visitor(row.mind)).map((row) => row.intention.action)) };
+    sequence: canonical(baseline.decisions.filter((row) => visitor(row.mind)).map((row) => row.intention.action)),
+    recordedDecisions: baseline.decisions.length,
+    lambda: lambdaChecks(baseline.decisions, `seed ${seed} baseline`) };
   if (seed <= COMPARISON_SEEDS) {
-    result.changed = Object.fromEntries(Object.entries(DIMENSIONS).map(([dimension, value]) =>
-      [dimension, summarize(runHungryPair({ seed, epochs, params: { [dimension]: value } }))])) as SeedResult["changed"];
+    result.changed = Object.fromEntries(Object.entries(DIMENSIONS).map(([dimension, value]) => {
+      const run = runHungryPair({ seed, epochs, params: { [dimension]: value } });
+      result.recordedDecisions += run.decisions.length;
+      result.lambda = mergeLambdaChecks([result.lambda, lambdaChecks(run.decisions, `seed ${seed} ${dimension}`)]);
+      if (dimension === "lambda") {
+        const before = baseline.decisions.filter((row) => visitor(row.mind));
+        const after = run.decisions.filter((row) => visitor(row.mind));
+        result.fights = { baseline: fightPoints(before), changed: fightPoints(after),
+          lost: before.filter((row, i) => row.intention.action === "fight" && after[i].intention.action !== "fight").length,
+          gained: before.filter((row, i) => row.intention.action !== "fight" && after[i].intention.action === "fight").length };
+      }
+      return [dimension, summarize(run)];
+    })) as SeedResult["changed"];
     const frozen = runHungryPair({ seed, epochs, params: { eta: 0 }, encode: false });
+    result.recordedDecisions += frozen.decisions.length;
+    result.lambda = mergeLambdaChecks([result.lambda, lambdaChecks(frozen.decisions, `seed ${seed} frozen`)]);
     const informative = baseline.attributions.map((event) => event.payload as LearningTrace)
       .filter((trace) => trace.updates.some((update) => Number(update.kl) > 0));
     const first = Math.min(...informative.map((trace) => trace.t));
@@ -206,11 +226,14 @@ export function studyVerdicts(rows: readonly SeedResult[], checks: readonly Chec
     `seeds=${rows.length}; chi-square=${sym.statistic}; df=${sym.df}; p=${sym.p}; min expected=${sym.minimumExpected}`, rows.length);
   add("CB-6c", new Set(rows.map((row) => row.sequence)).size > 1,
     `distinct sequences=${new Set(rows.map((row) => row.sequence)).size}`, rows.length);
-  // DESIGN assigns this independent certification to a separate check unit, not this worker.
-  add("CB-6b", false, "independent source audits available=0/1");
+  // COG-18: CB-6b is certified by unit 2672's CHECK.md, outside this verdict.
+  const lambda = mergeLambdaChecks(rows.map((row) => row.lambda));
+  result.push(lambda.check);
+  add("CB-7 lambda coverage", rows.every((row) => row.lambda.decisions > 0 && row.lambda.decisions === row.recordedDecisions) && lambda.candidates > 0 && lambda.strict > 0,
+    `all ${lambda.decisions} recorded study decisions; ${lambda.candidates} candidates; ${lambda.strict} strict and ${lambda.equal} equal-probability maxima; max EU residual=${lambda.maxError}`);
   for (const [dimension, metric] of DIRECTIONS) {
     const values = comparison(rows, dimension, metric), change = values.difference;
-    add(`CB-7 ${dimension}`, (dimension === "lambda" ? change.high < 0 : change.mean < 0) &&
+    add(`CB-7 ${dimension}`, change.mean < 0 &&
       (dimension !== "d" || values.baseline.mean > 0),
       `${dimension}/${metric}: difference=${format(change)}`);
   }
@@ -224,7 +247,7 @@ export function studyVerdicts(rows: readonly SeedResult[], checks: readonly Chec
   }
   return result;
 }
-export const DIRECTIONS = [["lambda", "action:fight+steal"], ["beta", "entropy"],
+export const DIRECTIONS = [["beta", "entropy"],
   ["kappa", "switches"], ["d", "earlyLossEffect"]] as const;
 
 export function renderReport(rows: readonly SeedResult[], seconds: number, checks: readonly Check[] = [],
@@ -234,13 +257,13 @@ export function renderReport(rows: readonly SeedResult[], seconds: number, check
   const verdicts = studyVerdicts(rows, checks);
   const failed = verdicts.some((check) => check.failures > 0);
   const status = failed ? "**parked**: acceptance failures remain; see HANDOFF.md Blocked. Requirements remain failing assertions."
-    : "All acceptance checks passed.";
+    : "All bench acceptance checks passed; CB-6b certification belongs to unit 2672's CHECK.md (COG-18).";
   const summary = Array.from({ length: 7 }, (_, i) => {
     const id = `CB-${i + 1}`;
     const group = verdicts.filter((row) => row.id.startsWith(id));
     const failures = group.reduce((sum, row) => sum + row.failures, 0);
     const cases = group.reduce((sum, row) => sum + row.cases, 0);
-    return `Verdict ${id}: ${group.length > 0 && failures === 0 ? "PASS" : "FAIL"} (${failures}/${cases} assertions failed)`;
+    return `Verdict ${id}: ${group.length > 0 && failures === 0 ? "PASS" : "FAIL"} (${failures}/${cases} assertions failed${id === "CB-6" ? "; covers (a) symmetry/ID swap and (c) sequence diversity only; (b) independent semantic audit is certified separately by unit 2672's CHECK.md" : ""})`;
   });
   const lines = ["# Hungry-pair acceptance report", "", `Status: ${status}`, "", "Verification only; no claim of independent validation.", "",
     `Git commit: ${provenance.commit}`,
@@ -262,11 +285,12 @@ export function renderReport(rows: readonly SeedResult[], seconds: number, check
     `  ${learning.beforeOutcomeDiffers} pairs already differed by the first informative outcome: eta=0 also freezes sensory belief updates, so this contrast does not isolate outcome learning alone.`,
     `- CB-6a: Pearson chi-square=${symmetryResult.statistic.toFixed(5)}, df=${symmetryResult.df}, p=${symmetryResult.p.toFixed(6)}; required p>0.01. Minimum expected cell=${symmetryResult.minimumExpected.toFixed(2)}.`,
     "  Action counts pool repeated epochs within seeds as DESIGN specifies; that chi-square p-value is descriptive because the repeated choices and A/B interaction are dependent. Exact ID-swap is a separate assertion.",
-    "- CB-6b: independent Haiku source audit remains with the designated check unit; no subagents were run. The acceptance suite includes a limited literal-ID branch guard, not a substitute for that audit.",
+    "- CB-6b: independent semantic audit certification belongs to unit 2672's CHECK.md, not this report, and contributes no bench assertion or failure. The limited literal-ID guard does not certify it. No CHECK.md is present in this checkout; this report does not claim the audit has completed.",
     `- CB-6c: ${new Set(rows.map((row) => row.sequence)).size} distinct default action sequences across ${rows.length} seeds.`,
     "- CB-7: all ten theta dimensions from DESIGN §3 appear below. Shared drive exponents n,m are held fixed; they are not theta dimensions.",
     "- P7-3: the suite swaps only pertinence; other hooks remain the null model's identical functions.", "",
     "## CB-7 paired comparisons", "",
+    "COG-19: population fight, steal and fight + steal frequencies and their intervals are reported, not asserted. Lambda is asserted only in fixed-context evaluation below.", "",
     "Each entry is mean [95% interval]. Frequencies count visitor A/B decisions (including retained intentions); outcome fractions count their emitted causal receipts, including unfinished censoring. Hunger and pain are final visitor averages. Entropy uses the pre-commitment Luce distribution in nats; switches count action/target changes between epochs.",
     "The seed is the independent unit: intervals use the 200 seed-level means and t=1.972. Difference intervals use paired seed differences. Intervals are pointwise, approximate, and not corrected for multiple comparisons; zero variance is reported honestly.", ""];
   for (const dimension of Object.keys(DIMENSIONS) as Dimension[]) {
@@ -281,8 +305,25 @@ export function renderReport(rows: readonly SeedResult[], seconds: number, check
   lines.push("### Direction assertions", "");
   for (const [dimension, metric] of directions) {
     const change = comparison(rows, dimension, metric).difference;
-    lines.push(`- ${dimension} / ${metric}: ${(dimension === "lambda" ? change.high < 0 : change.mean < 0) ? "PASS" : "FAIL"}, paired change ${format(change)}; ${dimension === "lambda" ? "95% interval strictly below zero required" : "strict mean decrease required"}.`);
+    lines.push(`- ${dimension} / ${metric}: ${change.mean < 0 ? "PASS" : "FAIL"}, paired change ${format(change)}; strict mean decrease required.`);
   }
+  const lambda = mergeLambdaChecks(rows.map((row) => row.lambda));
+  lines.push("", "### Lambda fixed-context verification (COG-19)", "",
+    "For every recorded study decision (all minds, baseline, all ten interventions and frozen controls), re-evaluate at lambda 2.25 and 4.5 while holding needs, generated repertoire, beliefs, episodes, time and every other parameter fixed. No decision subset is selected.",
+    "Define positive discounted expected loss L = -discount × Σ P(o) min(0, net). Assert EU(4.5) - EU(2.25) = -2.25 L for every candidate (relative/absolute tolerance 1e-10). Assert a strict decrease in the pre-commitment Luce probability of every maximum-L candidate when beta > 0 and losses differ; otherwise assert equality. Commitment can retain an intention independently of that Luce probability.",
+    `- lambda: ${lambda.check.failures ? "FAIL" : "PASS"}; ${lambda.decisions} decisions, ${lambda.candidates} candidate EU checks, ${lambda.strict} strict probability checks, ${lambda.equal} equality checks; maximum absolute EU residual ${lambda.maxError}.`,
+    "", "### Why fight frequency is invariant", "");
+  for (const side of ["baseline", "changed"] as const) {
+    const points = rows.flatMap((row) => row.fights?.[side] ?? []);
+    if (!points.length) continue;
+    const mean = (values: number[]) => values.reduce((sum, n) => sum + n, 0) / values.length;
+    lines.push(`- ${side} paired worlds: ${points.length} chosen visitor fight decisions; discounted expected loss L mean ${number(mean(points.map((p) => p.loss)))}, range [${number(Math.min(...points.map((p) => p.loss)))}, ${number(Math.max(...points.map((p) => p.loss)))}]; zero-loss decisions ${points.filter((p) => p.loss === 0).length}.`,
+      `  All-alternative availability: ${points.filter((p) => p.alternatives > 0).length}/${points.length} have a positive-probability alternative; ${points.filter((p) => p.movingAlternatives > 0).length}/${points.length} have an alternative whose Luce probability moves under lambda. Fight P mean ${number(mean(points.map((p) => p.before)))} -> ${number(mean(points.map((p) => p.after)))}, delta range [${number(Math.min(...points.map((p) => p.after - p.before)))}, ${number(Math.max(...points.map((p) => p.after - p.before)))}].`,
+      `  Retained by commitment: ${points.filter((p) => p.kept).length}; non-retained choices whose recorded draw still selects fight at lambda 4.5 in the same context: ${points.filter((p) => !p.kept && p.sameDrawFight).length}/${points.filter((p) => !p.kept).length}.`);
+  }
+  const lost = rows.reduce((sum, row) => sum + (row.fights?.lost ?? 0), 0);
+  const gained = rows.reduce((sum, row) => sum + (row.fights?.gained ?? 0), 0);
+  lines.push(`Paired visitor decision positions changing fight/non-fight status: ${lost + gained}; ${lost} fight choices lost and ${gained} gained. Their cancellation explains the equal realized frequencies in this finite-seed fixture; it is not a structural invariance of fight's utility or probability. Fight can gain Luce probability even while its EU falls when competing actions lose more EU. Population frequencies and intervals above are descriptive. ${lambda.check.failures ? "Evaluation-level failures remain and require investigation; see the failing checks above." : "Lambda reaches fight's evaluator (covered by every-candidate checks). No evaluator fix or fixture tuning was needed."}`);
   lines.push("");
   lines.push("## What this does not show", "",
     "DESIGN §10 V5: no independent data exist for this scene; none are in hand. The CB-7 directions are consequences of the formulas, not validation of how real hungry people choose. Closed-loop feedback and shared resources can also defeat a monotonic direction inferred from a single fixed-context formula. A failed direction is reported, not repaired by choosing favorable seeds.",
