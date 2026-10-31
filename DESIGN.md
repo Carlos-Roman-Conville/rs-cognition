@@ -624,21 +624,49 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | Rex (a new overlap group, raised by Reality to the registry keeper) |
 | C-G1 | `mind.` scope, 13 rows, 5 reserved rows, 14 quantities + `mind.testimony` | **registered 2026-10-30** (planned); DUP-46's owner still Rex's in batch 5 |
 
-## 13. Attraction and partner selection (Rex, 2026-10-30; placeholder; designed after CB-1…CB-7 pass)
+## 13. Preference learning (Rex, 2026-10-30; placeholder; designed after CB-1…CB-7 pass)
 
-The first integration experiment after the baseline (ENGINES.md, "Attraction and partner selection"). Nothing here
-is built or queued; this section fixes the boundaries so no baseline unit forecloses it.
+A **general preference-learning architecture** (ENGINES.md, "General preference learning"). Attraction is its
+first application (§13b), not a special system, and there is **no catalogue of attraction types**. The same
+mechanisms serve admiration, distrust, occupational preference, taste and aversion. Nothing here is built or
+queued; the section fixes boundaries so no baseline unit forecloses it.
+
+### 13a. The mechanisms (Rex; forms proposed)
+
+1. **Semantic representation**: characteristics, abilities, behaviours, identities and relationships as nodes,
+   linked to observed behaviour and to each other. These are beliefs (§2.3), so they can be wrong.
+2. **Preferences** `P_i,k(t)` toward any characteristic k: positive, negative, neutral or context-dependent,
+   each with its own **weight** (how strongly it influences evaluation). The profile and the weights are separate
+   state, and experience changes the weights.
+3. **Associative learning, generalisation and causal misattribution**: an experience is attributed to a
+   characteristic by the existing attribution read-out (§2.6), and the preference generalises along whatever the
+   mind attributed it to, rightly or wrongly. One bad artist may become a dislike of artists, of expressive
+   people or of admired people, depending on the attribution.
+4. **Social transmission**: family, peers, institutions and culture, arriving as Society inputs.
+5. **Contextual, nonlinear evaluation of combinations**: a characteristic's value may depend on context and on
+   the other characteristics present. The form is open (P-Q2).
+6. **Separate quantities**: attraction, romantic attachment, sexual motivation, partner selection and
+   reproductive intention, each its own quantity or decision.
+
+**Baseline evaluation (proposed):** `A_ij = Σ_k P_i,k · X̂_ij,k` over the other *as perceived* (`X̂`, through §2.1
+perception and the mind's semantic links), never the true record. Mechanism 5 later replaces the sum.
+
+**Predispositions and malleability (Rex):** predispositions initialise as distributions and tendencies, not fixed
+values. Malleability varies per preference. **Sexual orientation is a fixed-malleability class: reward,
+punishment and social pressure never freely rewrite it.** Its learning rate toward those signals is zero by
+construction, not tuned.
+
+**Boundaries (unchanged):** Reality owns phenotype and capability; Society owns norms and transmission; Cognition
+owns beliefs, preferences, associations and evaluation.
+
+### 13b. First application: attraction and partner selection
 
 **Cognition owns (Rex):**
-- **Individual preference structure `P_i`**: three interacting influences, namely biological tendencies
-  (inherited and developmental), social transmission (family, peers, culture, status) and experiential
+- **Individual preference structure `P_i`** (13a, mechanism 2): three interacting influences, namely biological
+  tendencies (inherited and developmental), social transmission (family, peers, culture, status) and experiential
   associations (personal history, learned associations).
-- **Preference and weight are separate (Rex)**: each mind holds a preference profile and, per preference, a
-  weight for how strongly it influences evaluation. Experience changes the weights; the profile and the weights
-  are distinct state.
 - **Interpersonal attraction** `A_ij(t) = F(P_i, X̂_ij, C_i, E_i, R_ij, S_t)`, where `X̂_ij` is the other
-  *as perceived* through §2.1 perception and attention, never the true phenotype. The form of `F` is proposed,
-  not chosen.
+  *as perceived*, never the true phenotype. Baseline form: the 13a sum; `F` beyond it is open.
 - **Attachment.**
 - **Sexual motivation as a need**: a §2.2 need record, with a category and a source, under the same `M_i` as
   every other need.
@@ -688,7 +716,13 @@ coherently, each difference traceable to its cause (inherited, experiential or c
 behaviour pathway), with replayed seeds as in §6.
 
 **Open (to settle when this is designed; nothing registered beyond the registry keeper's rows):**
-- A-Q1: the form of `F` and of `P_i` (feature weights over perceived traits? prototypes? both?), with evidence
+- P-Q1: the semantic representation (graph of nodes and typed links? embeddings?) and how observed behaviour
+  links to it, with evidence levels.
+- P-Q2: the nonlinear combination form (mechanism 5) and its source.
+- P-Q3: the generalisation rule along semantic links (e.g. similarity-based generalisation; Shepard 1987), and
+  how attribution strength sets its breadth.
+- P-Q4: the malleability classes besides sexual orientation, and who sets each (Rex).
+- A-Q1: the form of `P_i` for attraction (feature weights over perceived traits? prototypes? both?), with evidence
   levels.
 - A-Q2: how social transmission of `P_i` works (a family/peer update rule), and how much belongs to Society versus
   Cognition.
@@ -724,3 +758,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-30 | §13 attraction and partner selection placeholder (Rex, via the controller): boundaries, invariants, open A-Q1–A-Q6; nothing built or registered |
 | 2026-10-30 | §13 refinements (Rex): preference vs weight, two social-influence pathways, the divergence experiment |
 | 2026-10-30 | §13 style and presentation (Rex): presentation choice and observer interpretation are Cognition's; goods Economy's, meaning Society's |
+| 2026-10-30 | §13 reframed as general preference learning (Rex): 13a mechanisms 1–6, baseline `A = Σ P·X̂`, malleability classes with sexual orientation fixed; attraction becomes 13b, the first application |
