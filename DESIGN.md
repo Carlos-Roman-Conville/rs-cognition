@@ -541,6 +541,116 @@ pirate (CTRL-7). `realism.nutrition.hunger_fullness`: Cognition reads it, never 
 includes "appetite as felt priority", the boundary is the deficit signal (Reality) vs the drive and priority
 (Cognition) (to agree with Reality, §12).
 
+### 5.1 The communication build (released by the controller 2026-11-01; keeper's forms, proposed)
+
+Rex's rules (ENGINES.md "Communication and information transmission", "Conversational plausibility"; §18) bind
+this section: **a message delivers information, and the receiving mind decides what it means. Transmission is not
+comprehension, comprehension is not acceptance, and acceptance is not compliance.** A message is a Stimulus, so
+perception is reused, never duplicated, and belief change goes through §2.3's update, never a second
+belief-changing system. There is no charisma roll, no resistance score, no keyword unlock and no patience bar.
+Every quantity named below is already registered. This build adds no mechanism row.
+
+**Message (`cognition.communication.message`, format only).** `world.message = { id, sender, receivers, medium, t,
+utterances }`. Each utterance is `{ act, term, about, claim?, declared? }`:
+- `act` is host data, such as assert, ask, request, offer, warn, joke or greet.
+- `term` is the public word.
+- `about` is the entity handle the speaker refers to.
+- `claim` is the speaker's intended `(attribute, value)`.
+- `declared` is an explicit definition the speaker supplies for `term`.
+Transmission is Reality's (`realism.communication.transmission`). The host delivers `world.message_received` to each
+mind as a Stimulus with channel `report` and its detectability. Whether an unintended receiver notices it
+(`cognition.communication.detection`) is ordinary §2.1 detection; no new code exists for it.
+
+**Comprehend (`cognition.communication.comprehend`; writes `mind.testimony` and `mind.meaning_pool`).**
+- **Pool.** A mind's pool for a term `w` holds candidate meanings `m`. Each maps the term to an `(attribute, value
+  rule)`, and each carries usage counts `n_{m,b}` per bubble `b` it was met in.
+- **Selection** in the current bubble `b*` (the host gives the setting's group handle; §18.3's context also counts
+  the speaker and the listeners present as bubbles) is a two-level Dirichlet:
+  `P(m | w, c) = ( n_{m,b*} + α · P_pool(m) ) / ( N_{b*} + α )`, where `P_pool(m) = n_m / N`. This is the same
+  nesting as §20.2 (Teh et al. 2006, hierarchical Dirichlet; level 4).
+  `α` is the pool's concentration, default 1 (keeper, `sourced: false`). It is the interpret hook's new parameter
+  `poolConcentration`; the null model and v1 leave it at 1.
+- **Familiarity.** A mind familiar with `b*` resolves by that bubble's usage. In an unfamiliar bubble
+  (`N_{b*} ≈ 0`) it falls back on its whole pool and forces its home meanings, as Rex's C-Q18 answer describes.
+  This is an outcome, not a rule.
+- **Testimony.** Testimony is the meaning mixture through §2.3's likelihood:
+  `L(v') = Σ_m P(m | w, c) · [ r_j · [v' = v_m] + (1 − r_j)/K ]`, with `r_j` the speaker's credibility. With one
+  certain meaning it reduces exactly to §2.3. A `declared` definition enters the pool as a candidate (see below);
+  it is not an override.
+- **Fit and reconstruction.** The fit of the resolved reading is `F = Σ_m P(m | w, c) · P_prior(claim_m holds)`. If
+  `F < θ_pre` (§2.4's threshold, reused), or the term has no pool, the mind records a **confusion** observation:
+  `{ speaker, term, F }` in its processing trace and as an internal cue for the next decision. Reconstruction adds
+  a candidate with one count in `b*` when the speaker declares a meaning, or when the host shows the group's usage
+  (`{ term, meaning, bubble }` observed). A candidate grows only as later uses reinforce it, so the pool drifts
+  (§18.1).
+- **Reinforcement.** When a resolved reading is confirmed (a later observation or reply agrees, with no repair),
+  `n_{m,b*} += 1`.
+- **Equivocation.** Comprehend keeps the reading of each term per partner per conversation. If the most probable
+  meaning of `w` changes inside one conversation without a `declared` change, the listener records an
+  **equivocation** cue `{ speaker, term, from, to }`. Whether it is noticed is attention (pertinence of the
+  category `equivocation`). The interpret hook parameter `equivocationPertinence` defaults to 0 and takes effect
+  only when a personality version supplies it.
+
+**Bubble exposure (`mind.bubble_exposure`).** It is derived from episodes, never stored twice:
+`w_b ∝ Σ_e P_retrieve(e) · s_e · [e ∈ b] / |C(e)|`, which is §21.4's split, so an episode shared by several groups
+counts once.
+
+**Credibility (`cognition.communication.credibility`; writes `mind.source_credibility`).** Each received claim is
+kept as a pending testimony `{ speaker, about, attribute, value, t }` in `mind.testimony`. A later direct observation
+of the same `(about, attribute)` settles it. If it matches, `r_j` gains `+1` on α; if it does not, `+1` on β, each
+weighted by the observation's confidence (`updateReliability`). This is §2.3's "an exposed lie lowers `r_j`", made
+explicit. Credibility stays in the mind, never on Society's tie (DUP-60).
+
+**Persuasion (`cognition.communication.persuasion`; writes `mind.evaluation_target`, a read-out).** For each
+utterance, the target is the belief its testimony moved. Its effect is the change in each candidate's `EU` from the
+belief before to the belief after. The listener's **real objection** for an action `a` is the belief, among those
+`a`'s naive model reads, whose change toward the speaker's claim would most reduce `max_{a'} EU(a') − EU(a)`. It is
+computed by evaluating one counterfactual belief at a time. The record says whether the message hit it. Nothing reads
+this record to decide anything. A message can be logically strong and miss, and it can backfire when the listener's
+beliefs about the speaker's motive (conversation state) make the claim evidence of a pitch. Both are outcomes.
+
+**Encode (`cognition.communication.encode`; writes `world.message`).** Saying is an intention chosen by
+`cognition.decision.select` among the host's utterance acts. Encode only builds the content:
+- **Claim.** By default the claim is the mind's most probable value (honest). A deceiving act carries its declared
+  claim as host data, as in the hungry pair's deceive.
+- **Word.** The word is `argmax_w P_self(m_target | w, b*)`: the speaker's own pool used as its model of what the
+  listener will understand. This is the believed shared context, so it can be wrong.
+- **Articulability.** Articulability (§16.2) is the encode parameter `articulability ∈ [0, 1]`, default 1. It is the
+  share of the claim's detail that can be said. Fi's lossy encoder is this parameter in a later personality version.
+- **Capacity.** The medium's capacity (`world.medium_properties`) truncates the utterance list in order.
+  `society.comm_network` and `society.comm_restriction` are host-side inputs to who can be addressed and which
+  medium is open; encode does not read them as rules.
+- **Consistency.** The speaker keeps its own term bindings per conversation, so it does not switch meanings
+  silently.
+
+**Conversation state (`cognition.communication.conversation_state`; writes `mind.conversation_state`,
+`mind.believed_shared_context`, `mind.engagement_willingness`).** One record per mind and partner:
+- **Believed shared context.** The `(about, attribute)` pairs this mind believes the partner knows. They are added
+  when the mind said or heard them with that partner, and they are its belief only.
+- **Perceived intention.** A categorical belief over host-declared intention kinds (help, pitch, threat, joke,
+  flirt, fishing, time-wasting). It is updated by §2.3 from each utterance act with a host likelihood table. An
+  utterance about something outside the believed shared context, with no link, raises the confusion cue.
+- **Relationship and history.** Relationship and history are the mind's episodes with that partner (context =
+  partner) and its credibility for them. No new store.
+- **Tolerance (C-Q12, derived, cacheable).** `mind.conversation_tolerance = σ( β · ( max_{a ∈ turns} EU(a) − EU(leave) ) )`,
+  where `σ` is the logistic function. It uses the existing `β` and the EU of the host's conversational acts
+  (answer, ask for clarification, interpret, redirect, challenge, leave). It is the selection probability of
+  staying against leaving, so it is in [0, 1] and is never a need or a draining bar. Its causes stay separate:
+  the social-connection drive (§2.2), available attention (§2.1), beliefs and EU (§2.3, §2.4), and episodes.
+  `mind.engagement_willingness` is the same read-out before the first turn.
+- **Emergence.** Awkwardness, lingering and repair emerge from these beliefs and choices. No script exists.
+
+**Not in this build:** gaze (C-Q14 open), learned language competence (`cognition.communication.language`; needs
+`cognition.skill.practice`), the §16 chemistry stages (Life's REAL-29), and `cognition.relationship.trust`. All
+new interpret and encode parameters default to neutral, so the null model, personality v1 (F1–F13 frozen) and every
+existing result are unchanged. **Tests (level 5):**
+- A stranger told "buried treasure" with no shared context records confusion, and a close friend does not.
+- Two minds with different bubble histories resolve the same word differently.
+- An undeclared mid-conversation switch produces an equivocation cue.
+- A contradicted claim lowers `r_j`.
+- A message can miss the listener's real objection.
+- Tolerance falls when leaving is worth more than staying, and rises for a partner the mind values.
+
 ## 6. The first benchmark: the hungry pair (Rex's scenario; the fixture world proposed)
 
 **(Rex)** Two hungry individuals, food nearby, its owner stronger than either. Actions: ask, trade, work, steal,
@@ -1778,3 +1888,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-11-01 | §20 social categorisation and learned group association recorded (Rex: no prejudice equation; five stages; attention-gated group-belief update as the one belief rule; expectation-driven attention; eight-function routes as hypotheses; merchant experiment; registry audited, no new row); G-Q1 to G-Q4 open (unit 5277). |
 | 2026-11-01 | §2.4 payment acceptance recorded (multi-economy v2, Cognition amendments 1–5; asset value = direct usefulness + one-step expected exchangeability inside r(o); exchange candidates; derived ratioMin by bisection; fence; tests a–d); PA-Q1, PA-Q2 open (unit 5294). |
 | 2026-11-01 | §21 contextual meaning, private judgement and public expression recorded (Rex's brief; keeper's design review: three stages mapped to §18, §2.3, §5; context-indexed self as ordinary beliefs; D and V as trace-only diagnostics with JS and expected-fit distances; overlap split per episode; experiments A–D after the communication build); SR-Q1 to SR-Q4 open (unit 5321). |
+| 2026-11-01 | §5.1 communication build recorded (released by the controller; message format, comprehend with two-level Dirichlet meaning selection, testimony mixture, fit and reconstruction, equivocation cue, bubble exposure split, credibility settlement, persuasion read-out, encode, conversation state, tolerance as the stay-versus-leave selection probability; no new row) (unit 5324). |
