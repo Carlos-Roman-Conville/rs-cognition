@@ -1,0 +1,121 @@
+{
+  "grid": { "width": 6, "height": 6 },
+  "kinds": [
+    {
+      "id": "berry-red",
+      "novel": false,
+      "yield": {
+        "support": [0, 1, 2],
+        "pmf": [0.45, 0.35, 0.2]
+      },
+      "cues": [
+        { "attribute": "colour", "value": "red", "tags": ["physical"] },
+        { "attribute": "size", "value": "small", "tags": ["physical"] }
+      ],
+      "share": 0.3333333333333333,
+      "provenance": "researched",
+      "source": "pmc11327252"
+    },
+    {
+      "id": "root-brown",
+      "novel": false,
+      "yield": {
+        "support": [0, 1, 2],
+        "pmf": [0.1, 0.25, 0.65]
+      },
+      "cues": [
+        { "attribute": "colour", "value": "brown", "tags": ["physical"] },
+        { "attribute": "size", "value": "medium", "tags": ["physical"] }
+      ],
+      "share": 0.3333333333333333,
+      "provenance": "researched",
+      "source": "pmc11327252"
+    },
+    {
+      "id": "fungus-pale",
+      "novel": true,
+      "yield": {
+        "support": [0, 1, 2],
+        "pmf": [0.3333333333333333, 0.3333333333333333, 0.3333333333333333]
+      },
+      "cues": [
+        { "attribute": "colour", "value": "pale", "tags": ["physical"] },
+        { "attribute": "size", "value": "large", "tags": ["physical"] }
+      ],
+      "share": 0.3333333333333333,
+      "provenance": "estimate",
+      "source": ""
+    }
+  ],
+  "cueTags": {
+    "physical": ["colour", "size"],
+    "present": "adjacent-or-on",
+    "targeted": "after-inspect",
+    "remembered": "visited-before"
+  },
+  "actions": [
+    {
+      "id": "move",
+      "durationEpochs": 1,
+      "domain": "space",
+      "preconditions": "The mind believes an adjacent grid cell exists and is passable.",
+      "effect": "Relocate to an adjacent patch; present physical cues update for the new cell and its neighbours."
+    },
+    {
+      "id": "inspect",
+      "durationEpochs": 1,
+      "domain": "space",
+      "preconditions": "The mind believes a patch is reachable (on or adjacent) and not yet inspected this epoch.",
+      "effect": "Add targeted physical cues for the chosen patch; beliefs about yield may update from the observation."
+    },
+    {
+      "id": "gather",
+      "durationEpochs": 1,
+      "domain": "space",
+      "preconditions": "The mind stands on the patch and believes gathering is possible there.",
+      "effect": "Draw food units from the patch true yield, apply hunger relief, mark the patch visited (remembered)."
+    },
+    {
+      "id": "wait",
+      "durationEpochs": 1,
+      "domain": "none",
+      "preconditions": "None.",
+      "effect": "No state change beyond epoch advance."
+    }
+  ],
+  "episodes": {
+    "perKind": 4,
+    "provenance": "estimate"
+  },
+  "sources": [
+    {
+      "key": "pmc11327252",
+      "citation": "Differential patch-leaving behavior during probabilistic foraging in humans and gerbils (PMC11327252)",
+      "level": 2,
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11327252/"
+    },
+    {
+      "key": "constantino-daw-2015",
+      "citation": "Constantino, S. M. & Daw, N. D. (2015). Learning the opportunity cost of time in a patch-foraging task. Cognitive, Affective, & Behavioral Neuroscience 15(4): 837–853.",
+      "level": 2,
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4624618"
+    },
+    {
+      "key": "hutchinson-2008",
+      "citation": "Hutchinson, J. M. C., Wilke, A. & Todd, P. M. (2008). Patch leaving in humans: can a generalist adapt its rules to dispersal of items across patches? Animal Behaviour 75: 1331–1349.",
+      "level": 2,
+      "url": "https://doi.org/10.1016/j.anbehav.2007.09.006"
+    },
+    {
+      "key": "wilke-barrett-2009",
+      "citation": "Wilke, A. & Barrett, H. C. (2009). The hot hand phenomenon as a cognitive adaptation to clumped resources. Evolution and Human Behavior 30: 161–169.",
+      "level": 2,
+      "url": "https://doi.org/10.1016/j.evolhumbehav.2008.11.004"
+    }
+  ],
+  "provenanceSummary": {
+    "researched": 2,
+    "estimate": 1,
+    "null": 0
+  }
+}
