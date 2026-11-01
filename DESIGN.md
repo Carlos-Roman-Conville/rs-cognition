@@ -72,6 +72,11 @@ value, and a fence test checks no module past `perception.ts` imports the `Stimu
 The same applies to other minds: an agent never reads another agent's beliefs or parameters, only what that agent
 did or said (observations and testimony).
 
+**Backend records are never read by a mind (Rex, 2026-10-31; DUP-61, §17).** The History record (`history.*`) and
+the collective knowledge stock (`knowledge.*`) are aggregates computed *from* minds and surviving records; no
+`mind.*` quantity holds a copy of either, and no Cognition module reads them. The fence test gains both prefixes
+when the communication and history rows are built.
+
 ## 2. The five baseline mechanisms
 
 Notation for one mind at decision epoch `t` (period `Δ`, a host parameter, §7). Probabilities are dimensionless
@@ -210,7 +215,9 @@ lower η under-updates (a cognitive parameter, and the personality "interpretati
 **Testimony.** A message "attribute = v" from speaker `j` is evidence weighted by the listener's belief that `j`
 is honest and informed, `r_j` = the mean of a Beta(α_j, β_j) belief about `j`'s reliability:
 `L(v') = r_j · [v' = v] + (1 − r_j)/K`. Lying works exactly to the extent the listener trusts the liar, and an
-exposed lie lowers `r_j` (§2.5): deception has consequences through beliefs, not through a rule.
+exposed lie lowers `r_j` (§2.5): deception has consequences through beliefs, not through a rule. The per-speaker
+reliability is the registry quantity `mind.source_credibility` (planned writer `cognition.communication.credibility`);
+it lives in the mind, never on Society's network tie (DUP-60).
 
 **Change over time.** Between observations, real beliefs widen, `σ² ← σ² + q_k · Δt` (the mind's expectation that
 the attribute drifts), and categorical beliefs relax toward their prior at rate `λ_b = ln 2 / h_b` (level 4).
@@ -252,6 +259,13 @@ beliefs (e.g. P(win a fight) from believed strengths, §6). A "wait" action alwa
 **Generation.** Candidates = repertoire entries whose believed preconditions hold with probability ≥ `θ_pre`
 (proposed 0.5) and whose required capacity the body has (`capacity.functional`, stub). The personality hook may
 reorder or add recombinations of repertoire entries (§9); the null model returns the list unchanged.
+
+**Social affordances (agreed with Society, 2026-10-31; IF-46, proposed to Rex).** Society supplies the social
+candidate actions open to a person (join, leave, found, propose, support or oppose, pay, attend, participate, marry,
+move, seek or avoid contact) with their charter terms, as repertoire entries: host data like any other action.
+Generation filters them by the mind's **believed** preconditions (`θ_pre`), never by Society's truth; Society checks
+whether the action is actually open when the intention is attempted, and a refusal is an outcome the mind learns
+from (§2.5). Charter terms reach the mind as observations or testimony (§1); Society never writes a belief.
 
 **Evaluation (expected value of drive reduction; level 4, loss aversion level 2).**
 
@@ -715,7 +729,7 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
-| C-Q6 | The baseline has **no internalised norms**: lying and stealing cost only what their consequences cost (beliefs, retaliation); norms arrive with Society and personality | Rex |
+| C-Q6 | The baseline has **no internalised norms**: lying and stealing cost only what their consequences cost (beliefs, retaliation); norms arrive with Society and personality | Rex; **answered by the Society seam (2026-10-31, pending the controller's confirmation of Rex's reading):** norms reach minds only as observed acts and messages through `society.affordance` and the network; Society acts on what people do, never on what they think |
 | C-Q7 | V2 needs the Technion Prediction Tournament data (public, Erev et al. 2010); the unit fetches it, or Rex downloads it if the belt cannot | Rex if fetch fails |
 | C-Q8 | One-action lookahead in the baseline; planning later | Rex |
 | C-Q9 | Mistaken identity (beliefs keyed by the mind's own handles) deferred | proposed |
@@ -724,6 +738,9 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-M3 | Allostatic anticipation and long-term goals in `M` | open, after the baseline |
 | C-K1 | Per-mind RNG streams | **agreed 2026-10-30**: `get(mechanismId, entityId)`, kernel unit 2660 (§7) |
 | C-K2 | `cognition` and `host` phases | **agreed 2026-10-30**, kernel unit 2660 (§7) |
+| C-K3 | Knowledge & Technology holder port (KNT-C1): read-only view over `mind.belief` (holds j = categorical belief about the mind's handle for j, attribute `truth`, P(true) ≥ K&T's θ_hold; "heard of" ≠ "holds"; host supplies the handle map) and a future `mind.skill` ([0,1] per technique, from reserved `cognition.skill.practice`); discovery from an outcome is §2.5, invention of new techniques is generation and open (their KNT-6); skill units Rex's (their KNT-7). See knowledge/DESIGN.md §1.2, §1.7, §2, §6 | **agreed 2026-10-31** |
+| C-S1 | DUP-60 transmission (batch 2b, Rex 2026-10-31): Society's network is the one substrate; Cognition keeps what each mind encodes, understands and believes; one entry point into a mind (`mind.testimony` via comprehend); beliefs move only on a received message or a lived observation | **agreed 2026-10-31**; combined tests are integration tests (§11b) for the first integrated experiment |
+| C-S2 | DUP-61 collective knowledge (batch 2b, Rex 2026-10-31): K&T owns the stock as an aggregate; `cognition.belief.update` stays per-mind; no copy of the stock in a mind; no mind reads `knowledge.*` (§1) | **agreed 2026-10-31** |
 | C-R1 | Port names and the hunger boundary | **agreed 2026-10-30** with Reality and the registry; `percept.detectability` renamed `body.detectability` (§8) |
 | C-R2 | Appetite and the eating rule (nutrition.json) move to Cognition as decisions; fullness and hunger stay Reality's signals | **(Rex, 2026-10-30)** DUP-49 approved: four-owner split (§0, §2.2, §8) |
 | C-G1 | `mind.` scope, 13 rows, 5 reserved rows, 14 quantities + `mind.testimony` | **registered 2026-10-30** (planned); DUP-46's owner still Rex's in batch 5 |
@@ -1130,3 +1147,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | Rex's experience pipeline and memory profiles recorded as §16 (perception filter → encoding → chemical response → re-interpretation; memory as stored / retrievable / articulable; function profiles; stack interaction); C-Q16, C-Q17 open (unit 2746). Not built. |
 | 2026-10-31 | §8 gains Reality's `body.transmitter_levels` and `body.hormone_levels` (planned, absent until researched) and the outputs `mind.appraisal` / `mind.recalled_body_state` for §16 (unit 2747). |
 | 2026-10-31 | §17 knowledge of history (Rex: History is the backend record, never read in-world; four fallible routes as planned rows; `mind.inferred_past`); §13b names `shared.presentation.set` as Cognition's composition row (unit 2774). Not built. |
+| 2026-10-31 | Seams recorded: DUP-60/DUP-61 (C-S1, C-S2), the K&T holder port (C-K3), the Society affordance port (§2.4, C-Q6 answered pending the controller), `mind.source_credibility` (§2.3), backend records never read by a mind (§1) (unit 2804). |
