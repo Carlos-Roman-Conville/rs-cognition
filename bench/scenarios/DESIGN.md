@@ -145,3 +145,66 @@ evidence. Asserted only after the run; controls as in §0; the four-mind symmetr
 
 **T-2.** Support and agreement → Agreeableness indicator; `propose`, `share` and `ask` counts → Extraversion
 indicator; `leave` → low Extraversion (estimate of the mapping).
+
+## 6. S5 Developmental cohort (DESIGN §19, `cognition.personality.function_development`)
+
+**Purpose.** Give the developmental model something to measure against: identical hierarchies raised in different
+environments must diverge in `E_f` and `C_f` (DESIGN §19), and nothing may depend on age as such.
+
+**Cohort (fixture).** For each of the 16 stacks, three upbringings: **foraging** (a childhood of S1 worlds),
+**abstract** (S2 and S3 worlds), **social** (S4 worlds); and three life stages at which the test battery S1–S4 is
+run: early (few prior epochs of upbringing), mid, late (estimate: 0, 60 and 240 upbringing epochs; the counts are
+estimates, chosen so `log(1 + E_f)` has visibly turned). An ESTP raised abstract should show more Ni facility than
+one rewarded for immediate action (Rex's example, DESIGN §19), measured as the S2 switch-latency metric.
+
+**Controls.** (a) `function_development` off: all three upbringings identical to the mid-stage default; (b) a
+uniform baseline `B_f` for every function: no hierarchy-driven ordering of `C_f`; (c) age without experience: a mind
+with late-stage epochs spent in `wait` worlds equals the early-stage mind (no age unlock).
+
+**Metrics.** `E_f` and `C_f` trajectories per function; the S1–S4 metrics at each stage; rank order of `C_f`
+against the stack position (dominant first, inferior last, DESIGN §19) and its dependence on upbringing.
+
+**Runs.** 100 seeds × 16 stacks × 3 upbringings × 3 stages (estimate; heavy, so it runs as `npm run bench`
+periodic validation under PLATFORM §11b, never in a gate).
+
+**T-2.** The same derived indicators as S1–S4, now per stage: the McCrae & Costa correlations should hold at every
+stage if the type letters describe the pattern; a stage effect that reorders them is a finding, not a failure.
+
+## 7. S6 Cross-scenario T-2 (external yardstick: McCrae & Costa 1989)
+
+**Derived indicators (one per Big Five domain; estimate of the mapping, to be fixed before any run and never
+adjusted after).**
+
+| Domain | Indicator built from | Scenarios |
+|---|---|---|
+| Openness | novel-patch share; distinct combinations; switch latency (inverted) | S1, S2 |
+| Conscientiousness | return-to-known; completion rate; verification; (switching inverted) | S1, S3 |
+| Extraversion | propose, share, ask counts; (leave inverted) | S4 |
+| Agreeableness | support, deference, testimony acceptance | S3, S4 |
+| Neuroticism | **null**: no indicator in S1–S5 (no threat or variance-under-loss scenario yet); reported as not measured |
+
+**Comparison.** For each stack, four letters (E/I, S/N, T/F, J/P) and four derived scores; the test statistic is the
+rank correlation between each letter and its McCrae & Costa domain (researched: E–I with Extraversion, S–N with
+Openness, T–F with Agreeableness, J–P with Conscientiousness; their reported correlations are the reference
+magnitudes, cited in the fixture when built). A pass is the four correlations having the reported sign with 95 %
+intervals excluding zero over the seeds; a failure is reported as such. Neuroticism is not tested until a scenario
+supplies it (open).
+
+**Not shown by this battery.** No scenario validates a formula against human data (level 5 throughout); S6 is a
+consistency check between behaviour and the type letters, not evidence that the letters are real. The controls of
+§0 are mandatory in every scenario.
+
+## 8. Build order and open items
+
+Build order (units, later, when Rex releases the build): S1 fixture (Codex) → S3 (κ > 0 and the testimony-context
+adapter are the two smallest new hooks) → S2 (compound executor) → S4 (believed-other-mind adapter, four minds) →
+S5 (needs `function_development` built) → S6 report. Composer writes the data tables; every unit's Gate runs the
+scenario's own tests and `tsc` only (PLATFORM §11b); the 200-seed studies run as `npm run bench`.
+
+| Id | Open | Whose |
+|---|---|---|
+| SC-1 | Yield, price and defect distributions for S1–S3 (all **null**): sources to choose | keeper, researched |
+| SC-2 | The κ value for S3 and the warm-up length for S4 (estimates) | keeper; Rex may set |
+| SC-3 | Upbringing epoch counts for S5 (estimates) | keeper; Rex may set |
+| SC-4 | A Neuroticism scenario (threat, variance under loss) | open (Rex) |
+| SC-5 | Whether S4's four minds all carry the stack under test, or mixed stacks (which would break CB-6 symmetry inside a run) | open (Rex) |
