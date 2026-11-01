@@ -83,3 +83,28 @@ gap reduction and whether the message hit that objection. Counterfactuals put fu
 categorical mass on the claimed value; ties follow claim order. Missing alternatives
 cannot be inferred from another mind. This record is returned to the caller only;
 no decision code reads it.
+
+### Encoding and conversations
+
+Host utterance actions still compete through ordinary generation, evaluation and selection.
+Set `MindConfig.communication.encode` to ordered `EncodePlan` records for those actions;
+the selected plan builds `MindResult.message` (`world.message`) for the host to transmit.
+Cognition does not perform transmission. Plans declare receivers, medium capacity (an integer
+utterance count), bubble, conversation handle, ordered terms and atomic claim details.
+An omitted detail value uses the speaker's categorical mode. Articulability defaults to 1;
+the proposed discrete convention keeps `floor(details.length * articulability)` details,
+then capacity truncates that prefix. Conversation handles scope the speaker's term bindings;
+a conflicting binding requires an explicit definition or a different term.
+
+Received observations can carry `context.intentionModel` (a categorical prior and an act
+likelihood table in prior support order) and subjectively understood `context.links`.
+Per-partner `memory.conversations` records shared topics and perceived intentions. Unknown
+unlinked topics raise the existing confusion cue; intention evidence uses the existing
+categorical update. Neither the sender's intended claim nor another mind's state supplies
+the listener's shared topics: they come from its own resolved meanings.
+
+Set `communication.conversations` to partner-specific turn and leave action references.
+The decision trace records tolerance from their already-computed utilities, with initial
+engagement willingness retained after the first turn. Leave is the comparison alternative,
+excluded from the staying acts. These diagnostics do not choose actions or consume randomness.
+Without communication inputs, existing decision traces retain their byte representation.

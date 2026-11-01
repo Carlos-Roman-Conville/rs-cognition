@@ -14,6 +14,7 @@ import { DEFAULT_COGNITIVE_PARAMS } from "./types.ts";
 import type { CognitiveParams, Episode, Intention, MemoryState, NeedState, Observation } from "./types.ts";
 
 export interface MindConfig {
+  readonly communication?: import("./communication/types.ts").CommunicationDecision;
   readonly generation: Omit<GenerationInputs, "body">;
   readonly personality?: PersonalityModel;
   readonly learning: Pick<LearningInputs, "appraise" | "latents" | "encode" | "epsilonAttribution">;
@@ -80,7 +81,7 @@ export type MindCommand =
 export type CognitionEmission =
   | { readonly type: "cognition.intention"; readonly payload: Intention }
   | { readonly type: "cognition.attribution"; readonly payload: LearningTrace; readonly cause: string };
-export interface MindResult { readonly state: MindsState; readonly events: CognitionEmission[]; readonly added?: string; readonly observationTrace?: ObservationTrace }
+export interface MindResult { readonly state: MindsState; readonly events: CognitionEmission[]; readonly added?: string; readonly observationTrace?: ObservationTrace; readonly message?: import("./communication/types.ts").Message }
 
 export function createMindsState(runSeed: number): MindsState {
   if (!Number.isSafeInteger(runSeed)) throw new RangeError("Run seed must be a safe integer");
@@ -147,6 +148,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
   let streamState = state.streams;
   const events: CognitionEmission[] = [];
   let observationTrace: ObservationTrace | undefined;
+  let message: import("./communication/types.ts").Message | undefined;
   switch (command.type) {
     case "observe": {
       const observations = structuredClone(command.observations);
@@ -160,6 +162,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       }
       observationTrace = memory.trace;
       mind = { ...mind, observations, memory: { ...mind.memory,
+        ...(memory.conversations === undefined ? {} : { conversations: memory.conversations }),
         ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),
         ...(memory.termReadings === undefined ? {} : { termReadings: memory.termReadings }),
         ...(memory.equivocationCues === undefined ? {} : { equivocationCues: memory.equivocationCues }),
@@ -190,9 +193,11 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       const context = structuredClone(command.context ?? mind.context);
       const selected = policy([], { ...mind.memory, decision: {
         mind: qualify("cognition", mind.id), counters, context, current: mind.current,
+        ...(config.communication ? { communication: config.communication } : {}),
         generation: { ...config.generation, body: { capacity_functional: capacityFunctional } },
       } }, mind.needs, personality, mind.params,
       random.get("cognition.decision.select", qualify("cognition", mind.id)), command.t);
+      message = selected.message;
       counters = selected.counters;
       streamState = random.state();
       const fresh = selected.intention.id !== mind.current?.id;
@@ -223,7 +228,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
     }
   }
   return { state: { ...state, counters, streams: streamState,
-    minds: state.minds.map((previous, i) => i === index ? mind : previous) }, events, ...(observationTrace ? { observationTrace } : {}) };
+    minds: state.minds.map((previous, i) => i === index ? mind : previous) }, events, ...(message ? { message } : {}), ...(observationTrace ? { observationTrace } : {}) };
 }
 
 export class MindsRunner extends Runner<MindsState, MindCommand, MindResult, CognitionEmission> {

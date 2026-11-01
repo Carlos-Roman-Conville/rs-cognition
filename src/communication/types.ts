@@ -35,6 +35,9 @@ export interface CommunicationContext {
   readonly bubble: string;
   readonly thetaPre: number;
   readonly poolConcentration?: number;
+  readonly intentionModel?: ConversationModel;
+  /** Subjectively understood links supplied with the observation, not world truth. */
+  readonly links?: readonly SharedTopic[];
   /** Observed group usage and confirmed readings, never inferred from intended claims. */
   readonly usage?: readonly { readonly term: string; readonly meaning: MeaningCandidate; readonly bubble: string }[];
   readonly confirmed?: readonly { readonly term: string; readonly meaning: string; readonly bubble: string }[];
@@ -50,4 +53,48 @@ export interface ComprehendedUtterance {
     readonly about: EntityHandle; readonly attribute: string;
     readonly values: readonly string[]; readonly likelihood: readonly number[];
   }[];
+}
+
+/** DESIGN §5.1: host-ordered atomic details; a prefix is retained (proposed granularity). */
+export interface ClaimDetail {
+  readonly act: string;
+  readonly about: string;
+  readonly attribute: string;
+  readonly value?: string;
+  readonly declared?: MeaningCandidate;
+}
+export interface EncodePlan {
+  readonly action: string;
+  readonly target?: string;
+  readonly receivers: readonly string[];
+  readonly medium: string;
+  readonly capacity: number;
+  readonly bubble: string;
+  readonly conversation: string;
+  readonly terms: readonly string[];
+  readonly details: readonly ClaimDetail[];
+  readonly articulability?: number;
+}
+export interface SharedTopic { readonly about: string; readonly attribute: string }
+export interface ConversationRecord {
+  readonly partner: string;
+  readonly sharedContext: readonly SharedTopic[];
+  readonly perceivedIntention?: CategoricalBelief;
+  readonly turns: number;
+  readonly conversationTolerance?: number;
+  readonly engagementWillingness?: number;
+}
+export interface ConversationModel {
+  readonly prior: CategoricalBelief;
+  /** Likelihoods in prior.values order, keyed by host act. */
+  readonly likelihoods: Readonly<Record<string, readonly number[]>>;
+}
+export interface ConversationDecision {
+  readonly partner: string;
+  readonly turns: readonly { readonly action: string; readonly target?: string }[];
+  readonly leave: { readonly action: string; readonly target?: string };
+}
+export interface CommunicationDecision {
+  readonly conversations?: readonly ConversationDecision[];
+  readonly encode?: readonly EncodePlan[];
 }

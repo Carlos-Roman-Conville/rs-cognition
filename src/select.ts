@@ -21,6 +21,8 @@ export function softmax(utilities: readonly number[], beta: number): number[] {
 }
 
 export interface SelectionTrace extends DecisionTrace {
+  readonly conversations?: readonly import("./communication/types.ts").ConversationRecord[];
+  readonly message?: import("./communication/types.ts").Message;
   readonly candidates: readonly (Evaluation & {
     /** Effective selection probability, including a commitment point mass. */
     readonly probability: number;

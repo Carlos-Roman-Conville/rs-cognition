@@ -1,3 +1,6 @@
+import { encode } from "./communication/encode.ts";
+import { conversation, conversationTurn, keepConversation, assessConversation } from "./communication/conversation.ts";
+import type { CommunicationDecision, Message } from "./communication/types.ts";
 import { settleTestimony } from "./communication/credibility.ts";
 import type { CredibilitySettlement } from "./communication/credibility.ts";
 import { comprehend } from "./communication/comprehend.ts";
@@ -18,6 +21,7 @@ import type { Belief, CognitiveParams, Episode, Intention, MemoryState, MindView
  */
 export interface PolicyMemoryState extends MemoryState {
   readonly decision: {
+    readonly communication?: CommunicationDecision;
     readonly mind: string;
     readonly counters: Counters;
     readonly generation: GenerationInputs;
@@ -38,6 +42,7 @@ export interface ObservationUpdate {
   readonly kl: number | "Infinity";
 }
 export interface ObservationTrace {
+  readonly conversations?: MemoryState["conversations"];
   readonly credibility?: readonly CredibilitySettlement[];
   readonly comprehension?: readonly ComprehendedUtterance[];
   readonly updates: readonly ObservationUpdate[];
@@ -57,6 +62,7 @@ export function observeMemory(
 ): ObservationResult {
   simTime(t);
   let beliefs = memory.beliefs;
+  let conversations = memory.conversations;
   let reliability = memory.reliability;
   let testimony = memory.testimony;
   let termReadings = memory.termReadings;
@@ -91,8 +97,17 @@ export function observeMemory(
       termReadings = understood.readings;
       testimony = [...(testimony ?? []), ...understood.utterances.flatMap(u => u.pending ? [u.pending] : [])];
       equivocationCues = understood.utterances.flatMap(u => u.equivocation ? [u.equivocation] : []);
-      comprehension.push(...understood.utterances);
-      confusionCues = understood.utterances.flatMap(item => item.confusion ? [item.confusion] : []);
+      const turns = understood.utterances.map(item => {
+        const partner = observation.message.sender;
+        const topics = (Object.hasOwn(understood.pool, item.utterance.term) ? understood.pool[item.utterance.term] : [])
+          .filter(candidate => (item.distribution?.probabilities[item.distribution.values.indexOf(candidate.id)] ?? 0) > 0)
+          .map(candidate => ({ about: item.utterance.about, attribute: candidate.attribute }));
+        const updated = conversationTurn(conversation(conversations ?? [], partner), item.utterance, topics, observation.context, eta, true);
+        conversations = keepConversation(conversations ?? [], updated.record);
+        return updated.confusion && !item.confusion ? { ...item, confusion: updated.confusion } : item;
+      });
+      comprehension.push(...turns);
+      confusionCues = turns.flatMap(item => item.confusion ? [item.confusion] : []);
       for (const utterance of understood.utterances) for (const testimony of utterance.testimony) {
         const prior = getBelief(beliefs, testimony.about, testimony.attribute)!;
         if (prior.kind === "categorical") apply(testimony.about, testimony.attribute, prior,
@@ -111,12 +126,13 @@ export function observeMemory(
     }
   }
   return { ...memory, beliefs, reliability,
+    ...(conversations === undefined ? {} : { conversations }),
     ...(testimony === undefined ? {} : { testimony }),
     ...(termReadings === undefined ? {} : { termReadings }),
     ...(equivocationCues === undefined ? {} : { equivocationCues }),
     ...(meaningPool === undefined ? {} : { meaningPool }),
     ...(confusionCues === undefined ? {} : { confusionCues }),
-    trace: { updates, ...(credibility.length ? { credibility } : {}), ...(comprehension.length ? { comprehension } : {}) } };
+    trace: { updates, ...(comprehension.length && conversations ? { conversations } : {}), ...(credibility.length ? { credibility } : {}), ...(comprehension.length ? { comprehension } : {}) } };
 }
 
 /** DESIGN §3: π(o,m,n,p,θ,rng,t), pure apart from the explicitly supplied stream.
@@ -126,16 +142,38 @@ export function observeMemory(
 export function policy(
   o: readonly Observation[], m: PolicyMemoryState, n: NeedState, p: PersonalityModel,
   theta: CognitiveParams, rng: RandomStream, t: SimTime,
-): { intention: Intention; trace: SelectionTrace; next: MemoryState; counters: Counters } {
+): { intention: Intention; trace: SelectionTrace; next: MemoryState; counters: Counters; message?: Message } {
   const memory = observeMemory(o, m, n, p, theta, t, { thetaPre: m.decision.generation.thetaPre ?? 0.5 });
   const view: MindView = { beliefs: memory.beliefs, needs: n, params: theta,
     ...(memory.confusionCues === undefined ? {} : { confusionCues: memory.confusionCues }) };
   const generation = generateActions(m.decision.generation, view, p);
   const evaluation = evaluateActions(generation, view, memory.episodes, m.decision.context, t, p);
   const selected = selectAction(evaluation, m.decision, rng);
-  return { intention: selected.intention, trace: selected.trace, counters: selected.counters,
-    next: { ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),
-      ...(memory.termReadings === undefined ? {} : { termReadings: memory.termReadings }),
+  let conversations = memory.conversations;
+  const assessments = (m.decision.communication?.conversations ?? []).map(spec => {
+    const record = assessConversation(conversation(conversations ?? [], spec.partner), evaluation, spec);
+    conversations = keepConversation(conversations ?? [], record);
+    return record;
+  });
+  let termReadings = memory.termReadings;
+  let message: Message | undefined;
+  const plan = m.decision.communication?.encode?.find(plan => plan.action === selected.intention.action && plan.target === selected.intention.target);
+  if (plan && selected.intention.id !== m.decision.current?.id) {
+    const encoded = encode(selected.intention, memory, plan);
+    message = encoded.message;
+    termReadings = encoded.readings;
+    for (const partner of message.receivers) for (const utterance of message.utterances) {
+      const updated = conversationTurn(conversation(conversations ?? [], partner), utterance,
+        [{ about: utterance.about, attribute: utterance.claim!.attribute }], {}, theta.eta, false);
+      conversations = keepConversation(conversations ?? [], updated.record);
+    }
+  }
+  return { intention: selected.intention, trace: { ...selected.trace,
+      ...(assessments.length ? { conversations: assessments } : {}), ...(message ? { message } : {}) }, counters: selected.counters,
+    ...(message ? { message } : {}),
+    next: { ...(conversations === undefined ? {} : { conversations }),
+      ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),
+      ...(termReadings === undefined ? {} : { termReadings }),
       ...(memory.equivocationCues === undefined ? {} : { equivocationCues: memory.equivocationCues }),
       ...(memory.meaningPool === undefined ? {} : { meaningPool: memory.meaningPool }),
       ...(memory.confusionCues === undefined ? {} : { confusionCues: memory.confusionCues }), beliefs: memory.beliefs, episodes: memory.episodes, reliability: memory.reliability } };

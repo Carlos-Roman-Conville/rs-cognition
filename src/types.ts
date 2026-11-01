@@ -1,4 +1,4 @@
-import type { CommunicationContext, EquivocationCue, TermReading, PendingTestimony, ConfusionCue, MeaningPool, Message } from "./communication/types.ts";
+import type { ConversationRecord, CommunicationContext, EquivocationCue, TermReading, PendingTestimony, ConfusionCue, MeaningPool, Message } from "./communication/types.ts";
 import type { SimTime } from "@rex/kernel";
 
 /** DESIGN §1: a mind's handle, not access to the entity's objective state. */
@@ -182,6 +182,7 @@ export interface Episode {
 }
 
 export interface MemoryState {
+  readonly conversations?: readonly ConversationRecord[];
   readonly termReadings?: readonly TermReading[];
   readonly equivocationCues?: readonly EquivocationCue[];
   readonly testimony?: readonly PendingTestimony[];

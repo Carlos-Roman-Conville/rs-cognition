@@ -21,3 +21,6 @@ export * from "./communication/exposure.ts";
 
 export * from "./communication/credibility.ts";
 export * from "./communication/persuasion.ts";
+
+export * from "./communication/encode.ts";
+export * from "./communication/conversation.ts";
