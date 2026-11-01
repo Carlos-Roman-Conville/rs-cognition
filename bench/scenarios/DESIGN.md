@@ -36,3 +36,56 @@ Common rules: identical needs, knowledge, capability and opportunities across st
 personality version and the stack vary; A/B symmetry and the id-swap test of CB-6 hold in every scenario; seeds
 replay through the Kernel; `nullPersonality` is the control in every run; 12 epochs per world unless the scenario
 says otherwise (estimate, inherited from the T-3 run; DESIGN §6's 144 is the demonstration length).
+
+## 2. S1 Forage field (domain `space`)
+
+**World (host data, fixture).** A 6 × 6 grid of patches (estimate). Each patch has a true yield in {0, 1, 2} food
+units (fixture) and a visible cue: `physical` tags (colour, size: `present` when the mind stands on or beside the
+patch, `targeted` when it inspects one) and a `remembered` tag for patches visited before. Two thirds of the patches
+are of a familiar kind the mind has episodes for at start; one third are novel kinds with no episodes (estimate).
+Yields of familiar kinds are stable; novel kinds have higher variance (fixture; the exact distributions are **null**
+until a foraging source is chosen; candidate: patch-choice data in optimal-foraging reviews, researched later).
+Hunger is the one need (DESIGN §6 signal); no other minds.
+
+**Actions.** `move(adjacent)`, `inspect(patch)` (adds a `targeted` physical cue), `gather(patch)` (one epoch, lowers
+hunger by the yield), `wait`. Preconditions over beliefs; outcomes by the host.
+
+**Levers.** `physical` / `present` / `targeted` cue tags feed F6 (Se: pertinence and interpretation of present,
+targeted perception); `space` is the domain of Se/Si, so F4 (learning from a loss in the extraverted function's
+domain, pertinence) and F5 (the introverted form, Si, outpacing on `space`) have data; F2 reweights attitude
+attention. Nothing is added for the other hooks.
+
+**Metrics (per mind, per seed).** Share of `inspect` before `gather` (targeted perception); share of novel-patch
+visits; return rate to the best known patch; food gathered. **T-1 expectation (formula-implied, not asserted
+until the run):** Se-heavy stacks inspect more and act on present cues; Si-heavy stacks return to remembered
+patches; Ne/Ni-heavy stacks visit novel patches more; the controls show none of these orderings.
+
+**Runs.** 200 seeds × 16 stacks + null, common random numbers (estimate, matching the T-3 protocol); 12 epochs.
+
+**T-2.** Novel-patch share → Openness indicator; return-to-known and gather-after-inspect → Conscientiousness
+indicator (estimate of the mapping; the McCrae & Costa comparison is only at S6).
+
+## 3. S2 Shifting market (domain `adaptation`)
+
+**World (host data, fixture).** One mind trades three goods at a stall whose prices follow a regime: regime A for
+the first third of the run, regime B after (a change in which good is profitable; fixture), with a second change in
+half the seeds (estimate). Prices are observed with Weber noise (DESIGN §2.1). A `combine` action exists: two goods
+make a third of higher value only in regime B (fixture), so recombination pays after the change.
+
+**Actions.** `buy(good)`, `sell(good)`, `combine(good1, good2)` (a compound of two primitives, run through the
+compound executor), `wait`. Need: a wealth-as-security appraisal need (DESIGN §2.2 appraisal source) plus hunger.
+
+**Levers.** `adaptation` is Ne/Ni's domain (F4, F5); the compound executor gives F9 (Ne: generate recombinations)
+something to run; the regime change makes F8's memory half-life matter (how long old prices weigh); F1's `α0` on
+new price evidence. Other hooks untouched.
+
+**Metrics.** Epochs from a regime change to the first profitable trade under the new regime (switch latency);
+number of distinct `combine` pairs tried; profit; share of trades repeating the previous regime's best. **T-1
+expectation:** Ne-heavy stacks try more combinations and switch sooner; Si-heavy stacks repeat the old regime
+longer; Ni-heavy stacks switch after fewer observations once a pattern repeats (formula-implied; asserted only
+after the run). Controls as in §0.
+
+**Runs.** 200 seeds × 16 stacks + null, common random numbers; 18 epochs (estimate: six per regime third).
+
+**T-2.** Distinct combinations and switch latency → Openness indicator; repetition of the old best → low Openness
+/ high Conscientiousness indicator (estimate of the mapping).
