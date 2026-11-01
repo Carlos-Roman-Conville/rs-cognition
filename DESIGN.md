@@ -1602,6 +1602,137 @@ application named, it is a note on `cognition.preference.associative_learning`, 
 - **G-Q4:** Rex to confirm §20.5's rows as his hypotheses, especially the Ne, Ni, Fe and Te rows, which came with this
   note.
 
+
+## 21. Contextual meaning, private judgement and public expression (Rex, 2026-11-01; design review, recorded, not built)
+
+Rex's brief (2026-11-01, reviewed with ChatGPT; his words count as his). **Observation A:** a statement with a clear
+operational definition may be read for its social implications instead (calling Ti "logical" heard as ranking
+people). **Observation B:** an evaluator may privately judge that someone meets a criterion and still say something
+weaker, because of what the stronger words would do socially. **Hypothesis:** contextual social meaning can shape
+interpretation and expression, and can interfere with applying an explicit definition. **Principle (Rex):** never
+create a behavioural trait when the behaviour can emerge from more basic operations. There is no
+`selfLabelResistance`, no Fe rejection threshold and no rule that a type qualifies. The same machinery serves
+compliments, insults, moral judgements, social roles, factual claims and descriptions of others, not only labels
+about oneself.
+
+### 21.1 Three stages, mapped to what exists (keeper's review)
+
+| Stage | What it does | Home in this design | State |
+|---|---|---|---|
+| A. Semantic interpretation | what does this expression mean here? | §18 meaning pools: `cognition.communication.comprehend` resolves a word against `mind.meaning_pool` with context (speaker, relationship, situation, time and the listeners present) | designed (§18), quantities registered (planned), **not built** |
+| B. Private evaluation | does that meaning hold, of me or of them? | §2.3 belief update on the resolved claim; the self-model is the mind's beliefs about its own handle plus §13a identity nodes (C-Q23, open) | belief update built; self-model **open** (C-Q23) |
+| C. Response selection | what do I say, if anything? | §5 "the next utterance is a choice", through `cognition.decision.select`; content chosen by `cognition.communication.encode` | selection built; communication **not built** |
+
+**Private and public are already two records.** A mind's belief (stage B) and the content of its utterance (stage
+C) are separate. §2.3 already lets a speaker say what it does not believe, and an exposed lie costs it through the
+listener's `r_j`. Nothing new is needed to let expression diverge from judgement. The trace must log both side by
+side (§21.5).
+
+### 21.2 Stage A: meaning as a distribution (Rex's analogy, proposed)
+
+`P_i(m | L, c)` is mind `i`'s distribution over the candidate meanings `m` of expression `L` in context `c`: exactly
+§18's pool with context-selected likelihoods. Several meanings may stay live until context shifts them ("loyal" as
+obedience, affection, reliability or solidarity). This is a probabilistic reading of Rex's analogy, not a claim about
+quantum cognition. The resolved interpretation is the distribution itself, `L_i(c) = P_i(· | L, c)`, built from the
+pool `M_i`, the episodes in context `c`, the function allocation and the current beliefs. Those are the existing
+inputs, not new state. An explicit operational definition is one more candidate meaning, introduced by testimony.
+Whether it wins in a context is the same selection as any other meaning, so "definition versus social meaning" is
+a competition inside the pool, never a mode switch.
+
+### 21.3 Stage B: a context-indexed self, learned (proposed)
+
+`S_i(c)` is the mind's belief about its own attributes in context `c`: ordinary §2.3 beliefs `(self, attribute@c)`,
+the same context-indexing as `accepted@market` (§2.4) and the same two-level structure as §20.2. Each context's
+self-belief is nested under a whole-person self-belief and updated from:
+- the mind's own observed behaviour in that context (self-perception; Bem 1972, level 4);
+- others' descriptions of it, as testimony weighted by `cognition.communication.credibility` (reflected appraisal;
+  Cooley 1902, level 5).
+**Variation across contexts is an outcome.** It is large only when behaviour and feedback really differ between
+contexts and the update keeps them apart, and small when they agree. No type sets it (Rex). The functions act only
+through the existing hooks: which cues and listeners get attention (pertinence), how readily contexts pool or
+separate (interpret: `η` and the testimony fit of §18.4), and how meanings are selected or rebuilt (§18.2's
+profiles). Two Fe-weighted minds with different histories end up with different variation. A Ti-weighted mind can
+hold several context selves and organise them under one definition.
+
+### 21.4 The two diagnostics (Rex's equations; keeper's choice of distance)
+
+Both are **read-outs written to the trace, never read by any rule** (like attribution, §2.5).
+
+```
+D_i(L) = Σ_c w_c · d_c          d_c = 1 − Σ_m P_i(m | L, c) · P_i(self has m | c)
+V_i(L) = ½ Σ_{c,k} w_c w_k · JS( P_i(· | L, c) , P_i(· | L, k) )
+```
+
+- **Distance (keeper).** Both sides are distributions, so no scalar distance is assumed. `d_c` is the mind's own
+  probability that the label, as it reads it in context `c`, does not hold of it there. It uses one meaning space:
+  each candidate meaning is an attribute node of §13a mechanism 1, so the self-belief can be asked about it.
+  Between interpretations, `JS` is the Jensen–Shannon divergence (Lin 1991; base 2, bounded in [0, 1]).
+- **Context weights from exposure, with overlap counted once.** Each retrievable episode `e` carries its weight
+  `P_retrieve(e) · s_e` (§2.3, §16's salience). It is split equally over the `|C(e)|` contexts it belongs to:
+  `w_c ∝ Σ_e P_retrieve(e) · s_e · [e ∈ c] / |C(e)|`, then normalised. A shared family-and-church dinner counts once
+  in total, not once per group. Closeness enters through the episodes with close others (`cognition.relationship.trust`).
+  The split rule is the keeper's (SR-Q3). `mind.bubble_exposure` (§18.3) is the record these sums are kept in;
+  there is no second exposure store.
+- **The four cases** of the brief (high or low `D` against high or low `V`) are therefore separable in a trace.
+  Neither number drives behaviour.
+
+### 21.5 Stage C: what is said (existing machinery)
+
+The host's repertoire offers utterance acts (accept, reject, qualify, reinterpret, ignore), each with a content that
+encode builds from the mind's private belief. Selection is the ordinary EU over each act's predicted outcomes. These
+include the listener's predicted reaction (a naive model over the mind's beliefs about that audience: trust, status,
+expected offence), the relationship episodes at stake, and the believed cost if a gap between the said and the
+believed is exposed (§2.3). **No distance threshold maps to a response.** Partial fit makes "qualify" more likely only
+when its predicted outcomes are better. The same private belief can therefore be stated plainly before a friend,
+qualified before a rival and denied before an authority, and the trace says which stage made the difference.
+
+### 21.6 Function Activation Ledger (planned extension)
+
+Per statement and mind, the trace records stage A's `P_i(· | L, c)` and `V_i`; stage B's self-belief prior and
+posterior, the KL and `D_i`; and stage C's candidate utterances with the EU split into accuracy-related and
+audience-related outcome terms, the chosen act and the **gap** between the believed claim and the expressed claim.
+The ledger attributes changes per stage and per function group as in S1 (overlapping groups; not additive).
+Everything goes in the existing processing trace, with no second log.
+
+### 21.7 Experiments (Rex; planned, after the communication subsystem exists and after S1–S6)
+
+- **A, audiences.** The same evidence and statement are given to every configuration. A private evaluation comes
+  first, then a public answer before a supportive friend, a competitive colleague and an authority. Measure which
+  stage moved: interpretation (`V`, `P(m)`), evaluation (`D`, the self or other belief) or expression (the gap).
+- **B, histories.** Identical function allocation with different exposure histories. Does contextual self-variation
+  differ? This tests that it is learned, not typed.
+- **C, definition against social meaning.** A term with an explicit definition is placed among bubbles where it
+  carries other meanings. Record whether the definition is kept, the meaning shifts, several stay live, or only the
+  expression changes.
+- **D, overlap.** Independent contexts are compared with contexts that share members. With the split rule, shared
+  episodes must not raise their contexts' combined weight.
+All are measured and never asserted. They use the S1 classification rule and the T-1 controls. F1–F13 stay frozen.
+
+### 21.8 Exists, proposed, missing; registry
+
+- **Exists (built):** belief update with conservatism, testimony and credibility weighting (§2.3); episodes and
+  retrieval (§2.3); EU and selection (§2.4); the trace and the ledger (`bench/diagnostics/`).
+- **Designed, not built:** meaning pools and bubble exposure (§18; `mind.meaning_pool` and `mind.bubble_exposure`
+  registered, planned); comprehend and encode (§5); conversation state (§5); the §18.4 coherence primitive;
+  `cognition.relationship.trust`.
+- **Missing, and decided here as proposals:** context-indexed self-beliefs (§21.3, ordinary beliefs, no new store);
+  the diagnostics `D` and `V` (trace fields only); the overlap split for `w_c`.
+- **Registry:** no new mechanism and no new quantity. If the registry wants the diagnostics named, they are
+  documented outputs of `cognition.communication.comprehend` (V) and `cognition.belief.update` (D), not rows that
+  write state.
+- **Order:** the experiments need §5's comprehend and encode and §18's pools built first. That is the real gap, and
+  it is a build the controller releases, not part of the current scenarios.
+
+### 21.9 Open
+
+- **SR-Q1 = C-Q23:** which structure is the self-model. This design assumes the keeper's proposal: beliefs for
+  traits, identity nodes for memberships.
+- **SR-Q2:** the shared meaning space, meaning how candidate meanings map to §13a attribute nodes; this is tied to P-Q1.
+- **SR-Q3:** the overlap split (equal shares per episode) and the form of the context-self pooling (§21.3); both are
+  the keeper's proposals.
+- **SR-Q4:** which audience features the utterance's naive model reads. The host offers them as beliefs; the list is
+  open.
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -1646,3 +1777,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-11-01 | §18.4 Ti/Fi shared compatibility primitive recorded (Rex: one coherence operation, two criteria; Fe by contextual integration; general mechanism of §13; outfit test); C-Q22 answered by Rex (two levels, identityFit term, self-model never a separate store), C-Q23 open; §18.5 Si reference matching recorded (Rex: C_Si = match(a, R_i), R_i updated through the auxiliary's interpretation; ISTJ/ISFJ contrast; knight test), C-Q24 open (unit 2921). Not built. |
 | 2026-11-01 | §20 social categorisation and learned group association recorded (Rex: no prejudice equation; five stages; attention-gated group-belief update as the one belief rule; expectation-driven attention; eight-function routes as hypotheses; merchant experiment; registry audited, no new row); G-Q1 to G-Q4 open (unit 5277). |
 | 2026-11-01 | §2.4 payment acceptance recorded (multi-economy v2, Cognition amendments 1–5; asset value = direct usefulness + one-step expected exchangeability inside r(o); exchange candidates; derived ratioMin by bisection; fence; tests a–d); PA-Q1, PA-Q2 open (unit 5294). |
+| 2026-11-01 | §21 contextual meaning, private judgement and public expression recorded (Rex's brief; keeper's design review: three stages mapped to §18, §2.3, §5; context-indexed self as ordinary beliefs; D and V as trace-only diagnostics with JS and expected-fit distances; overlap split per episode; experiments A–D after the communication build); SR-Q1 to SR-Q4 open (unit 5321). |
