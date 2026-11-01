@@ -17,7 +17,7 @@ function yes(key: BeliefKey | undefined, view: MindView): number {
   return index < 0 ? 0 : belief.probabilities[index];
 }
 
-/** DESIGN ง2.4: missing real rate beliefs are ignorance, not a seeded rate. */
+/** DESIGN ยง2.4: missing real rate beliefs are ignorance, not a seeded rate. */
 export function believedRate(id: string, other: string, view: MindView, assets: readonly AssetDefinition[]): number | undefined {
   const key = asset(id, assets).rates?.[other];
   if (!key) return undefined;
@@ -28,7 +28,7 @@ export function believedRate(id: string, other: string, view: MindView, assets: 
   return belief.mean;
 }
 
-/** DESIGN ง2.4, ง2.2 (Keramati & Gutkin 2014): one unit's direct drive reduction. */
+/** DESIGN ยง2.4, ยง2.2 (Keramati & Gutkin 2014): one unit's direct drive reduction. */
 export function directUsefulness(id: string, view: MindView, assets: readonly AssetDefinition[]): number {
   const definition = asset(id, assets);
   for (const reduction of Object.values(definition.usefulness)) {
@@ -46,7 +46,7 @@ function issuerTrust(definition: AssetDefinition): number {
   return 1;
 }
 
-/** DESIGN ง2.4: keeper's proposed one-exchange-deep saleability model (Menger 1892). */
+/** DESIGN ยง2.4: keeper's proposed one-exchange-deep saleability model (Menger 1892). */
 export function exchangeability(id: string, view: MindView, assets: readonly AssetDefinition[]): number {
   const definition = asset(id, assets);
   const accepted = yes(definition.accepted, view);
@@ -60,7 +60,7 @@ export function exchangeability(id: string, view: MindView, assets: readonly Ass
   return view.params.gamma * genuine * issuerTrust(definition) * best;
 }
 
-/** DESIGN ง2.4: V(m) = D(m) + E(m), proposed. */
+/** DESIGN ยง2.4: V(m) = D(m) + E(m), proposed. */
 export function assetValue(id: string, view: MindView, assets: readonly AssetDefinition[]): number {
   return directUsefulness(id, view, assets) + exchangeability(id, view, assets);
 }

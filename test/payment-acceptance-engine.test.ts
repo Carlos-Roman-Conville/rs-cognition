@@ -37,7 +37,7 @@ function run(repertoire = [offer()], ctx = context(), definitions = assets) {
     body: { capacity_functional: 1 } }, ctx), ctx, [], {}, 1000);
 }
 
-describe("DESIGN ง2.4 payment acceptance in the existing evaluator", () => {
+describe("DESIGN ยง2.4 payment acceptance in the existing evaluator", () => {
   it("matches hand-computed two-asset D, E and V and floors deficits at zero", () => {
     const ctx = context();
     expect(directUsefulness("food", ctx, assets)).toBe(1);

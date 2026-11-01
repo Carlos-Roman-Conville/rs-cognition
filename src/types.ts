@@ -106,7 +106,7 @@ export const DEFAULT_COGNITIVE_PARAMS: Readonly<CognitiveParams> = Object.freeze
   m: 3, // DESIGN §2.2: Keramati & Gutkin 2014 starting value; m >= 1
 });
 
-/** DESIGN �2.4: addresses subjective beliefs, never objective asset state. */
+/** DESIGN §2.4: addresses subjective beliefs, never objective asset state. */
 export interface BeliefKey {
   readonly about: EntityHandle;
   readonly attribute: string;

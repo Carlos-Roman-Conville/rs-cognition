@@ -19,7 +19,7 @@ export interface OutcomeUtility {
   readonly value: number;
 }
 
-/** DESIGN ง2.4 PA-Q2: keeper's proposed search bound; sourced: false. */
+/** DESIGN ยง2.4 PA-Q2: keeper's proposed search bound; sourced: false. */
 export const R_MAX = 1e6;
 
 export interface Evaluation {
@@ -85,7 +85,7 @@ function outcomeUtility(effect: PredictedOutcome, probability: number, candidate
   let rawReward = reward + goals - candidate.cost;
   if (candidate.exchange && effect.success === true) {
     const { give, want } = candidate.exchange;
-    // DESIGN ง2.4 payment acceptance: signed holdings value enters before v(x).
+    // DESIGN ยง2.4 payment acceptance: signed holdings value enters before v(x).
     rawReward += -give.units * assetValue(give.asset, ctx, assets) +
       (wantUnits ?? want.units!) * assetValue(want.asset, ctx, assets);
   }
@@ -138,7 +138,7 @@ export function evaluateActions(
        (other.exchange.give.asset === exchange.want.asset && other.exchange.want.asset === exchange.give.asset));
     const alternative = rated.reduce((best, other) => other === evaluation || samePair(other.candidate)
       ? best : Math.max(best, other.expectedUtility), -Infinity);
-    // DESIGN ง2.4: bisection uses the identical interpreted EU, including failure, cost, loss and discount.
+    // DESIGN ยง2.4: bisection uses the identical interpreted EU, including failure, cost, loss and discount.
     const eu = (ratio: number) => evaluation.discount * candidate.effects.reduce((sum, effect, i) => {
       const outcome = outcomeUtility(effect, evaluation.expectedOutcomes.probabilities[i], candidate, ctx,
         evaluation.interpret.lambda, assets, ratio * exchange.give.units);

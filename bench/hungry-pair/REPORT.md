@@ -4,8 +4,8 @@ Status: All bench acceptance checks passed; CB-6b certification belongs to unit 
 
 Verification only; no claim of independent validation.
 
-Git commit: e9b0db4e5427cab495a24c668e4db71e15b85393
-Source SHA256: ad1781259ee38c4faba1429b99a5fcfd4099a94d079ef04dc4ae8da983882d4f
+Git commit: 4a42b02f68b101449af69473cfc6f42cab3f3a45
+Source SHA256: 122212aa6f6e5cc02c7cb837e7ada26d4e81f2a78356b5e97c8a55f7e30f6a41
 The git commit is the base revision executed with the working source tree identified by SHA256 above.
 Seed count symmetry: 500
 Seed count paired-per-dimension: 200
@@ -22,7 +22,7 @@ Verdict CB-7: PASS (0/242881 assertions failed)
 Protocol: seeds 1–500 for CB-6; seeds 1–200 for every CB-7 dimension and CB-5b.
 Diagnostic checks use two fixed seeds: 1 (two epochs) and 19 (eight epochs); exact ID swap uses seed 1. Vitest study smoke checks use 16 fixed seeds, 1–16.
 Each world uses 2 ten-minute epochs instead of 144 to reduce runtime. All runs include Scheduler, EventBus, named streams, initial-snapshot Runner replay and host replay.
-Study wall time: 105.22 s, outside vitest under C-B1. Two epochs cannot test completed six-epoch journeys or one-day behavior.
+Study wall time: 106.85 s, outside vitest under C-B1. Two epochs cannot test completed six-epoch journeys or one-day behavior.
 CB-7's late-loss metric is a separate fixed-context early-loss probe at +1 day, not a completed one-day world run.
 Paired worlds share seed and per-mind stream names. Conditional draws can desynchronize after histories diverge.
 
