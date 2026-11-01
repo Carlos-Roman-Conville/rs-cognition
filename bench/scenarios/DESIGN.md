@@ -19,7 +19,8 @@ imply, stable across seeds, and absent under two controls: randomised θ with th
 stack with its hook outputs shuffled across functions. T-2 (derived traits): Big Five indicators derived from
 behaviour across scenarios correlate with the stacks' type letters in the directions McCrae & Costa (1989) report
 for the MBTI–NEO-PI relation (researched: E–I ↔ Extraversion, S–N ↔ Openness, T–F ↔ Agreeableness, J–P ↔
-Conscientiousness; Neuroticism unrelated to the four letters). A negative result is a result (DESIGN §9).
+Conscientiousness; Neuroticism unrelated to the four letters). A negative result is a result (DESIGN §9). Rex
+released the build on 2026-11-01 (§9).
 
 ## 1. Scenario list
 
@@ -60,6 +61,10 @@ visits; return rate to the best known patch; food gathered. **T-1 expectation (f
 until the run):** Se-heavy stacks inspect more and act on present cues; Si-heavy stacks return to remembered
 patches; Ne/Ni-heavy stacks visit novel patches more; the controls show none of these orderings.
 
+**Processing trace (Rex, 2026-11-01).** Per mind and epoch: pertinence shares per cue, the hook-modified
+interpretation parameters and belief deltas, the generated candidate set, EU per candidate, and the learning
+deltas, recorded in the host log beside the chosen action (§9).
+
 **Runs.** 200 seeds × 16 stacks + null, common random numbers (estimate, matching the T-3 protocol); 12 epochs.
 
 **T-2.** Novel-patch share → Openness indicator; return-to-known and gather-after-inspect → Conscientiousness
@@ -84,6 +89,10 @@ number of distinct `combine` pairs tried; profit; share of trades repeating the 
 expectation:** Ne-heavy stacks try more combinations and switch sooner; Si-heavy stacks repeat the old regime
 longer; Ni-heavy stacks switch after fewer observations once a pattern repeats (formula-implied; asserted only
 after the run). Controls as in §0.
+
+**Processing trace (Rex, 2026-11-01).** Per mind and epoch: pertinence shares per cue, the hook-modified
+interpretation parameters and belief deltas, the generated candidate set, EU per candidate, and the learning
+deltas, recorded in the host log beside the chosen action (§9).
 
 **Runs.** 200 seeds × 16 stacks + null, common random numbers; 18 epochs (estimate: six per regime third).
 
@@ -113,6 +122,10 @@ of low-reliability `opinion` testimony vs `procedural`. **T-1 expectation:** Te-
 switch less (F11), accept procedural testimony more readily (F13); Ti-heavy stacks verify more and accept less
 testimony; Ne-heavy stacks switch more. Asserted only after the run; controls as in §0.
 
+**Processing trace (Rex, 2026-11-01).** Per mind and epoch: pertinence shares per cue, the hook-modified
+interpretation parameters and belief deltas, the generated candidate set, EU per candidate, and the learning
+deltas, recorded in the host log beside the chosen action (§9).
+
 **Runs.** 200 seeds × 16 stacks + null; 16 epochs (estimate: two tasks × four steps × two).
 
 **T-2.** Completion and verification → Conscientiousness indicator; switching → low Conscientiousness / Openness
@@ -121,7 +134,8 @@ indicator; testimony acceptance → Agreeableness indicator (estimate of the map
 ## 5. S4 Village gathering (domain `cohesion`)
 
 **World (host data, fixture).** Four minds (A, B, C, D; identical except the stack under test is given to all
-four per run, preserving CB-6 symmetry) at a gathering with one shared decision: where to dig a well (two sites;
+four per run, preserving CB-6 symmetry) **Amended (Rex, 2026-11-01): the gathering is mixed-type; see SC-5.**
+at a gathering with one shared decision: where to dig a well (two sites;
 fixture). Each mind holds a prior belief about which site is better (fixture, varied per seed) and a social
 connection need (DESIGN §6). Each mind has a **believed-other-mind adapter** (DESIGN §9 F10): a simple model of
 what another mind wants, updated from what that mind says and does. A hidden-information twist in half the seeds:
@@ -140,6 +154,10 @@ warm-up phase, estimate). The scripted parts are the sites' yields only; all spe
 a wrong prior; `share` rate; `leave` rate. **T-1 expectation:** Fe-heavy stacks support more and reach agreement
 sooner, deferring more when a prior is wrong; Fi-heavy stacks propose and leave more; Te-heavy stacks oppose on the
 evidence. Asserted only after the run; controls as in §0; the four-mind symmetry is tested by id rotation.
+
+**Processing trace (Rex, 2026-11-01).** Per mind and epoch: pertinence shares per cue, the hook-modified
+interpretation parameters and belief deltas, the generated candidate set, EU per candidate, and the learning
+deltas, recorded in the host log beside the chosen action (§9).
 
 **Runs.** 200 seeds × 16 stacks + null; 12 epochs (estimate) plus a 4-epoch warm-up for F3's history.
 
@@ -163,6 +181,10 @@ with late-stage epochs spent in `wait` worlds equals the early-stage mind (no ag
 
 **Metrics.** `E_f` and `C_f` trajectories per function; the S1–S4 metrics at each stage; rank order of `C_f`
 against the stack position (dominant first, inferior last, DESIGN §19) and its dependence on upbringing.
+
+**Processing trace (Rex, 2026-11-01).** Per mind and epoch: pertinence shares per cue, the hook-modified
+interpretation parameters and belief deltas, the generated candidate set, EU per candidate, and the learning
+deltas, recorded in the host log beside the chosen action (§9).
 
 **Runs.** 100 seeds × 16 stacks × 3 upbringings × 3 stages (estimate; heavy, so it runs as `npm run bench`
 periodic validation under PLATFORM §11b, never in a gate).
@@ -194,6 +216,22 @@ supplies it (open).
 consistency check between behaviour and the type letters, not evidence that the letters are real. The controls of
 §0 are mandatory in every scenario.
 
+## 9. Rex's rulings (Rex, 2026-11-01)
+
+- **Release.** S1 is released; proceed with the build sequence S1, S3, S2, S4, S5, S6, through the Codex/Composer
+  belt.
+- **Formulas frozen.** F1–F13 stay frozen during the initial experiments. Formulas are never tuned merely to force
+  separation between the sixteen types. Results are reported without modifying the personality formulas until Rex
+  reviews the evidence.
+- **The result wanted.** From the runs: which mechanisms give **stable** differences between stacks, which give
+  **context-dependent** differences, and which give **none**.
+- **Processing trace (every scenario).** Each run records both the observable actions and the internal processing
+  per stack: attention (pertinence shares per cue), interpretation (the hook-modified parameters and the belief
+  deltas), the generated alternative set, the evaluation (EU per candidate), and the learning deltas, not only the
+  chosen action. The trace lives in the host log, like the hungry pair's diagnostics, and is replayable.
+- **Cost.** Test costs stay proportional to the value of the experiment: meaningful scenario coverage over repeated
+  full-suite runs (PLATFORM §11b).
+
 ## 8. Build order and open items
 
 Build order (units, later, when Rex releases the build): S1 fixture (Codex) → S3 (κ > 0 and the testimony-context
@@ -206,5 +244,5 @@ scenario's own tests and `tsc` only (PLATFORM §11b); the 200-seed studies run a
 | SC-1 | Yield, price and defect distributions for S1–S3 (all **null**): sources to choose | keeper, researched |
 | SC-2 | The κ value for S3 and the warm-up length for S4 (estimates) | keeper; Rex may set |
 | SC-3 | Upbringing epoch counts for S5 (estimates) | keeper; Rex may set |
-| SC-4 | A Neuroticism scenario (threat, variance under loss) | open (Rex) |
-| SC-5 | Whether S4's four minds all carry the stack under test, or mixed stacks (which would break CB-6 symmetry inside a run) | open (Rex) |
+| SC-4 | Neuroticism | **(Rex, 2026-11-01)** no dedicated Neuroticism mechanism. Investigate whether neuroticism-related patterns emerge from the existing stress, appraisal, physiological and learning mechanisms; design a later stress-response experiment (S7, not yet written) without blocking S1–S6. S6's Neuroticism indicator stays null until S7 exists |
+| SC-5 | S4 stacks | **(Rex, 2026-11-01)** mixed-type village gatherings, with controlled comparison runs that hold the social environment and the other participants fixed while one participant's stack varies. CB-6's identical-agent symmetry is checked in a separate all-same-stack control run |
