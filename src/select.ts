@@ -84,6 +84,7 @@ export function selectAction(
     const minted = mint(counters, "int");
     counters = minted.counters;
     intention = { id: minted.id, mind: inputs.mind, action: chosen.candidate.action, target: chosen.candidate.target,
+      ...(chosen.candidate.terms === undefined ? {} : { terms: chosen.candidate.terms }),
       t, expectedOutcomes: chosen.expectedOutcomes, status: "active" };
   }
   const trace: SelectionTrace = {

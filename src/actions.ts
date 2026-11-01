@@ -7,6 +7,8 @@ import type { BeliefStore, Candidate, CategoricalBelief, Domain, MindView, Predi
 export interface ActionDefinition {
   readonly id: string;
   readonly target?: string;
+  /** DESIGN §2.4: host repertoire data passed through untouched; numbers only; Cognition never reads a term */
+  readonly terms?: Readonly<Record<string, number>>;
   readonly targetKind: string;
   readonly domain: Domain;
   readonly preconditions: readonly { readonly id: string; readonly probability: (beliefs: BeliefStore) => number }[];
@@ -41,7 +43,10 @@ function nonnegative(value: number, name: string): void {
   if (!Number.isFinite(value) || value < 0) throw new RangeError(`${name} must be finite and nonnegative`);
 }
 
-function validateFeasibility(candidate: Pick<Candidate, "cost" | "capacityRequired" | "duration" | "preconditions">): void {
+function validateFeasibility(candidate: Pick<Candidate, "cost" | "capacityRequired" | "duration" | "preconditions" | "terms">): void {
+  for (const value of Object.values(candidate.terms ?? {})) {
+    if (!Number.isFinite(value)) throw new RangeError("Term values must be finite numbers");
+  }
   nonnegative(candidate.cost, "cost");
   nonnegative(candidate.capacityRequired, "required capacity");
   if (!Number.isSafeInteger(candidate.duration) || candidate.duration < 1) throw new RangeError("Duration must be positive epochs");
@@ -70,6 +75,19 @@ export function validateCandidate(candidate: Candidate): void {
   }
 }
 
+/** DESIGN §3: detach host data before deeply freezing the subjective candidate. */
+function freezeCandidate(candidate: Candidate): Candidate {
+  function freeze(value: unknown): void {
+    if (value !== null && typeof value === "object") {
+      for (const child of Object.values(value)) freeze(child);
+      Object.freeze(value);
+    }
+  }
+  const copy = structuredClone(candidate);
+  freeze(copy);
+  return copy;
+}
+
 function sameAction(left: Candidate, right: Candidate): boolean {
   return left.action === right.action && left.target === right.target;
 }
@@ -83,6 +101,7 @@ export function generateActions(
   if (thetaPre > 1) throw new RangeError("thetaPre must be <= 1");
   nonnegative(inputs.body.capacity_functional, "body.capacity_functional");
   const wait = inputs.wait;
+  if (wait.terms !== undefined) throw new RangeError("The host's fallback must have no terms");
   if (wait.preconditions.length !== 0 || wait.capacityRequired !== 0 || wait.cost !== 0 || wait.duration !== 1) {
     throw new RangeError("The host's fallback must be unconditional, zero-cost, zero-capacity and one epoch");
   }
@@ -96,6 +115,7 @@ export function generateActions(
     }
     const metadata = {
       action: definition.id, target: definition.target, targetKind: definition.targetKind,
+      ...(definition.terms === undefined ? {} : { terms: definition.terms }),
       domain: definition.domain, duration: definition.duration, cost: definition.cost,
       capacityRequired: definition.capacityRequired,
       preconditions: definition.preconditions.map((condition) => ({ id: condition.id, probability: condition.probability(ctx.beliefs) })),
@@ -109,7 +129,7 @@ export function generateActions(
     if (eligible) {
       const candidate: Candidate = { ...metadata, effects: definition.outcomeSpace, outcomes: definition.naiveModel(ctx.beliefs) };
       validateCandidate(candidate);
-      candidates.push(candidate);
+      candidates.push(freezeCandidate(candidate));
     }
   }
   const fallback = candidates[candidates.length - 1];
@@ -126,6 +146,6 @@ export function generateActions(
   if (result.some((candidate, i) => result.slice(0, i).some((other) => sameAction(candidate, other)))) {
     throw new RangeError("Generated action/target pairs must be unique");
   }
-  return { candidates: result, params: generated.params, thetaPre,
+  return { candidates: result.map(freezeCandidate), params: generated.params, thetaPre,
     capacityFunctional: inputs.body.capacity_functional, checks };
 }

@@ -19,3 +19,10 @@ npm install
 npm test            # vitest run
 npm run typecheck   # tsc --noEmit
 ```
+
+## Public API
+
+- `generateActions` builds candidates from host repertoire data.
+- `selectAction` chooses an intention; `MindsRunner` emits `cognition.intention` events.
+
+Optional `terms` on repertoire entries, candidates and intentions carry finite numeric host data through to the intention event unchanged.

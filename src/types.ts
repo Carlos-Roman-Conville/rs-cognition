@@ -180,6 +180,8 @@ export interface PredictedOutcome {
 export interface Candidate {
   readonly action: string;
   readonly target?: EntityHandle;
+  /** DESIGN §2.4: host repertoire data passed through untouched; numbers only; Cognition never reads a term */
+  readonly terms?: Readonly<Record<string, number>>;
   readonly targetKind: string;
   readonly domain: Domain;
   readonly duration: number;
@@ -195,6 +197,8 @@ export interface Intention {
   readonly mind: EntityHandle;
   readonly action: string;
   readonly target?: EntityHandle;
+  /** DESIGN §2.4: host repertoire data passed through untouched; numbers only; Cognition never reads a term */
+  readonly terms?: Readonly<Record<string, number>>;
   readonly t: SimTime;
   readonly expectedOutcomes: CategoricalBelief;
   readonly status: "active" | "completed" | "failed" | "impossible";
