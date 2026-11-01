@@ -1,0 +1,41 @@
+[
+  {
+    "seed": 1,
+    "epochs": 12,
+    "baseMs": 1646.2752,
+    "summaryMs": 5162.1247,
+    "detailedMs": 3289.0606,
+    "reruns": 6,
+    "rerunMs": 4535.498299999999,
+    "analysisMsPerEpoch": 52.21886666666675,
+    "summaryMsPerEpoch": 430.1770583333334,
+    "summaryBytes": 103064,
+    "detailedBytes": 5249175
+  },
+  {
+    "seed": 2,
+    "epochs": 12,
+    "baseMs": 1496.1499000000003,
+    "summaryMs": 5369.181400000001,
+    "detailedMs": 3745.770800000002,
+    "reruns": 6,
+    "rerunMs": 4719.7112,
+    "analysisMsPerEpoch": 54.1225166666668,
+    "summaryMsPerEpoch": 447.43178333333344,
+    "summaryBytes": 103029,
+    "detailedBytes": 5235234
+  },
+  {
+    "seed": 3,
+    "epochs": 12,
+    "baseMs": 965.6648000000023,
+    "summaryMs": 4917.702300000001,
+    "detailedMs": 4870.750500000002,
+    "reruns": 6,
+    "rerunMs": 4353.8973000000005,
+    "analysisMsPerEpoch": 46.98375000000002,
+    "summaryMsPerEpoch": 409.8085250000001,
+    "summaryBytes": 102905,
+    "detailedBytes": 5245967
+  }
+]
