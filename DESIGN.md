@@ -267,6 +267,68 @@ Generation filters them by the mind's **believed** preconditions (`θ_pre`), nev
 whether the action is actually open when the intention is attempted, and a refusal is an outcome the mind learns
 from (§2.5). Charter terms reach the mind as observations or testimony (§1); Society never writes a belief.
 
+**Resolution of an intention (CG-16, IF-26, IF-27; agreed with Reality, Life and Economy 2026-11-01; Settlement
+pending; Rex approved integration first, CHAINS.md).** Cognition decides whether a mind attempts an act (the
+`cognition.intention` event, payload `Intention`); it never decides whether the act succeeds. Resolution is the
+shared contract `shared.action.resolution` (registry-owned, like `shared.contract.labour_supply`):
+`resolve(intention, truth) → { status, stimuli, transfers }`, implemented by the engine that owns the action kind in
+`shared.action.kind`. One resolver per intention; the kind table says which.
+
+| Action kinds | Resolver | What it checks and moves |
+|---|---|---|
+| `move`, `gather` (first units, against the S1 fixtures), later contact and strikes | Reality | reachability, distance → time from a speed with its surface term (research unit 3020, CG-5; Life owns the body-speed side); reach and contact; the transfer debits the owning ledger (plants: Life's `plant_state`; water: Reality's hydrology once CG-2 exists); the owner refuses an overdraw, the resolver never decides stock |
+| `eat` (body side) | Life | preconditions in truth: body alive, can swallow and the gut works (anatomy feed gate, intestines), the food id exists in nutrition, taken mass > 0; then `eatMeal({food, kg})`: Δbody = +E_kept, Δwaste = +rest (CG-13); the source debit is its owner's (Economy `takeMass` for an inventory item, Life's `plant_state` via IF-42 for wild food), in the same transaction |
+| `buy`, `sell` | Economy | `economy.trade.trade` at the market price, refused when the price is above `terms.price_max` or below `terms.price_min`, beyond stock, or with no price; `terms.quantity` in the good's units |
+| `consume` | Economy then Life | `takeMass` (Δinventory = −q, q = `terms.kg`) then `eatMeal` (CG-19 pair), one transaction |
+| `work`, `refuse_work` | Settlement with Economy | CONTRACTS §16: the host answers `hours(person, role, day)` from the latest `work` intention (`terms.hours`; 0 after `refuse_work`); `terms.wage_min` needs a new appended CONTRACTS section (reservation wage), Settlement to agree (IF-27) |
+| social acts (join, propose, marry, …) | Society | openness at the attempt (IF-46, the social-affordances paragraph above) |
+| attempted violations | Government | whether an enforceable violation occurred and whether enforcement follows (IF-43) |
+
+- **Success is the resolver's equation, never Cognition's.** Reality supplies the act's physical demand (mass,
+distance, terrain); Life supplies `body.capacity_functional` (DUP-15): a record of named capacities in physical
+units (sustained power, force per muscle group, gut function, reach and grip, fatigue and organ state), with a 0–1
+fraction-of-normal view for display only. demand > capacity → `failed` (attempted; effort and time spent) or
+`impossible` (cannot start, e.g. an organ at its crisis floor). Where the act is a rate the outcome scales
+deterministically: `work done = min(demand, capacity) × duration`. No probability unless a source gives the
+variability (tremor, measured performance spread), then a seeded draw with its source.
+- **The resolver never reads the mind.** The candidate's `capacityRequired`, `duration`, `cost`, `preconditions` and
+the intention's `expectedOutcomes` are beliefs (§1); a resolver's signature takes only `id`, `action`, `target`
+and `terms` (Life adds a fence test on its side). Detectability (`realism.perception.detectability`, Life's) is an
+input to the mind's perception, never a filter the resolver applies.
+- **One transaction per intention (PLATFORM §7a).** Source debit by its owner, destination credit, the effort and
+time cost through Life's energy ledger (also on `failed`), then the outcome event, inside one `kernel.transaction`;
+through `kernel.transfer` once kernel v0.1.0 lands. Δsource = −q and Δdestination = +q; losses accounted
+separately. A smaller available q than requested resolves `completed` with the smaller q (Economy unit 3010
+tests that); an overdraw is refused by the owner.
+- **Status.** `impossible`: a precondition is false in truth, no transfer. `failed`: attempted, effort and time
+only; a refusal (Economy's `refused { cause, reason }`, Society's closed action) is `failed` with the reason among
+the stimuli, and the mind learns from it (§2.5). `completed`: the transfer happened.
+- **One outcome event type for every kind: `shared.action.outcome { cause, status, stimuli, payload? }`** (registered
+under CG-18; `cause` = the intention event id). Engine-native records (a trade, a `refused`, a future
+`contact_event`) travel as the payload or as siblings in the same transaction; Economy's commands take an optional
+`cause?` copied onto their events. The host adapter turns the outcome event into Cognition's `outcome` command;
+there is no `cognition.outcome` type and no second channel. Duplicate or uncaused outcomes stay ignored and logged.
+- **Stimuli are raw truth at the scene**, perceived by each mind through its own perception (§2.1): scene changes
+observable by anyone present (the food item reduced or gone, the actor's new position); interoceptive signals to
+the actor only (taste from the food's composition, gastric fill from the mass eaten; Life owns both, DUP-49).
+Delayed consequences are **not** in the outcome event: `body.satiety_signal` and `body.hunger_signal` change over
+the following hours as ordinary body signals, and §2.5's attribution handles the delay.
+- **`terms?: Readonly<Record<string, number>>`** on `Candidate` and `Intention` (unit 3044): numbers only, filled by
+the host's repertoire entry and passed through untouched; the host maps its action names to each engine's
+operations (fixture names `acquire`, `sell`, `consume`, `work`, `refuse_work`); which market and whose inventory
+are resolved by the host from the mind's holder and location, never terms. Economy reads the event stream (one
+substrate, never a copy).
+- **Never both (CG-23).** A buy by an individually simulated mind is a trade, not per-capita demand; a person with
+a `work` intention is not in the cohort's labour supply; the population provider's headcount must exclude
+simulated minds (whose rule this is: C-Q26).
+- **Verification at the commits.** Economy: an `acquire` with quantity 3 and `price_max` ≥ price makes one trade,
+market stock −3, holder +3, 3 × price on Settlement's ledger in one transaction, outcome event with the
+intention's cause; below the price, refused with no state change; replay identical. A `work` intention for 8
+hours gives `hours = 8`, Settlement assigns at most 8, the wage quote counts them, `refuse_work` gives 0, and the
+person is absent from the cohort supply. Life: the eat resolver's fence test and CG-13's conservation. Reality:
+move and gather conservation against S1. Cognition: the existing `outcome` tests plus the `terms` pass-through.
+The hungry pair's `world.resolve` stub is replaced only once CG-24 and DUP-15 are built.
+
 **Evaluation (expected value of drive reduction; level 4, loss aversion level 2).**
 
 ```
@@ -733,6 +795,8 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q22 | §18.4 Fi coherence: among valued things, or with the internal identity | **(Rex, 2026-11-01)** both, as two levels of one mechanism: compatibility among valued things builds an evaluative structure and identity, which then feeds back (λ_t · identityFit(X, I_t)); I_t is Cognition's existing self-model, never a separate store; changes through experience, never fixed by type |
 | C-Q23 | §18.4 which existing structure is the self-model I_t: the mind's beliefs about itself (§2.3, about = own handle), §13a mechanism 1's identity nodes, or both | open (keeper proposal: both, beliefs for traits, identity nodes for memberships) |
 | C-Q24 | §18.5 coherence principles for Ni (tentative: integrated pattern or anticipated trajectory), Se and Ne; and the form of match and update for Si | open (Rex) |
+| C-Q25 | §2.4 resolution: does a refused social or market act count as `failed` (the mind learns from the refusal) or as its own status | keeper proposal: `failed` with the reason among the stimuli; Rex to confirm |
+| C-Q26 | §2.4 never-both: which engine owns excluding individually simulated minds from the population headcount that feeds per-capita demand and cohort labour supply (Life or Reality) | open (controller) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
