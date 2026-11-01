@@ -726,8 +726,8 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q15 | Which reasoning-process parameters a substance may move, and each substance's sourced model (§14.5) | open (Rex, with the Reality keeper) |
 | C-Q16 | §16.2 memory profiles for Se, Ne and Te (how each stores, what triggers recall, articulation) | open (Rex) |
 | C-Q17 | §16.4 the episode detail vector and the cue-type retrieval weights, and their sources | open (keeper proposal; Rex and the personality matrix) |
-| C-Q18 | §18 reconstruction vs selection in Fe users | **(Rex, 2026-10-31)** both: selection in a recognised bubble, reconstruction (slow, group-fed) in an unfamiliar one; wide exposure selects more, narrow reconstructs constantly or forces home meanings |
-| C-Q19 | §18 semantic profiles for Se, Si, Ne and Ni, and Fi's "what it notices" | open (Rex); a frame is offered in §18.3 (perceiving functions feed the pool: Se the concrete thing, Si personal precedent, Ne branching possible meanings, Ni the pattern across uses) for him to accept, change or scrap |
+| C-Q18 | §18 reconstruction vs selection in Fe users | **(Rex, 2026-10-31, amended)** both: selection in a recognised bubble, reconstruction when no meaning fits or one is supplied (also within a conversation); selection success follows the similarity of the current bubble to the exposure history, not width alone |
+| C-Q19 | §18 semantic profiles for Se, Si, Ne and Ni, and Fi's "what it notices" | **(Rex, 2026-10-31)** Se/Si/Ne/Ni roles accepted provisionally as pool feeders (§18.2), never an exclusive boundary: judging functions bias attention upstream (§16). Still open: whether Ne/Ni actively resolve meaning; Fi's "what it notices" |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -1123,7 +1123,12 @@ parameters of one shared mechanism, never as a rule that a type reasons well or 
 
 - **`meaning(signal, context)`** can change its output while the definition of the function stays fixed. A word ("fine", "loyalty", "respect") carries a **pool of candidate meanings**; context (speaker, relationship, situation, time) selects which one is active and with what likelihood. The engine keeps the candidates separate and updates their likelihoods from context (§2.3 beliefs); it never declares two meanings identical.
 - **An undeclared change of meaning inside one argument is an error** (equivocation): a symbol must keep its assigned meaning throughout a reasoning chain unless the change is declared.
-- **Two speeds (Rex):** **selection**, fast, within one interaction: the pool is held and context picks ("loyalty" resolves to obedience before the boss and to solidarity among coworkers within the same hour); and **reconstruction**, slow, across interactions: when no candidate fits, a new meaning is built on the spot, often by blending existing ones, and if the group reinforces it, it stays in the pool, so the pool drifts over time.
+- **Selection and reconstruction (Rex):** **selection** happens within one interaction: the pool is held and
+  context picks ("loyalty" resolves to obedience before the boss and to solidarity among coworkers within the same
+  hour). **Reconstruction** happens whenever no held meaning fits or someone supplies a new one, including within a
+  single conversation (a listener rebuilds a meaning on the spot when the speaker explains their usage); a new
+  meaning is often a blend of existing ones, and it accumulates and persists across interactions when the group
+  reinforces it, so the pool drifts over time.
 - **Bubble exposure (Rex):** every group (a culture, a faction, nerds, jocks, a party) has its own semantic outline: what its words mean, what insults and what compliments. A mind's pool is built from the bubbles it has been inside. **Narrow exposure** (one or two bubbles) makes those meanings feel universal, carried into every room, misreading people who use the same words differently; **wide exposure** holds many outlines, resolves terms by the bubble one is in, and gives a word weight only when someone present would be hurt by it, with time needed to work out how to handle it. The exposure history is per mind and comes from lived contact (§14.1, §16), never from a type. **Exposure has depth, not just membership (Rex, review note 1):** passing through ten bubbles is not living in ten; depth comes from time spent, closeness to members and the emotional salience of the episodes. **Context includes who is present (Rex, review note 2):** `context` carries the listeners present and their bubbles, not only the speaker and the situation, since a worldly mind weighs a word by who nearby would be hurt.
 - **Emergent conflict, not scripted (Rex):** a fixed-definition speaker sees equivocation; a context-resolving listener sees rigidity that ignores what the situation obviously means. Neither is malfunctioning; they run different semantic systems. Rex observed this live when a language model (distributional semantics: a word is known by the company it keeps, Firth) resolved his fixed definition of "illogical" by its social weight instead; replacing the word with one that had no conflicting social meanings removed the friction.
 
@@ -1136,8 +1141,19 @@ parameters of one shared mechanism, never as a rule that a type reasons well or 
 | **Te** | one, anchored to the shared external definition, meant to work across every bubble | fixed | by changing the shared standard; pushes others to adopt it | departures from the shared definition |
 | **Fi** | one fixed internal referent authored from personal values (its own bubble) plus a **lossy encoder** to public words | fixed referent | the referent does not drift; its expression does | **open** |
 
-Symmetry (Rex): Fe/Ti is many external outlines against one internal structure; Te/Fi is one shared standard against
-one private standard. Se, Si, Ne and Ni profiles are not given (**open**, C-Q19).
+Symmetry (Rex): Fe/Ti is many external outlines against one internal structure; Te/Fi is one shared standard
+against one private standard.
+
+**Perceiving functions (Rex, 2026-10-31, accepted provisionally):** as starting definitions, the perceiving functions
+feed what goes into the pool: **Se** the details available in the current sensory input; **Si** comparison with
+personally retained experiences; **Ne** alternative interpretations and possible connections; **Ni** patterns
+inferred across multiple observations. This is **never an exclusive boundary**: the judging functions (Fe, Te, Fi,
+Ti) also bias upstream which information gets attention, which connections matter and which interpretation is
+retained (§16.1 stage 1, where Fe and Te shape what is noticed in the first place), and the processes interact
+rather than passing information one way. Each function therefore has two roles, by attitude (§16: extraverted
+filters, introverted encodes) and by kind (perceiving feeds, judging assigns), and the two axes coexist. Whether Ne
+or Ni also actively resolve meaning, rather than only supplying candidates, stays **open** (C-Q19), as does Fi's
+"what it notices".
 
 ### 18.3 Where it attaches (keeper, proposed)
 
@@ -1145,18 +1161,15 @@ one private standard. Se, Si, Ne and Ni profiles are not given (**open**, C-Q19)
 - **Encode** (`cognition.communication.encode`): the speaker's chosen public word for an internal referent; Fi's lossy encoder lives here.
 - **Reconstruction** is learning (§2.5): a new candidate enters the pool when no candidate fits and the group's reaction reinforces it; social transmission on Society's network (DUP-60) carries a bubble's outline.
 - **Quantities (proposed to the registry, planned):** `mind.meaning_pool` (record per mind and term: candidate meanings with likelihoods and the bubble each came from) and `mind.bubble_exposure` (record per mind: groups lived in, weighted by time spent, closeness to members and the emotional salience of the episodes; **derived**, no writer of its own, from `mind.episode` and Society's membership, so there is no second store of the past; registered 2026-10-31). Both come from history; personality sets only the pool's parameters (size, selection weighting, reconstruction threshold) through the §9 hooks. `mind.meaning_pool` is written by comprehend (registered 2026-10-31).
-- **Test (level 5):** two minds with the same words and different exposure histories misread each other in a predictable direction (the narrow one universalises); a Ti-weighted mind flags the Fe-weighted mind's mid-argument shift and the Fe-weighted mind flags the Ti-weighted mind's rigidity, from the parameters alone.
+- **Test (level 5):** two minds with the same words and different exposure histories misread each other in a predictable direction (the one whose history is least similar to the current bubble reconstructs or universalises); a Ti-weighted mind flags the Fe-weighted mind's mid-argument shift and the Fe-weighted mind flags the Ti-weighted mind's rigidity, from the parameters alone.
 
-**C-Q18 answered (Rex, 2026-10-31): both.** Fe selects from its existing pool when it recognises the bubble it is in.
-When it enters an unfamiliar bubble, or meets a person whose usage matches no held meaning, it reconstructs, and that
-takes time ("needs time to understand how to handle it"); reconstruction is fed by the new group's usage, and the new
-meaning stays in the pool if reinforced. Wider exposure means selection succeeds more often and reconstruction is needed
-less; narrow exposure means the mind either reconstructs constantly or forces home-bubble meanings onto the new group.
-
-**C-Q19, a frame offered for Rex to accept, change or scrap (proposed, not his decision yet):** judging functions
-assign meaning; perceiving functions feed what goes into the pool: Se from the concrete thing in front of it, Si from
-personal precedent, Ne from branching possible meanings, Ni from the underlying pattern across uses. Fi's "what it
-notices" stays open with it.
+**C-Q18 answered (Rex, 2026-10-31, amended the same day): both.** Fe selects from its existing pool when it
+recognises the bubble it is in. When it enters an unfamiliar bubble, or meets a person whose usage matches no held
+meaning, it reconstructs, and that takes time ("needs time to understand how to handle it"); reconstruction is fed by
+the new group's usage, and the new meaning stays in the pool if reinforced. **Selection succeeds according to how
+similar the current bubble is to the mind's exposure history, not to exposure width alone:** a mind familiar with
+ten communities dropped into an alien eleventh is back to reconstructing; narrow exposure means the mind either
+reconstructs constantly or forces home-bubble meanings onto the new group.
 
 ## Sources (to be confirmed and expanded by each unit)
 
@@ -1197,3 +1210,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | §17 knowledge of history (Rex: History is the backend record, never read in-world; four fallible routes as planned rows; `mind.inferred_past`); §13b names `shared.presentation.set` as Cognition's composition row (unit 2774). Not built. |
 | 2026-10-31 | Seams recorded: DUP-60/DUP-61 (C-S1, C-S2), the K&T holder port (C-K3), the Society affordance port (§2.4, C-Q6 answered pending the controller), `mind.source_credibility` (§2.3), backend records never read by a mind (§1) (unit 2804). |
 | 2026-10-31 | §18 semantic systems recorded (Rex: meaning pools, selection vs reconstruction, bubble exposure, Fe/Ti/Te/Fi profiles as hypotheses; keeper's attachment to comprehend/encode); C-Q18 answered by Rex (both, by familiarity of the bubble), C-Q19 open with a frame offered; exposure depth and who-is-present context added (unit 2817). Not built. |
+| 2026-10-31 | §18 amended (Rex): perceiving-function roles accepted provisionally, not an exclusive boundary; C-Q18 selection by bubble similarity, reconstruction also within a conversation (unit 2820). |
