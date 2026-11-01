@@ -1431,6 +1431,126 @@ built.
 - **Open:** the sources and ranges for `k_f`, `C_f,0` and the form of `R_f` (C-Q20); how `C_f` enters `L_f` in §9's
   allocation and whether `E_f` decays without practice (C-Q21).
 
+## 20. Social categorisation and learned group association (Rex, 2026-11-01; recorded design, not built)
+
+Rex's direction, given to the Cognition keeper on 2026-11-01 (reviewed with ChatGPT; his words count as his).
+**There is no prejudice equation and no prejudice engine.** Beliefs about groups of people come from the ordinary
+pipeline: what a mind notices (§2.1), how it reads and attributes an experience (§2.5), what it stores and retrieves
+(§2.3, §16) and what it hears from others (§2.3 testimony, §18 bubbles). The same mechanism yields prejudice, positive
+stereotypes, professional reputations, cultural expectations, social trust and accurate distinctions. Groups are
+§13a's characteristics applied to people, so this section specialises §13a mechanisms 1 to 4 and adds no gear.
+
+### 20.1 Five stages, kept distinct (Rex)
+
+| Stage | What happens | Where it lives |
+|---|---|---|
+| 1. Observe a characteristic | an accent, clothing or a community mark is a cue with relevance tag `group:g`; whether it is attended depends on `a_c` | §2.1 (`cognition.attention.allocate`) |
+| 2. Encode an association | the episode stores the cues that were attended with the outcome | §2.3, §16 (`cognition.memory.episodic`) |
+| 3. Attribute a cause | the candidate causes are the individual, the circumstance, the group and chance | §2.5 (`cognition.learning.attribution`, `cognition.preference.misattribution`) |
+| 4. Generalise to the category | the mind's belief about the group's latent attribute moves | §2.3 (`cognition.belief.update`), §13a.3 (`cognition.preference.associative_learning`) |
+| 5. Apply to another individual | the group belief becomes the prior for a new member of the group | §2.4 (`cognition.decision.evaluate`) through `P_theory` |
+
+Membership is itself a belief: `(person, member_of) = g` is perceived from cues and can be wrong. A group is an
+entity handle in the mind's beliefs (§2.3), so a group belief is an ordinary `(g, attribute)` belief and needs no
+new quantity. The true attributes of individuals are host truth; the mind holds only its beliefs (§1).
+
+### 20.2 The update (keeper, proposed)
+
+Individuals sit inside groups as a two-level belief: each person `i` has a latent `θ_i` (e.g. honesty), and each group
+`g` has a latent `θ_g` that sets the prior for its members (a hierarchical model, level 4). An outcome attributed to
+`i` updates `θ_i` by §2.3's rule. It also updates `θ_g`, with the evidence tempered by the attention the group cue
+received and the significance of the experience:
+
+```
+P'(θ_g) ∝ P(θ_g) · L(obs | θ_g)^(η · ã_g · S_e)        ã_g = a_g / max_c a_c ,  S_e ∈ [0, 1]
+```
+
+The form in Rex's note, `B' = B + α·A_g·S_e·(I(e) − B)`, is this same update for a real-valued belief: the Kalman form
+of §2.3 with `σ_obs² / (η·ã_g·S_e)` gives `μ' = μ + K(x − μ)`, where `K` plays the part of `α·A_g·S_e` and `x` the
+interpreted experience `I(e)`. There is one belief rule (§8), not a second learning rule. **The gate is attention:** a
+group cue that was not attended (`ã_g = 0`) updates no group belief, whatever happened. Attribution remains a
+read-out (§2.5): it reports whether the individual, the circumstance or the group moved most.
+
+**Application.** A first encounter with a new person `k` sets the prior for `θ_k` as
+`P(θ_k) = Σ_g P(k ∈ g | cues) · P(θ_g) + (1 − Σ_g P(k ∈ g | cues)) · P_0(θ)`. Evidence about `k` then individuates:
+as `k`'s own episodes accumulate, `θ_k`'s posterior leaves the group prior. Nothing stops a mind from learning an
+accurate group difference, overgeneralising from one case, or revising a belief after contrary experience.
+
+### 20.3 Expectation-driven attention (Rex; proposed, level 5)
+
+A confident group belief raises the pertinence of the cues that bear on it. When a mind believes group `g` is
+dishonest, a member's dishonest act gets more attention than the same act by someone else, and contrary acts may get
+less. Form (proposed): `π_j` gains a term `ρ · c_g · rel(j, θ_g)`, where `c_g = 1 − H(P(θ_g)) / H_max` is the belief's
+confidence and `rel(j, θ_g)` is how strongly cue category `j` bears on the latent. The asymmetry for contrary evidence
+is open (G-Q1). This is how a belief can reinforce itself without any scripted outcome (illusory correlation, Hamilton
+& Gifford 1976; confirmation bias, Nickerson 1998; level 5 as a model). `ρ` has no source yet (G-Q1).
+
+### 20.4 Transmission (with §18 and Society)
+
+Group beliefs also arrive as testimony (§2.3, weighted by `cognition.communication.credibility`) and through the
+bubbles a mind lives in (§18): a town's view of a faction spreads by talk and reputation, persists across
+generations and weakens through individual experience. Society owns the network and the norms (DUP-60); Cognition
+owns each mind's beliefs and their update. Society never writes a belief.
+
+### 20.5 The eight functions (Rex; hypotheses, parameters of the one mechanism)
+
+The functions change **how each stage runs**, never whether a mind becomes prejudiced or immune. No function is
+inherently more prejudiced; outcomes depend on exposure, interpretation, learning, transmission and correction.
+Memory belongs to the whole mind (§16.2), so an Se-weighted mind can hold a lasting group belief.
+
+| Function | Proposed route (Rex) | Hook it would act through (§9) |
+|---|---|---|
+| **Si** | compares an observed person with remembered experiences or internalised representations; repeated association (§18.5 reference matching) | pertinence on group cues; learning |
+| **Se** | weights the immediate observable characteristics and behaviour now; need not build the same lasting generalisation | pertinence on present physical cues |
+| **Ti** | takes in a group claim if it fits its internal explanatory structure (§18.4 coherence) | interpret (testimony fit) |
+| **Fi** | links a group, symbol or characteristic to personally significant positive or negative experiences | interpret (significance `S_e`) |
+| **Fe** | learns how groups around it judge other groups (§18 bubbles) | learning from testimony and transmission |
+| **Te** | adopts external classifications, rules and institutional descriptions | interpret (testimony from institutions) |
+| **Ne** | generates alternative explanations, which may challenge or reinforce a generalisation | generate (alternative causes for attribution) |
+| **Ni** | folds observations into an overall reading of a group or its intentions | learning (pattern across episodes) |
+
+These rows are a later personality version. **F1–F13 (v1) stay frozen** during S1 to S6; nothing here changes them.
+
+### 20.6 Function Activation Ledger (planned extension)
+
+The ledger (`bench/diagnostics/`) records, per episode and per function group, the contribution to each stage: the
+attention share given to group cues (`ã_g`), the attribution read-out (individual, circumstance, group or chance),
+the KL of the group-belief update, and the group prior applied at a first encounter. It uses the existing processing
+trace; there is no second logging system. Shared formulas overlap, so contributions are not additive (as in S1).
+
+### 20.7 The experiment (Rex; planned, after S1 to S6 unless Rex releases it earlier)
+
+**The merchant scenario.** Two communities of merchants with visible marks (accent, clothing). Two worlds:
+(a) **equal truth**, where the honesty distribution is the same in both communities, so any group difference a mind
+learns is an overgeneralisation; (b) **different truth**, where the communities differ, so learning the difference is
+accurate. Every configuration sees the same individuals, events and seeds; only the cognitive configuration
+changes (null, the 16 stacks under that later version, and sweeps of `η`, `ρ` and `S_e`).
+
+**Measured, never asserted:** the group belief against the truth over time; the prior applied to a new member at
+first encounter; individuation speed (episodes until `θ_k` leaves the group prior); the attention share on group
+cues; the self-reinforcement loop (whether `ã_g` rises with confidence in `θ_g`); revision after contrary
+experience; and the ledger's per-stage contributions. Classification uses the S1 rule (stable, context-dependent,
+none). The T-1 controls apply: a randomised `θ` with the null personality, and hook outputs shuffled across functions.
+
+### 20.8 Registry (audited 2026-11-01)
+
+Reused with no new row: `cognition.attention.allocate`, `cognition.belief.update`, `cognition.memory.episodic`,
+`cognition.learning.attribution`, `cognition.preference.semantic_representation`,
+`cognition.preference.associative_learning`, `cognition.preference.misattribution`,
+`cognition.communication.credibility`, `cognition.relationship.trust`, `cognition.decision.evaluate`, and Society's
+transmission network (DUP-60). Group beliefs are ordinary `mind.belief` entries. If the registry wants this
+application named, it is a note on `cognition.preference.associative_learning`, not a new mechanism.
+
+### 20.9 Open
+
+- **G-Q1:** `ρ` and the asymmetry for contrary evidence in §20.3: the form and the source.
+- **G-Q2:** the significance `S_e`. The candidates are the prediction error `|δ|` scaled to [0, 1], the need priority
+  at stake, or both. The source is open.
+- **G-Q3:** generalisation across nested and overlapping groups (a merchant who is also a foreigner and a woman):
+  how the membership weights split. This is the same question as P-Q3.
+- **G-Q4:** Rex to confirm §20.5's rows as his hypotheses, especially the Ne, Ni, Fe and Te rows, which came with this
+  note.
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -1473,3 +1593,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | §18 amended (Rex): perceiving-function roles accepted provisionally, not an exclusive boundary; C-Q18 selection by bubble similarity, reconstruction also within a conversation (unit 2820). |
 | 2026-10-31 | §19 developmental cognitive functions recorded (Rex: all four stack functions from birth, no age unlocks; hierarchy sets speed and focus; E_f and C_f with feedback into allocation; competence ≠ knowledge ≠ skill ≠ intelligence); C-Q20, C-Q21 open (unit 2896). Not built; does not interrupt the baseline or T-1/T-2. |
 | 2026-11-01 | §18.4 Ti/Fi shared compatibility primitive recorded (Rex: one coherence operation, two criteria; Fe by contextual integration; general mechanism of §13; outfit test); C-Q22 answered by Rex (two levels, identityFit term, self-model never a separate store), C-Q23 open; §18.5 Si reference matching recorded (Rex: C_Si = match(a, R_i), R_i updated through the auxiliary's interpretation; ISTJ/ISFJ contrast; knight test), C-Q24 open (unit 2921). Not built. |
+| 2026-11-01 | §20 social categorisation and learned group association recorded (Rex: no prejudice equation; five stages; attention-gated group-belief update as the one belief rule; expectation-driven attention; eight-function routes as hypotheses; merchant experiment; registry audited, no new row); G-Q1 to G-Q4 open (unit 5277). |
