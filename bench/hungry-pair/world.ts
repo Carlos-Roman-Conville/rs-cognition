@@ -197,7 +197,7 @@ export class HungryPairWorld {
       } });
     this.initial = take([{ id: "minds", snapshot: () => this.runner.state, restore: () => {} },
       { id: "world", snapshot: () => this.state, restore: () => {} }],
-    { version: 1, t: 0, epoch: "fixture", seed: options.seed, eventCounter: 0, rng: this.random.state() });
+    { version: 2, t: 0, epoch: null, epochLabel: "fixture", catalogue_hash: null, seed: options.seed, eventCounter: 0, rng: this.random.state() });
     this.runner.log = []; // Initial snapshot includes addMind, so replay starts after roster construction.
     this.runner.events = [];
   }
