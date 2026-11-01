@@ -344,6 +344,57 @@ v(x) = x if x ≥ 0, λ·x if x < 0
 hyperbolic is an alternative to test, open). Lookahead is **one action deep** in the baseline: multi-step plans
 appear as multi-epoch actions (work) and as learned values; deeper planning is a later mechanism (open C-Q8).
 
+**Payment acceptance (`cognition.valuation.payment_acceptance`, a specialisation of this evaluation; multi-economy
+design v2 with Cognition's amendments 1–5, agreed through the controller 2026-11-01; keeper's form, proposed, level
+4–5).** Whether a mind takes an asset as payment is the evaluation above applied to an exchange. No second
+evaluator exists: an exchange outcome gains one more term inside `r(o)`, the value of the holdings it changes. Money
+is never a property of an asset (Rex, R1). An asset is worth holding for what it does for the mind's needs, and for
+what the mind believes others will give for it (Menger 1892, saleability; Jones 1976 and Kiyotaki & Wright 1989,
+media of exchange that emerge from beliefs about acceptance; level 4).
+
+- **Assets are host data.** `GenerationInputs.assets` lists, for each asset `m` the mind may hold: its id;
+  `usefulness`, the deficit reduction per unit for each need (from goods data; Reality and Life own the physical
+  facts); optionally `issuer` (an entity handle); and the belief keys the mind uses: `accepted` (a categorical belief
+  `(m, accepted@<market>)` over `yes | no`), `rate:<b>` (a real belief, units of `b` per unit of `m`) and `genuine`
+  (a categorical belief `(m, genuine)`). A key with no belief yet contributes nothing (ignorance, not a default).
+- **Value of one unit to mind `i` (proposed):**
+
+```
+D_i(m) = r(needs after one unit of m reduces each deficit by usefulness_m)            direct usefulness, §2.2
+E_i(m) = γ · P_i(genuine m) · T_i(issuer m) · max_{b ≠ m} [ P_i(m accepted) · μ_i(rate m→b) · D_i(b) ]
+V_i(m) = D_i(m) + E_i(m)
+```
+
+  `E` is expected exchangeability, one exchange deep like every other lookahead here (C-Q8). `T_i` is the mind's
+  trust that the issuer will honour the asset (`cognition.relationship.trust`); it is 1 for an asset with no issuer.
+  `P_i(genuine)` comes from perception with its precision (counterfeit recognition). Transaction and verification
+  cost is the action's `cost`. Every input is the mind's own belief. Society's acceptance share and Government's
+  legal tender reach these beliefs only as host-delivered observations or testimony (§2.3, weighted by
+  `cognition.communication.credibility`), and they may be wrong or stale.
+- **Exchange candidates.** A repertoire entry may declare `exchange: { give: { asset, units }, want: { asset,
+  units? } }`. Its outcome `filled` adds `Σ_legs Δunits · V_i(asset)` to `r(o)`. Giving is therefore a loss, and `λ`
+  applies to it as to any loss. The outcome `not filled` adds nothing. The asset pair also names the action id or
+  `target` (the convention for `terms`: numbers only). `accept` carries the offer handle in `target` and both legs'
+  units. A refusal comes back as `shared.action.outcome` `failed` with its reason among the stimuli, and §2.5 learns
+  from it through the host's naive model. A `not-accepted` refusal therefore moves the mind's belief that the payee
+  accepts `m`.
+- **Reservation ratio, derived and never stored.** For an `offer` whose `want.units` is omitted, the mind computes
+  `ratioMin = r*`, the least ratio of `want` per unit of `give` at which the offer's `EU` equals the best
+  alternative's (the highest `EU` among the other candidates, excluding exchanges on the same pair). It finds `r*`
+  by bisection on this same `EU`, which rises with `r`. The offer's own `EU` for selection is evaluated at the believed
+  rate `μ_i(rate give→want)`, so the mind offers when it expects to gain. If it expects to lose, it does not offer.
+  The committed intention carries `terms.ratioMin = r*` and `terms.giveUnits`. The host builds Economy's `offer` with
+  `want.units = ratioMin · giveUnits`. With no rate belief, or no `r*` within the bound, there is no offer candidate.
+- **Fence.** Cognition never reads Society's `acceptance` or Government's `legalTender`. Acceptance is never seeded.
+  The host seeds needs, prior beliefs about who accepts what, and trust priors, and it records the seed. Personality
+  v1 (F1–F13) is untouched. The null personality is the default, so no stack assigns acceptance.
+- **Tests (the agreement's §8 rows a–d):** (a) with Society's share changed and the mind's observations unchanged,
+  decisions are byte-identical. (b) Changing the perceived share moves `P_i(m accepted)`, and through it `E`, `V` and
+  `EU`, and nothing else: needs, trust and personality outputs are unchanged. (c) A `not-accepted` refusal gives a KL
+  greater than 0 on the payee-acceptance belief. (d) Under the null personality, no configuration path assigns
+  acceptance. Open: P_fill does not yet depend on the ratio offered (PA-Q1; a market-depth belief would make `r*` a
+  fixed point). The bisection bound is the keeper's (PA-Q2).
+
 **Selection (Luce choice rule / softmax; level 2 as a descriptive choice model, Luce 1959).**
 
 ```
@@ -1594,3 +1645,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | §19 developmental cognitive functions recorded (Rex: all four stack functions from birth, no age unlocks; hierarchy sets speed and focus; E_f and C_f with feedback into allocation; competence ≠ knowledge ≠ skill ≠ intelligence); C-Q20, C-Q21 open (unit 2896). Not built; does not interrupt the baseline or T-1/T-2. |
 | 2026-11-01 | §18.4 Ti/Fi shared compatibility primitive recorded (Rex: one coherence operation, two criteria; Fe by contextual integration; general mechanism of §13; outfit test); C-Q22 answered by Rex (two levels, identityFit term, self-model never a separate store), C-Q23 open; §18.5 Si reference matching recorded (Rex: C_Si = match(a, R_i), R_i updated through the auxiliary's interpretation; ISTJ/ISFJ contrast; knight test), C-Q24 open (unit 2921). Not built. |
 | 2026-11-01 | §20 social categorisation and learned group association recorded (Rex: no prejudice equation; five stages; attention-gated group-belief update as the one belief rule; expectation-driven attention; eight-function routes as hypotheses; merchant experiment; registry audited, no new row); G-Q1 to G-Q4 open (unit 5277). |
+| 2026-11-01 | §2.4 payment acceptance recorded (multi-economy v2, Cognition amendments 1–5; asset value = direct usefulness + one-step expected exchangeability inside r(o); exchange candidates; derived ratioMin by bisection; fence; tests a–d); PA-Q1, PA-Q2 open (unit 5294). |
