@@ -728,6 +728,8 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q17 | §16.4 the episode detail vector and the cue-type retrieval weights, and their sources | open (keeper proposal; Rex and the personality matrix) |
 | C-Q18 | §18 reconstruction vs selection in Fe users | **(Rex, 2026-10-31, amended)** both: selection in a recognised bubble, reconstruction when no meaning fits or one is supplied (also within a conversation); selection success follows the similarity of the current bubble to the exposure history, not width alone |
 | C-Q19 | §18 semantic profiles for Se, Si, Ne and Ni, and Fi's "what it notices" | **(Rex, 2026-10-31)** Se/Si/Ne/Ni roles accepted provisionally as pool feeders (§18.2), never an exclusive boundary: judging functions bias attention upstream (§16). Still open: whether Ne/Ni actively resolve meaning; Fi's "what it notices" |
+| C-Q20 | §19 sources and ranges for k_f, C_f,0 and the form of R_f (learning-opportunity availability and relevance) | open (Rex; versioned, crude until sourced) |
+| C-Q21 | §19 how developed competence C_f enters the L_f term of §9's allocation, and whether function experience E_f decays without practice | open (keeper proposal; Rex) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -1171,6 +1173,40 @@ similar the current bubble is to the mind's exposure history, not to exposure wi
 ten communities dropped into an alien eleventh is back to reconstructing; narrow exposure means the mind either
 reconstructs constantly or forces home-bubble meanings onto the new group.
 
+## 19. Developmental cognitive functions (Rex, 2026-10-31; planned, personality layer; not built)
+
+Rex's direction (ENGINES.md, "Developmental cognitive functions"). It extends §9's dynamic allocation with development
+over a life. **It does not interrupt the baseline or T-1/T-2 (Rex).** Versioned formulas under §9's rules; nothing is
+built.
+
+- **All four functions of a type's stack are present and available from birth (Rex).** What differs is the attention,
+  experience, practice and learning each receives through life. **No hardcoded ages, maturity thresholds or unlocks.**
+- **The hierarchy sets the speed of development and where focus is spent, never whether a function exists (Rex).** The
+  dominant gets the greatest early allocation and develops fastest; the auxiliary develops to support it; the tertiary
+  later, assisting the first two; the inferior is the last to be substantially integrated, yet present and usable at
+  any age. Learning is more pronounced for data relevant to the first function, then the second, less for the third and
+  fourth.
+- **Four separate quantities per function `f` (Rex; forms provisional, not laws):**
+  1. baseline attention preference `B_f` (the light; §9 "Dynamic function allocation"; existing);
+  2. active allocation `A_f(t)` (§9, the same paragraph; existing);
+  3. accumulated function-relevant experience `E_f(t+Δt) = E_f(t) + A_f(t)·R_f(t)·Δt`, with `R_f` the availability and
+     relevance of learning opportunities in the situation (registry quantity `mind.function_experience`, planned);
+  4. developed competence `C_f(t) = C_f,0 + k_f·log(1 + E_f(t))`, diminishing returns (registry quantity
+     `mind.function_competence`, planned; `k_f` and `C_f,0` are versioned constants, sourced or marked crude). Both are
+     written by the planned row `cognition.personality.function_development` (registered 2026-10-31);
+     `cognition.personality.function_allocation` keeps `A_f` and reads competence as `L_f`.
+- **Feedback (Rex):** competence feeds back into future allocation (it is the `L_f` term of §9's `A_f(t)`), so two
+  people with one hierarchy diverge by environment: an ESTP raised on abstract planning develops more Ni facility than one
+  rewarded for immediate action. **The baseline `B_f` never changes.**
+- **Invariant (Rex):** cognitive competence ≠ domain knowledge ≠ learned skill ≠ intelligence. A developed Ti with little
+  mathematics, or much mathematics reached by other strategies, are both possible. Development never substitutes for the
+  learning system (§2.5, beliefs and episodes) or the skill system (reserved `cognition.skill.practice`, `mind.skill`;
+  the K&T holder port's skill item stays separate, C-K3).
+- **Test to design (Rex; level 5):** identical hierarchies in different environments give different trajectories of `E_f`
+  and `C_f`; a null control with uniform `B_f` shows no hierarchy-driven ordering; no trajectory depends on age as such.
+- **Open:** the sources and ranges for `k_f`, `C_f,0` and the form of `R_f` (C-Q20); how `C_f` enters `L_f` in §9's
+  allocation and whether `E_f` decays without practice (C-Q21).
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -1211,3 +1247,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | Seams recorded: DUP-60/DUP-61 (C-S1, C-S2), the K&T holder port (C-K3), the Society affordance port (§2.4, C-Q6 answered pending the controller), `mind.source_credibility` (§2.3), backend records never read by a mind (§1) (unit 2804). |
 | 2026-10-31 | §18 semantic systems recorded (Rex: meaning pools, selection vs reconstruction, bubble exposure, Fe/Ti/Te/Fi profiles as hypotheses; keeper's attachment to comprehend/encode); C-Q18 answered by Rex (both, by familiarity of the bubble), C-Q19 open with a frame offered; exposure depth and who-is-present context added (unit 2817). Not built. |
 | 2026-10-31 | §18 amended (Rex): perceiving-function roles accepted provisionally, not an exclusive boundary; C-Q18 selection by bubble similarity, reconstruction also within a conversation (unit 2820). |
+| 2026-10-31 | §19 developmental cognitive functions recorded (Rex: all four stack functions from birth, no age unlocks; hierarchy sets speed and focus; E_f and C_f with feedback into allocation; competence ≠ knowledge ≠ skill ≠ intelligence); C-Q20, C-Q21 open (unit 2896). Not built; does not interrupt the baseline or T-1/T-2. |
