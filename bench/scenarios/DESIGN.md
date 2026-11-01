@@ -89,3 +89,59 @@ after the run). Controls as in §0.
 
 **T-2.** Distinct combinations and switch latency → Openness indicator; repetition of the old best → low Openness
 / high Conscientiousness indicator (estimate of the mapping).
+
+## 4. S3 Workshop (domain `meta`)
+
+**World (host data, fixture).** One mind and a foreman (a scripted testimony source, not a mind; fixture) in a
+workshop with two multi-step tasks of four steps each (estimate). A step can fail silently (a hidden defect) with
+probability p_defect (**null** until sourced; the fixture starts with an estimate the unit records). A `verify`
+action reveals a defect in the last step. The foreman gives instructions as testimony before each step; the
+foreman's reliability is drawn per seed from {high, low} (fixture), and the instruction's context tag (`procedural`
+vs `opinion`) is attached, which is the F13 testimony-context lever. Need: a competence appraisal need (DESIGN §2.2;
+SDT competence) plus hunger paid per finished task.
+
+**Actions.** `continue(task)`, `switch(task)`, `verify`, `ask(foreman)`, `wait`. Commitment `κ` is set **> 0** in
+this scenario's θ (value **estimate**, recorded in the fixture; the baseline keeps κ = 0 elsewhere) so F11 has an
+effect to modulate.
+
+**Levers.** `meta` is Te/Ti's domain: F7 (confidence by domain ownership) applies to steps in `meta`; F11 (Te:
+commitment) acts on `κ`; F13 (Te: testimony reliability floor) acts on the foreman's instructions by context; F1
+(`η`, `α0`) on the defect evidence. Nothing social beyond the scripted foreman.
+
+**Metrics.** Task completion rate; switches per completed task; `verify` rate before `continue`; acceptance rate
+of low-reliability `opinion` testimony vs `procedural`. **T-1 expectation:** Te-heavy stacks complete more and
+switch less (F11), accept procedural testimony more readily (F13); Ti-heavy stacks verify more and accept less
+testimony; Ne-heavy stacks switch more. Asserted only after the run; controls as in §0.
+
+**Runs.** 200 seeds × 16 stacks + null; 16 epochs (estimate: two tasks × four steps × two).
+
+**T-2.** Completion and verification → Conscientiousness indicator; switching → low Conscientiousness / Openness
+indicator; testimony acceptance → Agreeableness indicator (estimate of the mapping).
+
+## 5. S4 Village gathering (domain `cohesion`)
+
+**World (host data, fixture).** Four minds (A, B, C, D; identical except the stack under test is given to all
+four per run, preserving CB-6 symmetry) at a gathering with one shared decision: where to dig a well (two sites;
+fixture). Each mind holds a prior belief about which site is better (fixture, varied per seed) and a social
+connection need (DESIGN §6). Each mind has a **believed-other-mind adapter** (DESIGN §9 F10): a simple model of
+what another mind wants, updated from what that mind says and does. A hidden-information twist in half the seeds:
+one mind's prior is wrong (fixture), so deference costs.
+
+**Actions.** `propose(site)`, `support(mind)`, `oppose(mind)`, `share(belief)` (testimony), `ask(mind)`,
+`leave`. Outcome: the site with the most support after N epochs is dug; its true yield (fixture) feeds every
+mind's hunger thereafter.
+
+**Levers.** `cohesion` is Fe/Fi's domain (F4, F5 for those stacks); F10 (Fe: generate through a believed other
+mind) has an adapter to run; F12 (Fe: person `α0`, trust in a person's testimony) acts on `share`; F3 (λ with a
+failure history) gets a history when an earlier seed-phase proposal was opposed (the fixture provides a short
+warm-up phase, estimate). The scripted parts are the sites' yields only; all speech is between minds.
+
+**Metrics.** Share of `support`/`oppose` vs `propose`; agreement reached (epochs to a majority); deference rate to
+a wrong prior; `share` rate; `leave` rate. **T-1 expectation:** Fe-heavy stacks support more and reach agreement
+sooner, deferring more when a prior is wrong; Fi-heavy stacks propose and leave more; Te-heavy stacks oppose on the
+evidence. Asserted only after the run; controls as in §0; the four-mind symmetry is tested by id rotation.
+
+**Runs.** 200 seeds × 16 stacks + null; 12 epochs (estimate) plus a 4-epoch warm-up for F3's history.
+
+**T-2.** Support and agreement → Agreeableness indicator; `propose`, `share` and `ask` counts → Extraversion
+indicator; `leave` → low Extraversion (estimate of the mapping).
