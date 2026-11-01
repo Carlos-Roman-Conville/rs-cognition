@@ -1,3 +1,4 @@
+import type { CommunicationContext, ConfusionCue, MeaningPool, Message } from "./communication/types.ts";
 import type { SimTime } from "@rex/kernel";
 
 /** DESIGN §1: a mind's handle, not access to the entity's objective state. */
@@ -21,6 +22,7 @@ export type Stimulus = Cue & {
   readonly domain: Domain;
 } & (
   | { readonly kind: "categorical"; readonly value: string; readonly values: readonly string[] }
+  | { readonly kind: "message"; readonly message: Message; readonly context: CommunicationContext }
   | { readonly kind: "real"; readonly value: number }
 );
 
@@ -33,6 +35,7 @@ export interface DetectionModel {
 export type Observation = Cue & { readonly t: SimTime } & (
   | { readonly kind: "categorical"; readonly value: string; readonly model: DetectionModel & { readonly q: number } }
   | { readonly kind: "real"; readonly value: number; readonly model: DetectionModel & { readonly sigma: number } }
+  | { readonly kind: "message"; readonly channel: "report"; readonly message: Message; readonly context: CommunicationContext; readonly model: DetectionModel }
   | { readonly kind: "null"; readonly model: DetectionModel }
 );
 
@@ -179,6 +182,8 @@ export interface Episode {
 }
 
 export interface MemoryState {
+  readonly meaningPool?: MeaningPool;
+  readonly confusionCues?: readonly ConfusionCue[];
   readonly beliefs: BeliefStore;
   readonly episodes: readonly Episode[];
   readonly reliability: readonly { readonly speaker: EntityHandle; readonly belief: BetaReliability }[];
@@ -246,6 +251,7 @@ export interface DecisionTrace {
 
 /** DESIGN §3: deeply readonly subjective inputs; no world or other mind access. */
 export interface MindView {
+  readonly confusionCues?: readonly ConfusionCue[];
   readonly beliefs: BeliefStore;
   readonly needs: NeedState;
   readonly params: CognitiveParams;

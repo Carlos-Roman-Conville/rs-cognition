@@ -257,7 +257,7 @@ export function learnOutcome(
     action: intention.action, outcome: perceived.outcome, reward, predictionError,
     attributedCause, domain: inputs.domain }, counters) : undefined;
   const next = beliefs === memory.beliefs && reliability === memory.reliability && !encoded ? memory : {
-    beliefs, reliability, episodes: encoded ? [...memory.episodes, encoded.episode] : memory.episodes,
+    ...memory, beliefs, reliability, episodes: encoded ? [...memory.episodes, encoded.episode] : memory.episodes,
   };
   return { next, counters: encoded?.counters ?? counters, episode: encoded?.episode,
     trace: { mind: inputs.mind, intention: intention.id, t: outcome.t, observations: outcome.observations,

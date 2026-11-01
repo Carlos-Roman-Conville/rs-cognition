@@ -28,3 +28,32 @@ npm run typecheck   # tsc --noEmit
 Optional `terms` on repertoire entries, candidates and intentions carry finite numeric host data through to the intention event unchanged.
 
 **Payment acceptance.** Optional asset definitions and exchange candidates use the existing evaluator to combine direct usefulness with believed exchangeability. Offers derive a reservation ratio and carry `ratioMin` and `giveUnits` in intention terms; missing rate beliefs make offers ineligible. See [DESIGN §2.4](DESIGN.md) for the formulas and belief boundary.
+
+### Communication inputs
+
+A host-delivered `world.message_received` enters `perceive` as a `kind: "message"`
+Stimulus on channel `report`, with `message` and `context: { bubble, thetaPre }`.
+Pass the resulting observations to the existing mind `observe` command. The mind
+reuses its action configuration's `thetaPre`; standalone `comprehend` callers supply
+that same threshold. Detection uses the existing attention/perception stream.
+
+Optional `memory.meaningPool` stores term candidates with literal value rules
+(`{ id, attribute, value: { kind: "literal", value }, counts: { [bubble]: number } }`).
+The speaker's intended `claim` never overrides the listener's pool. Declarations
+add one count; observed group usage can be supplied in `context.usage`, and explicit
+confirmation in `context.confirmed`. Reception alone does not reinforce a meaning.
+`poolConcentration` is an optional interpret parameter with effective default 1;
+it is supplied at message interpretation and omitted from legacy decision traces.
+Personality v1 preserves it unchanged.
+
+Comprehension records distributions, prior fit, confusion and testimony likelihoods
+in the observation processing trace. Optional `memory.confusionCues` exposes the
+latest message's cues to the next decision's `MindView`. Unknown speakers use
+Beta(1,1) ignorance (proposed). Missing attribute priors are not invented; alternative
+readings about a different attribute supply constant likelihood 1 for that attribute
+(proposed marginalization convention).
+
+`bubbleExposure` derives normalized weights from episode context features
+`"bubble:<group handle>": true`. Hosts encode every group present, including speaker
+and listener groups, using these features. Each episode's retrieval weight is split
+equally among its groups. Salience remains 1 pending section 16. Nothing is stored twice.

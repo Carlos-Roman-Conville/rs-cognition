@@ -15,3 +15,6 @@ export * from "./policy.ts";
 export * from "./mind.ts";
 export * from "./process.ts";
 export * from "./valuation.ts";
+export * from "./communication/types.ts";
+export * from "./communication/comprehend.ts";
+export * from "./communication/exposure.ts";

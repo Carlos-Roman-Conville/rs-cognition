@@ -150,7 +150,8 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
   switch (command.type) {
     case "observe": {
       const observations = structuredClone(command.observations);
-      const memory = observeMemory(observations, mind.memory, mind.needs, personality, mind.params, command.t);
+      const memory = observeMemory(observations, mind.memory, mind.needs, personality, mind.params, command.t,
+        { thetaPre: config.generation.thetaPre ?? 0.5 });
       if (command.perceptionState !== undefined) {
         const random = streams(state.runSeed);
         streamState = { ...streamState,
@@ -158,7 +159,9 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
         random.restore(streamState); // Kernel validates the recorded 32-bit state before publication.
       }
       observationTrace = memory.trace;
-      mind = { ...mind, observations, memory: { beliefs: memory.beliefs, episodes: memory.episodes, reliability: memory.reliability } };
+      mind = { ...mind, observations, memory: { ...mind.memory, ...(memory.meaningPool === undefined ? {} : { meaningPool: memory.meaningPool }),
+        ...(memory.confusionCues === undefined ? {} : { confusionCues: memory.confusionCues }),
+        beliefs: memory.beliefs, episodes: memory.episodes, reliability: memory.reliability } };
       break;
     }
     case "tickNeeds": {
@@ -190,7 +193,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       streamState = random.state();
       const fresh = selected.intention.id !== mind.current?.id;
       mind = { ...mind, context, capacityFunctional, current: selected.intention,
-        memory: { beliefs: selected.next.beliefs, episodes: selected.next.episodes, reliability: selected.next.reliability },
+        memory: selected.next,
         decisions: [...mind.decisions, selected.trace], intentions: fresh
           ? [...mind.intentions, { intention: selected.intention, trace: selected.trace }] : mind.intentions };
       if (fresh) events.push({ type: "cognition.intention",

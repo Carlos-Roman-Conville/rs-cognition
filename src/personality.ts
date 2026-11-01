@@ -3,6 +3,8 @@ export type { Domain } from "./types.ts";
 
 /** DESIGN §9: interpretation controls only; motivations are not parameters of a hook. */
 export interface InterpretParams {
+  /** DESIGN §5.1: proposed default 1; optional to preserve legacy serialized traces. */
+  readonly poolConcentration?: number;
   readonly eta: number;
   readonly alpha0: number;
   readonly lambda: number;

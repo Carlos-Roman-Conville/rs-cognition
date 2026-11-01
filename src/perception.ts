@@ -110,7 +110,11 @@ export function perceive(
       observations.push({ ...metadata, kind: "null", model });
       continue;
     }
-    if (stimulus.kind === "categorical") {
+    if (stimulus.kind === "message") {
+      if (stimulus.channel !== "report") throw new RangeError("Messages require the report channel");
+      observations.push({ ...metadata, channel: "report", kind: "message", model,
+        message: structuredClone(stimulus.message), context: structuredClone(stimulus.context) });
+    } else if (stimulus.kind === "categorical") {
       const values = stimulus.values;
       if (values.length === 0 || new Set(values).size !== values.length ||
           (stimulus.present && !values.includes(stimulus.value))) {
