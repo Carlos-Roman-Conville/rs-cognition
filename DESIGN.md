@@ -730,6 +730,9 @@ Re-seating is the PL track's (pirate keepers), after this baseline passes.
 | C-Q19 | §18 semantic profiles for Se, Si, Ne and Ni, and Fi's "what it notices" | **(Rex, 2026-10-31)** Se/Si/Ne/Ni roles accepted provisionally as pool feeders (§18.2), never an exclusive boundary: judging functions bias attention upstream (§16). Still open: whether Ne/Ni actively resolve meaning; Fi's "what it notices" |
 | C-Q20 | §19 sources and ranges for k_f, C_f,0 and the form of R_f (learning-opportunity availability and relevance) | open (Rex; versioned, crude until sourced) |
 | C-Q21 | §19 how developed competence C_f enters the L_f term of §9's allocation, and whether function experience E_f decays without practice | open (keeper proposal; Rex) |
+| C-Q22 | §18.4 Fi coherence: among valued things, or with the internal identity | **(Rex, 2026-11-01)** both, as two levels of one mechanism: compatibility among valued things builds an evaluative structure and identity, which then feeds back (λ_t · identityFit(X, I_t)); I_t is Cognition's existing self-model, never a separate store; changes through experience, never fixed by type |
+| C-Q23 | §18.4 which existing structure is the self-model I_t: the mind's beliefs about itself (§2.3, about = own handle), §13a mechanism 1's identity nodes, or both | open (keeper proposal: both, beliefs for traits, identity nodes for memberships) |
+| C-Q24 | §18.5 coherence principles for Ni (tentative: integrated pattern or anticipated trajectory), Se and Ne; and the form of match and update for Si | open (Rex) |
 | C-Q4 | The personality layer switches on only after CB-1…CB-7 pass on the null model | **(Rex, 2026-10-30)** kept; crude formulas written now (§9) |
 | C-Q10 | §9 v1 formulas F1–F13 and their crude constants (linear ω, N½ = 10, r = 1.5, K = 3, the /2 factors); what is off | Rex (each traces to his line) |
 | C-Q5 | Baseline need set: hunger, safety, social connection | Rex |
@@ -1173,6 +1176,160 @@ similar the current bubble is to the mind's exposure history, not to exposure wi
 ten communities dropped into an alien eleventh is back to reconstructing; narrow exposure means the mind either
 reconstructs constantly or forces home-bubble meanings onto the new group.
 
+### 18.4 Internal coherence: Ti and Fi share one compatibility primitive (Rex, 2026-11-01; proposed, not built)
+
+Rex's observation (2026-11-01, reviewed; his words count as his): Ti and Fi may share one underlying operation,
+**coherence building over an internal structure**, and differ in what counts as a valid connection. Ti assembles
+conceptual pieces by logical compatibility ("Lego pieces that fit together"); Fi assembles personally meaningful
+pieces by evaluative compatibility. Fi then has a more precise role than "liking things": it **organises individual
+likes into a coherent system of personal meaning**.
+
+- **One primitive, two criteria (proposed form):** a compatibility function over two items given a structure,
+`C_Fi(x_i, x_j | P)` with `P` the mind's accumulated personal evaluative structure (§13a mechanism 2, the
+preference structure), and `C_Ti(a, b | L)` with `L` the mind's conceptual structure (§2.3 beliefs and their
+links). Items carry perceived characteristics `x_i = (colour, shape, texture, symbolism, style, …)` as read by
+perception (§2.1), never true values. The same operation serves both; the criterion differs. This is §13a
+mechanism 5 (contextual, nonlinear evaluation of combinations) given a concrete shape, and it is one reusable
+computational primitive, not two functions made identical.
+- **Proposed scores (Rex, refined the same day):** for a set of items `X = {x_1 … x_n}`,
+`C_Fi(X) = Σ_i w_i · fit(x_i, P) + Σ_{i<j} v_ij · compat(x_i, x_j)`: the first term how well each item fits the
+internal structure `P`, the second the compatibility between items; and `C_Fe(X, c) = meaning(X, c)`, the meaning
+the assembled expression acquires in context `c` (the social environment, the audiences present, cultural
+associations, the intended communication; §18.1 meaning pools). Fi weighs relations among the components; Fe
+weighs the meaning their combination produces in a context. Proposed abstractions, not established equations.
+- **Fe assembles differently (Rex):** through contextual integration, how a combination will be read by the
+audiences present, whether it communicates a recognisable social identity, whether its apparent contradictions
+produce an intended impression (§18.1, §18.2 Fe). Fi asks whether the pieces belong together within its internal
+structure; Fe asks how they acquire meaning together within an interpersonal context.
+- **Rex's observation on styles:** romantic goth, mall goth and cybergoth have different visual vocabularies yet
+each is internally coherent: different goths are input reorientations of one Fi operation with different
+preference structures, not Fe-heavy remixing. The operation is therefore never tied to a colour, aesthetic or
+movement; a mind may prefer black and spikes, another white, clean lines and smooth surfaces, through the same
+operation. Pointillism keeps one construction principle; a mixed-media work gains coherence from an overarching
+message. **Refinement (Rex accepted):** mixing unlike things does not by itself mean Fe, and one consistent style
+does not by itself mean Fi: an Fi mind may combine radically different materials that fit a personal structure,
+and an Fe mind may hold one style because it communicates. The criterion for coherence decides, never the visible
+amount of variation, or the engine would classify by finished products instead of modelling the process.
+- **One primitive for the four judging functions (Rex, proposed):** Ti = internal conceptual compatibility; Fi =
+internal evaluative compatibility; Te = external definitional and procedural consistency (explicit shared
+definitions, §18.2); Fe = external contextual and interpersonal coherence (meaning resolved through context).
+Ti and Fi construct internally coherent systems; Te and Fe construct externally meaningful ones. The engine then
+needs one coherence-evaluation operation over relationships between components, with each function supplying its
+compatibility criterion, instead of four unrelated algorithms. Registered as an extension of the existing Fi/Fe
+semantic (§18) and preference (§13) mechanisms, never a new engine or row.
+- **What this does not say (Rex):** nothing about how an outfit looks. An Fi mind may combine gothic, military and
+formal pieces because they form a personally coherent identity; an Fe mind may combine the same pieces because
+they make a compelling social expression in a setting. The finished choices can be identical; the assembling
+process differs. No rule "Fi minimal, Fe maximal".
+- **Systematic without being verbal (Rex; §16.2 Fi row):** an Fi mind may consistently reject combinations it
+cannot explain ("that doesn't feel right"); the compatibility structure can be stable and testable even when
+articulation is low.
+- **General, not aesthetic (Rex):** the same Fi operation reaches music and artistic taste, personal values,
+romantic preferences (§13b), identity formation, moral judgement, and attachment to objects, places and people.
+It is a general mechanism of §13, with clothing (§13b "Style and presentation") its first observable case.
+- **Test to design (level 5):** give an Fi-weighted mind a wardrobe of items with perceived characteristics and
+let it assemble outfits over hundreds of decisions; measure whether accepted and rejected combinations show
+stable relations in colour, shape, symbolism and texture; repeat after changing the mind's experiences and
+bubble exposure (§18.1) and test that the structure evolves while keeping recognisable coherence; an Fe-weighted
+mind under the same wardrobe should vary with the audience present, an Fi-weighted one should not. **Prediction
+(Rex):** asked to assemble an aesthetic from unrelated components, Fi-weighted minds seek compatibility with an
+internal pattern, Fe-weighted minds seek a context that makes the combination meaningful; tested with the same
+components, different audiences and different learned aesthetic histories. The Function Activation Ledger
+(bench/diagnostics) records which function assembled each choice.
+
+| | Ti | Fi |
+|---|---|---|
+| **Organises** | concepts and their relationships | preferences and personal significance |
+| **Seeks** | logical coherence | evaluative coherence |
+| **Rejects** | contradiction | internal incompatibility |
+| **Preserves** | conceptual identity | personal significance |
+| **Can struggle with** | unresolved logical inconsistency | expressing why something feels incompatible |
+
+Provisional definitions within Rex's model (§9: hypotheses, never laws), not established properties of types. The
+strongest point (Rex): Fi's apparent subjectivity need not imply randomness; it can be a highly systematic
+construction of internally compatible expressions whose governing criteria are personal rather than explicitly
+logical.
+**C-Q22 answered (Rex, 2026-11-01): both, as two levels of the same Fi mechanism.** Fi first establishes
+compatibility among individually valued things; repeated compatible combinations build an internal evaluative
+structure and a developing identity; that identity then constrains which new combinations feel compatible. Identity
+need not be the source of every preference: it can emerge from accumulated preferences and experiences and then feed
+back. (Someone first likes black clothing, silver jewellery and certain silhouettes independently; repeated
+combination yields a coherent gothic aesthetic; later they reject items not disliked in themselves but conflicting
+with the established identity.) The extended score, proposed:
+`C_Fi(X, t) = Σ_i w_i · fit(x_i, P_t) + Σ_{i<j} v_ij · compat(x_i, x_j) + λ_t · identityFit(X, I_t)`, the three terms
+being individual preference, component coherence and identity coherence, with `I_t` the developing identity structure
+and `λ_t` how strongly identity weighs at time `t`; `I_t` changes through experience, so no identity is fully formed
+at birth. **Rules (Rex):** `I_t` is **Cognition's existing self-model, never a separate Fi-only identity store**
+(the mind's beliefs about itself, §2.3 with `about` = its own handle, and §13a mechanism 1's identity nodes; which
+of these is `I_t` is C-Q23); identity must change through experience; no fixed aesthetic, moral code or preference
+structure is imposed by type; internal compatibility stays distinct from external contextual coherence (Fe); a
+provisional hypothesis within §18.4, not a law; nothing here interrupts the frozen F1–F13 experiments or the ledger.
+**Implications (Rex):** Fi can grow more internally structured through experience without growing more externally
+articulate (§16.2); and a developmental prediction, younger Fi-weighted minds lean on individual preferences while
+accumulated experience produces increasingly organised evaluative structure and identity-based judgement, arising
+from learning history and never from an age unlock (§19).
+
+### 18.5 Reference matching: Si as consistency with an internalised representation (Rex, 2026-11-01; proposed, a start, not built)
+
+Rex's observation (2026-11-01, reviewed; "not the end of how this functions, but its start"): Si preserves
+coherence with an **internalised representation of what something is supposed to be**: a role, a character, a
+precedent. A child hears what a knight is, from stories, observed knights and social expectation, builds a
+representation of knighthood, and organises behaviour around it. **It reproduces what it believes a knight is, never
+what a knight objectively is** (§1: beliefs can be wrong), and that belief depends on what was experienced and how
+the other functions interpreted it.
+
+- **Proposed form:** `C_Si(a, R_i) = match(a, R_i)`, the degree to which a contemplated or observed action `a` fits
+the mind's learned representation `R_i` of the relevant role, identity or precedent; and
+`R_i(t+1) = update(R_i(t), O_t, I_t)`, the representation developing from new information `O_t` (observations,
+testimony, §2.1, §2.3) as interpreted `I_t`, where **the auxiliary function shapes the interpretation**.
+- **ISTJ (Si–Te) vs ISFJ (Si–Fe), proposed:** the same Si operation over the same role gives different outcomes
+by the auxiliary: Te reads knighthood through explicit rules, duties, definitions and procedures (§18.2 Te), so
+consistency is acting by the understood rules, and the rigidity is treating a rule as authoritative despite
+changed circumstances; Fe reads it through social meanings, expectations and contextual interpretation (§18.1
+meaning pools), so consistency is acting by the understood social meaning, often more strictly than any rule
+states, and the rigidity is treating a socially constructed interpretation as authoritative despite conflicting
+evidence. **Neither is correct by construction:** both can build inaccurate representations; they make different
+kinds of interpretive error (Rex's doctor: a representation "a doctor cures sick people" meets a physician who
+cannot cure one illness, and the mind either judges the physician incompetent or revises the representation; an
+Ne-weighted mind may already hold that doctors do not know every method).
+- **Refinement (Rex accepted): role consistency is one application of a general reference-matching operation**,
+which also serves a remembered person, a familiar environment, a learned procedure, a social role, an expected
+pattern of behaviour and a personal history. That is why Si reaches both memory (§16.2: physical detail, sensory
+similarity) and behaviour without two mechanisms: both compare the present against an internally retained
+reference.
+- **Reference fidelity and reference authority are different variables (Rex, 2026-11-01):** three separate
+quantities: `R_i`, the internal reference representation; `F_i`, confidence in the reference's accuracy; `A_i`,
+the authority assigned to it. The Si matching operation compares behaviour against `R_i` only; Cognition's
+existing belief system supplies `F_i` (§2.3, the belief's probability) and its motivation system supplies `A_i`
+(§2.2 needs and goals, the weight of conforming). A mind may remember a knight's code accurately and consider it
+unimportant; another may hold an inaccurate version as an absolute obligation. **Si is therefore never
+automatically obedient, traditional or rigid.**
+- **Si against Fi (Rex):** Fi may reject a role because it conflicts with the personal evaluative structure
+(§18.4); Si may preserve a role because it matches the learned understanding of who one is supposed to be. A mind
+can therefore strongly identify as a knight while personally disliking much of knighthood, and the tension emerges
+without a script.
+- **The coherence table so far (Rex; provisional):**
+
+| Function | What it attempts to preserve |
+|---|---|
+| **Ti** | internal conceptual consistency (§18.4) |
+| **Fi** | internal evaluative consistency (§18.4) |
+| **Te** | external definitional and procedural consistency (§18.4) |
+| **Fe** | external contextual and interpersonal coherence (§18.4) |
+| **Si** | consistency with an internalised representation or precedent (this section) |
+| **Ni** | **tentative:** consistency with an integrated underlying pattern or anticipated trajectory (open, C-Q24) |
+
+Se and Ne are not yet given a coherence principle (C-Q24).
+
+- **Test to design (Rex; level 5):** several simulated children receive different accounts of what a knight is
+(formal rules; heroic stories; observing real knights behaving imperfectly), develop through experience (§19), and
+are later placed where the learned representation conflicts with reality; measure which aspects of the role each
+function configuration preserves, reinterprets or abandons; with `F_i` and `A_i` separate, the experiment also
+tells apart a mind preserving an inaccurate representation from one that understands the role accurately and
+deliberately rejects it. It runs after the S1 and ledger chains, as a later test of Si with Te, Fe, Fi and
+accumulated experience. **Si does not preserve the past; it preserves an interpretation of the past, which can
+be wrong.**
+
 ## 19. Developmental cognitive functions (Rex, 2026-10-31; planned, personality layer; not built)
 
 Rex's direction (ENGINES.md, "Developmental cognitive functions"). It extends §9's dynamic allocation with development
@@ -1248,3 +1405,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-10-31 | §18 semantic systems recorded (Rex: meaning pools, selection vs reconstruction, bubble exposure, Fe/Ti/Te/Fi profiles as hypotheses; keeper's attachment to comprehend/encode); C-Q18 answered by Rex (both, by familiarity of the bubble), C-Q19 open with a frame offered; exposure depth and who-is-present context added (unit 2817). Not built. |
 | 2026-10-31 | §18 amended (Rex): perceiving-function roles accepted provisionally, not an exclusive boundary; C-Q18 selection by bubble similarity, reconstruction also within a conversation (unit 2820). |
 | 2026-10-31 | §19 developmental cognitive functions recorded (Rex: all four stack functions from birth, no age unlocks; hierarchy sets speed and focus; E_f and C_f with feedback into allocation; competence ≠ knowledge ≠ skill ≠ intelligence); C-Q20, C-Q21 open (unit 2896). Not built; does not interrupt the baseline or T-1/T-2. |
+| 2026-11-01 | §18.4 Ti/Fi shared compatibility primitive recorded (Rex: one coherence operation, two criteria; Fe by contextual integration; general mechanism of §13; outfit test); C-Q22 answered by Rex (two levels, identityFit term, self-model never a separate store), C-Q23 open; §18.5 Si reference matching recorded (Rex: C_Si = match(a, R_i), R_i updated through the auxiliary's interpretation; ISTJ/ISFJ contrast; knight test), C-Q24 open (unit 2921). Not built. |
