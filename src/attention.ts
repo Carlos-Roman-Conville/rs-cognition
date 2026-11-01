@@ -1,3 +1,5 @@
+import { nullPersonality } from "./personality.ts";
+import type { PersonalityModel } from "./personality.ts";
 import type { MindView, Relevance } from "./types.ts";
 
 /** Metadata only, projected at the sensory boundary. Arrays are in host mint order. */
@@ -39,6 +41,7 @@ function membership(value: number): number {
 export function allocateAttention(
   cues: readonly AttentionCue[], categories: readonly AttentionCategory[], ctx: MindView,
   hook: PertinenceHook = identityPertinence,
+  personality: PersonalityModel = nullPersonality,
 ): AttentionAllocation {
   if (new Set(categories.map((category) => category.id)).size !== categories.length) {
     throw new RangeError("Attention category ids must be unique");
@@ -49,6 +52,13 @@ export function allocateAttention(
     let pi = nonnegative(category.base, "base pertinence");
     for (const need of ctx.needs.needs) {
       pi += membership(need.priority) * membership(category.relevance[need.definition.id] ?? 0);
+    }
+    if (category.id === "equivocation") {
+      // DESIGN §5.1: neutral 0, added to this category only; v1 passes the field through.
+      const interpreted = personality.interpret({ eta: ctx.params.eta, alpha0: ctx.params.alpha0,
+        lambda: ctx.params.lambda, confidence: 1, weberFraction: 0, testimonyFloor: 0,
+        equivocationPertinence: 0 }, "none", ctx);
+      pi += nonnegative(interpreted.equivocationPertinence ?? 0, "equivocation pertinence");
     }
     base[category.id] = nonnegative(pi, "pertinence");
   }

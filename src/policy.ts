@@ -1,3 +1,5 @@
+import { settleTestimony } from "./communication/credibility.ts";
+import type { CredibilitySettlement } from "./communication/credibility.ts";
 import { comprehend } from "./communication/comprehend.ts";
 import type { CommunicationContext, ComprehendedUtterance } from "./communication/types.ts";
 import { simTime } from "@rex/kernel";
@@ -36,6 +38,7 @@ export interface ObservationUpdate {
   readonly kl: number | "Infinity";
 }
 export interface ObservationTrace {
+  readonly credibility?: readonly CredibilitySettlement[];
   readonly comprehension?: readonly ComprehendedUtterance[];
   readonly updates: readonly ObservationUpdate[];
 }
@@ -54,6 +57,11 @@ export function observeMemory(
 ): ObservationResult {
   simTime(t);
   let beliefs = memory.beliefs;
+  let reliability = memory.reliability;
+  let testimony = memory.testimony;
+  let termReadings = memory.termReadings;
+  let equivocationCues = memory.equivocationCues;
+  const credibility: CredibilitySettlement[] = [];
   const updates: ObservationUpdate[] = [];
   let meaningPool = memory.meaningPool;
   const comprehension: ComprehendedUtterance[] = [];
@@ -77,9 +85,12 @@ export function observeMemory(
         prior, posterior: applied, kl: kl === Infinity ? "Infinity" : kl });
     };
     if (observation.kind === "message") {
-      const understood = comprehend({ beliefs, reliability: memory.reliability, meaningPool }, observation.message,
+      const understood = comprehend({ beliefs, reliability, meaningPool, termReadings }, observation.message,
         { ...observation.context, ...communication, poolConcentration: interpreted.poolConcentration ?? 1 });
       meaningPool = understood.pool;
+      termReadings = understood.readings;
+      testimony = [...(testimony ?? []), ...understood.utterances.flatMap(u => u.pending ? [u.pending] : [])];
+      equivocationCues = understood.utterances.flatMap(u => u.equivocation ? [u.equivocation] : []);
       comprehension.push(...understood.utterances);
       confusionCues = understood.utterances.flatMap(item => item.confusion ? [item.confusion] : []);
       for (const utterance of understood.utterances) for (const testimony of utterance.testimony) {
@@ -88,6 +99,10 @@ export function observeMemory(
           updateCategorical(prior, testimony.likelihood, eta));
       }
     }
+    const settled = settleTestimony({ ...memory, reliability, testimony }, observation);
+    reliability = settled.reliability;
+    testimony = settled.testimony;
+    credibility.push(...settled.settlements);
     for (const entry of beliefs.entries) {
       if (entry.about !== observation.about ||
           (entry.attribute !== observation.attribute && entry.belief.kind !== "existence")) continue;
@@ -95,9 +110,13 @@ export function observeMemory(
       apply(entry.about, entry.attribute, entry.belief, updateFromObservation(entry.belief, observation, eta));
     }
   }
-  return { ...memory, beliefs, ...(meaningPool === undefined ? {} : { meaningPool }),
+  return { ...memory, beliefs, reliability,
+    ...(testimony === undefined ? {} : { testimony }),
+    ...(termReadings === undefined ? {} : { termReadings }),
+    ...(equivocationCues === undefined ? {} : { equivocationCues }),
+    ...(meaningPool === undefined ? {} : { meaningPool }),
     ...(confusionCues === undefined ? {} : { confusionCues }),
-    trace: { updates, ...(comprehension.length ? { comprehension } : {}) } };
+    trace: { updates, ...(credibility.length ? { credibility } : {}), ...(comprehension.length ? { comprehension } : {}) } };
 }
 
 /** DESIGN §3: π(o,m,n,p,θ,rng,t), pure apart from the explicitly supplied stream.
@@ -115,6 +134,9 @@ export function policy(
   const evaluation = evaluateActions(generation, view, memory.episodes, m.decision.context, t, p);
   const selected = selectAction(evaluation, m.decision, rng);
   return { intention: selected.intention, trace: selected.trace, counters: selected.counters,
-    next: { ...(memory.meaningPool === undefined ? {} : { meaningPool: memory.meaningPool }),
+    next: { ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),
+      ...(memory.termReadings === undefined ? {} : { termReadings: memory.termReadings }),
+      ...(memory.equivocationCues === undefined ? {} : { equivocationCues: memory.equivocationCues }),
+      ...(memory.meaningPool === undefined ? {} : { meaningPool: memory.meaningPool }),
       ...(memory.confusionCues === undefined ? {} : { confusionCues: memory.confusionCues }), beliefs: memory.beliefs, episodes: memory.episodes, reliability: memory.reliability } };
 }

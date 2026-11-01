@@ -159,7 +159,11 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
         random.restore(streamState); // Kernel validates the recorded 32-bit state before publication.
       }
       observationTrace = memory.trace;
-      mind = { ...mind, observations, memory: { ...mind.memory, ...(memory.meaningPool === undefined ? {} : { meaningPool: memory.meaningPool }),
+      mind = { ...mind, observations, memory: { ...mind.memory,
+        ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),
+        ...(memory.termReadings === undefined ? {} : { termReadings: memory.termReadings }),
+        ...(memory.equivocationCues === undefined ? {} : { equivocationCues: memory.equivocationCues }),
+        ...(memory.meaningPool === undefined ? {} : { meaningPool: memory.meaningPool }),
         ...(memory.confusionCues === undefined ? {} : { confusionCues: memory.confusionCues }),
         beliefs: memory.beliefs, episodes: memory.episodes, reliability: memory.reliability } };
       break;

@@ -1,6 +1,6 @@
 import { getBelief, reliabilityMean } from "../beliefs.ts";
 import type { CategoricalBelief, MemoryState, MindView } from "../types.ts";
-import type { CommunicationContext, ComprehendedUtterance, MeaningCandidate, MeaningPool, Message } from "./types.ts";
+import type { CommunicationContext, ComprehendedUtterance, MeaningCandidate, MeaningPool, Message, TermReading } from "./types.ts";
 
 function count(n: number): number {
   if (!Number.isFinite(n) || n < 0) throw new RangeError("Meaning counts must be finite and nonnegative");
@@ -45,15 +45,16 @@ export function reinforce(pool: MeaningPool, term: string, meaning: string, bubb
   if (!candidate) throw new RangeError("Cannot reinforce an unknown meaning");
   return reconstruct(pool, term, candidate, bubble);
 }
-export type ComprehensionView = Pick<MindView, "beliefs"> & Pick<MemoryState, "reliability" | "meaningPool">;
+export type ComprehensionView = Pick<MindView, "beliefs"> & Pick<MemoryState, "reliability" | "meaningPool" | "termReadings">;
 /** DESIGN §5.1: meaning selection, prior fit and credibility mixture; no belief mutation.
  * Unknown speakers use proposed Beta(1,1) ignorance. Speaker intent is not a definition.
  */
 export function comprehend(view: ComprehensionView, message: Message, context: CommunicationContext): {
-  readonly pool: MeaningPool; readonly utterances: readonly ComprehendedUtterance[];
+  readonly readings: readonly TermReading[]; readonly pool: MeaningPool; readonly utterances: readonly ComprehendedUtterance[];
 } {
   if (!Number.isFinite(context.thetaPre) || context.thetaPre < 0 || context.thetaPre > 1) throw new RangeError("Invalid fit threshold");
   let pool = view.meaningPool ?? {};
+  let readings = view.termReadings ?? [];
   for (const usage of context.usage ?? []) pool = reconstruct(pool, usage.term, usage.meaning, usage.bubble);
   for (const confirmed of context.confirmed ?? []) pool = reinforce(pool, confirmed.term, confirmed.meaning, confirmed.bubble);
   const r = reliabilityMean(view.reliability.find(entry => entry.speaker === message.sender)?.belief ?? { alpha: 1, beta: 1 });
@@ -80,9 +81,21 @@ export function comprehend(view: ComprehensionView, message: Message, context: C
         (m.attribute === attribute ? (value === m.value.value ? r : 0) + (1 - r) / prior.values.length : 1), 0));
       testimony.push({ about: utterance.about, attribute, values: prior.values, likelihood });
     }
-    return { utterance, distribution, F, ...(!distribution || F < context.thetaPre ? {
+    // DESIGN §5.1: stable mint-order argmax; track only within an identified conversation.
+    const best = distribution && meanings[probabilities.reduce((best, p, i) => p > probabilities[best] ? i : best, 0)];
+    const previous = readings.find(r => r.speaker === message.sender && r.conversation === context.conversation && r.term === utterance.term);
+    const equivocation = best && previous && previous.meaning !== best.id && !utterance.declared
+      ? { speaker: message.sender, term: utterance.term, from: previous.meaning, to: best.id } : undefined;
+    if (best && context.conversation !== undefined) {
+      const reading = { speaker: message.sender, conversation: context.conversation, term: utterance.term, meaning: best.id };
+      readings = previous ? readings.map(r => r === previous ? reading : r) : [...readings, reading];
+    }
+    return { utterance, distribution, F,
+      ...(equivocation ? { equivocation } : {}),
+      ...(best ? { pending: { speaker: message.sender, about: utterance.about, attribute: best.attribute, value: best.value.value, t: message.t } } : {}),
+      ...(!distribution || F < context.thetaPre ? {
       confusion: { speaker: message.sender, term: utterance.term, F },
     } : {}), testimony };
   });
-  return { pool, utterances };
+  return { pool, utterances, readings };
 }

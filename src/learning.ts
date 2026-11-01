@@ -1,3 +1,5 @@
+import { settleTestimony } from "./communication/credibility.ts";
+import type { CredibilitySettlement } from "./communication/credibility.ts";
 import { simTime } from "@rex/kernel";
 import type { Counters, SimTime } from "@rex/kernel";
 import {
@@ -71,6 +73,7 @@ export interface LatentUpdate {
 }
 
 export interface LearningTrace {
+  readonly credibility?: readonly CredibilitySettlement[];
   readonly mind: string;
   readonly intention: string;
   readonly t: SimTime;
@@ -251,16 +254,25 @@ export function learnOutcome(
     updates.push({ id: latent.id, prior, posterior, kl: kl === Infinity ? "Infinity" : kl, eta,
       learning: { ...learning, beliefHalfLife: learning.beliefHalfLife === Infinity ? null : learning.beliefHalfLife } });
   }
+  const credibility: CredibilitySettlement[] = [];
+  let testimony = memory.testimony;
+  // DESIGN section 5.1: outcome observations also settle pending claims, using the same helper.
+  for (const observation of outcome.observations) {
+    const settled = settleTestimony({ ...memory, reliability, testimony }, observation);
+    reliability = settled.reliability;
+    testimony = settled.testimony;
+    credibility.push(...settled.settlements);
+  }
   const attributedCause = attributeCause(updates, epsilon);
   // DESIGN §2.5: encode by default; complete one episode with the read-out, never update latents again.
   const encoded = (inputs.encode ?? true) ? encodeEpisode({ t: outcome.t, context: inputs.context,
     action: intention.action, outcome: perceived.outcome, reward, predictionError,
     attributedCause, domain: inputs.domain }, counters) : undefined;
-  const next = beliefs === memory.beliefs && reliability === memory.reliability && !encoded ? memory : {
-    ...memory, beliefs, reliability, episodes: encoded ? [...memory.episodes, encoded.episode] : memory.episodes,
+  const next = beliefs === memory.beliefs && reliability === memory.reliability && testimony === memory.testimony && !encoded ? memory : {
+    ...memory, beliefs, reliability, ...(testimony === undefined ? {} : { testimony }), episodes: encoded ? [...memory.episodes, encoded.episode] : memory.episodes,
   };
   return { next, counters: encoded?.counters ?? counters, episode: encoded?.episode,
-    trace: { mind: inputs.mind, intention: intention.id, t: outcome.t, observations: outcome.observations,
+    trace: { ...(credibility.length ? { credibility } : {}), mind: inputs.mind, intention: intention.id, t: outcome.t, observations: outcome.observations,
       outcome: perceived.outcome, reward, expectedUtility, predictionError,
       updates, attributedCause, epsilonAttribution: epsilon, likelihoodFloor: LEARNING_LIKELIHOOD_FLOOR,
       episode: encoded?.episode.id } };

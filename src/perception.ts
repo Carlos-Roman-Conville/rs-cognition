@@ -145,3 +145,12 @@ export function perceive(
   }
   return observations;
 }
+
+/** DESIGN §5.1: expose internal cues at the existing sensory boundary for the next epoch.
+ * Proposed detectability 1; callers combine these with external cues before allocating attention.
+ */
+export function equivocationStimuli(cues: readonly import("./communication/types.ts").EquivocationCue[]): Stimulus[] {
+  return cues.map((cue, i) => ({ cue: `equivocation:${i}`, about: cue.speaker,
+    attribute: `equivocation:${cue.term}`, channel: "report", present: true, detectability: 1,
+    relevance: { equivocation: 1 }, domain: "none", kind: "categorical", value: cue.to, values: [cue.to] }));
+}

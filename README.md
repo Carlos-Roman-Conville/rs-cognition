@@ -57,3 +57,29 @@ readings about a different attribute supply constant likelihood 1 for that attri
 `"bubble:<group handle>": true`. Hosts encode every group present, including speaker
 and listener groups, using these features. Each episode's retrieval weight is split
 equally among its groups. Salience remains 1 pending section 16. Nothing is stored twice.
+
+Supply `context.conversation` to track each partner's most probable term reading
+within a conversation. Without a handle, messages are independent conversations.
+An undeclared switch appears in the comprehension trace and in
+`memory.equivocationCues`. At the next sensory epoch, convert those cues with
+`equivocationStimuli`, combine them with external stimuli, and use the existing
+`attentionCues`, `allocateAttention`, and `perceive` path. Include an `equivocation`
+attention category with base 0. The optional final personality argument to
+`allocateAttention` adds its interpret hook's `equivocationPertinence` (default 0).
+The host consumes the latest cue batch once; no extra perception stream is used.
+
+`memory.testimony` holds pending claims under the listener's most probable reading,
+not the speaker's intended meaning. A later direct categorical observation settles
+all older claims on that attribute, weighted by identification confidence `q`.
+Reports and null detections do not settle claims. Settlements appear as
+`observationTrace.credibility`, including prior, posterior and KL.
+
+`persuasion` is a pure diagnostic for one utterance and one action/target. Supply
+belief snapshots immediately before and after that utterance, the usual generation
+and evaluation inputs, and explicit speaker claims for the counterfactuals. It
+tracks the beliefs actually read by the action's naive model, evaluates one claim
+at a time, and reports changed targets, candidate utilities, the largest positive
+gap reduction and whether the message hit that objection. Counterfactuals put full
+categorical mass on the claimed value; ties follow claim order. Missing alternatives
+cannot be inferred from another mind. This record is returned to the caller only;
+no decision code reads it.

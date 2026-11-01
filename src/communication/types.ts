@@ -26,7 +26,12 @@ export interface Message {
   readonly utterances: readonly Utterance[];
 }
 export interface ConfusionCue { readonly speaker: EntityHandle; readonly term: string; readonly F: number }
+export interface EquivocationCue { readonly speaker: EntityHandle; readonly term: string; readonly from: string; readonly to: string }
+export interface TermReading { readonly speaker: EntityHandle; readonly conversation: string; readonly term: string; readonly meaning: string }
+export interface PendingTestimony { readonly speaker: EntityHandle; readonly about: EntityHandle; readonly attribute: string; readonly value: string; readonly t: SimTime }
 export interface CommunicationContext {
+  /** Host conversation handle; omitted messages are independent conversations (proposed). */
+  readonly conversation?: string;
   readonly bubble: string;
   readonly thetaPre: number;
   readonly poolConcentration?: number;
@@ -39,6 +44,8 @@ export interface ComprehendedUtterance {
   readonly distribution: CategoricalBelief | undefined;
   readonly F: number;
   readonly confusion?: ConfusionCue;
+  readonly equivocation?: EquivocationCue;
+  readonly pending?: PendingTestimony;
   readonly testimony: readonly {
     readonly about: EntityHandle; readonly attribute: string;
     readonly values: readonly string[]; readonly likelihood: readonly number[];

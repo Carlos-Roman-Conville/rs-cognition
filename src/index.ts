@@ -18,3 +18,6 @@ export * from "./valuation.ts";
 export * from "./communication/types.ts";
 export * from "./communication/comprehend.ts";
 export * from "./communication/exposure.ts";
+
+export * from "./communication/credibility.ts";
+export * from "./communication/persuasion.ts";
