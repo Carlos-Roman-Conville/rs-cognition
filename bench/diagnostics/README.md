@@ -4,6 +4,20 @@ Diagnostic analysis of the existing S1 processing trace and common-random-number
 counterfactual runs. No engine outputs, formulas, parameters or decisions are added
 or changed in the original run. See HANDOFF.md for the remaining blockers.
 
+## Dashboard
+
+Static, offline viewer for `ledger-report.json` (schema `function-ledger-report/v1`) and
+optional detailed ledger exports (`function-ledger/v1` with `records` for hook-level rows).
+
+```powershell
+# From repo root — open in a browser (file://, no server required)
+start bench/diagnostics/dashboard/index.html
+```
+
+Use **Ledger report JSON** to load output from a run (`bench/scenarios/s1-forage/out/ledger-report.json`)
+or **Reload sample** for hand-authored illustrative data in `sample-ledger.json`. The page never reads
+`INTENDED-RELEVANCE.md`; comparing observed versus intended relevance maps stays a human review step.
+
 ## Run
 
 ```powershell
