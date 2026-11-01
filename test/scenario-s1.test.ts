@@ -135,7 +135,8 @@ describe("S1 forage fixture (DESIGN bench/scenarios §2)", () => {
       expect(trace.learning.intention).toBe(row.intention.id);
       expect(trace.learning.updates).toHaveLength(36);
       expect(trace.beliefDeltas).toEqual(trace.learning.updates);
-      expect(trace.observationBeliefDeltas).toBeNull();
+      expect(trace.observationBeliefDeltas).not.toBeNull();
+      expect(trace.observationBeliefDeltas.length).toBeGreaterThan(0);
       expect(new Set(trace.hooks.map((hook) => hook.hook))).toEqual(new Set(["pertinence", "interpret", "generate", "learning"]));
       expect(trace.hooks.every((hook) => hook.formulaIds === null)).toBe(true);
       expect(trace.selection.inputs.generation.checks.some((check) => !check.eligible)).toBe(true);

@@ -2,12 +2,6 @@
 
 ## Blocked
 
-- **Observation belief deltas:** S1 explicitly emits `observationBeliefDeltas: null`.
-  Hook parameter deltas and outcome-learning prior/posterior deltas are available, but
-  the former do not reconstruct the missing observation updates. The ledger preserves
-  null. Smallest engine addition: include the observation update's existing prior and
-  posterior (with observation/cue identity) in the public observe result/trace; the host
-  can then copy it into its existing processing trace. No second event log is needed.
 - **Strict independent function attribution:** frozen v1 has no per-function disable
   switch. F1/F2/F3 depend jointly on stack attitude; F7 and F11 also combine functions.
   The permitted fallback is implemented: whole-formula groups mapped to functions,
@@ -28,8 +22,8 @@
   or authorize separating influence studies from always-on summaries.
 
 This handoff is inside `bench/diagnostics/` because the task's explicit changed-path
-gate excludes the root HANDOFF.md. No engine, personality formula, parameter, design,
-or hypothesis file was changed. There was no S1 README at the requested path.
+gate excludes the root HANDOFF.md. The original ledger added no engine behavior, personality formula, parameter, design,
+or hypothesis change; observation diagnostics were subsequently added by 3013. There was no S1 README at the requested path.
 
 ## Integration notes
 
@@ -50,3 +44,7 @@ or hypothesis file was changed. There was no S1 README at the requested path.
 - S1 output creates its own ignored `out/.gitignore` containing `*` before writing
   artifacts. This satisfies the output-ignore requirement without editing paths the
   task gate forbids. The file ignores itself and all generated output.
+
+## Observation diagnostics (3013)
+
+Public observe results now expose readonly prior/posterior belief updates, cue identity, observation index, target attribute/about and JSON-safe KL. S1 copies these into `observationBeliefDeltas`; attention and interpretation ledger records retain the base-trajectory deltas. These are subjective beliefs, not independent causal shares. Ablation logic is unchanged.

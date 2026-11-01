@@ -8,6 +8,7 @@ import type { NeedInputs } from "./needs.ts";
 import { nullPersonality } from "./personality.ts";
 import type { PersonalityModel } from "./personality.ts";
 import { observeMemory, policy } from "./policy.ts";
+import type { ObservationTrace } from "./policy.ts";
 import type { SelectionTrace } from "./select.ts";
 import { DEFAULT_COGNITIVE_PARAMS } from "./types.ts";
 import type { CognitiveParams, Episode, Intention, MemoryState, NeedState, Observation } from "./types.ts";
@@ -79,7 +80,7 @@ export type MindCommand =
 export type CognitionEmission =
   | { readonly type: "cognition.intention"; readonly payload: Intention }
   | { readonly type: "cognition.attribution"; readonly payload: LearningTrace; readonly cause: string };
-export interface MindResult { readonly state: MindsState; readonly events: CognitionEmission[]; readonly added?: string }
+export interface MindResult { readonly state: MindsState; readonly events: CognitionEmission[]; readonly added?: string; readonly observationTrace?: ObservationTrace }
 
 export function createMindsState(runSeed: number): MindsState {
   if (!Number.isSafeInteger(runSeed)) throw new RangeError("Run seed must be a safe integer");
@@ -145,6 +146,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
   let counters = state.counters;
   let streamState = state.streams;
   const events: CognitionEmission[] = [];
+  let observationTrace: ObservationTrace | undefined;
   switch (command.type) {
     case "observe": {
       const observations = structuredClone(command.observations);
@@ -155,7 +157,8 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
           [`cognition.perception.detect@${qualify("cognition", mind.id)}`]: command.perceptionState };
         random.restore(streamState); // Kernel validates the recorded 32-bit state before publication.
       }
-      mind = { ...mind, observations, memory };
+      observationTrace = memory.trace;
+      mind = { ...mind, observations, memory: { beliefs: memory.beliefs, episodes: memory.episodes, reliability: memory.reliability } };
       break;
     }
     case "tickNeeds": {
@@ -213,7 +216,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
     }
   }
   return { state: { ...state, counters, streams: streamState,
-    minds: state.minds.map((previous, i) => i === index ? mind : previous) }, events };
+    minds: state.minds.map((previous, i) => i === index ? mind : previous) }, events, ...(observationTrace ? { observationTrace } : {}) };
 }
 
 export class MindsRunner extends Runner<MindsState, MindCommand, MindResult, CognitionEmission> {

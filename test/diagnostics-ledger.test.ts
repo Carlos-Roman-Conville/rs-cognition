@@ -28,6 +28,8 @@ describe("Function Activation Ledger (DESIGN diagnostics §4)", () => {
         expect(record.chosenAction).toEqual({ action: run.hostInputLog[record.epoch - 1].intention.action,
           target: run.hostInputLog[record.epoch - 1].intention.target });
         expect(record.needPriorities.length).toBeGreaterThan(0);
+        expect(record.observationBeliefDeltas).toEqual(record.hook === "pertinence" || record.hook === "interpret"
+          ? run.hostInputLog[record.epoch - 1].trace.observationBeliefDeltas : null);
       }
       const sum = emptyTotals();
       for (const row of detailed.summary) addTotals(sum, row);

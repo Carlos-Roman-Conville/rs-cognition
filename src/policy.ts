@@ -2,12 +2,12 @@ import { simTime } from "@rex/kernel";
 import type { Counters, RandomStream, SimTime } from "@rex/kernel";
 import { generateActions } from "./actions.ts";
 import type { GenerationInputs } from "./actions.ts";
-import { setBelief, updateFromObservation } from "./beliefs.ts";
+import { getBelief, klDivergence, setBelief, updateFromObservation } from "./beliefs.ts";
 import { evaluateActions } from "./evaluate.ts";
 import type { PersonalityModel } from "./personality.ts";
 import { selectAction } from "./select.ts";
 import type { SelectionTrace } from "./select.ts";
-import type { CognitiveParams, Episode, Intention, MemoryState, MindView, NeedState, Observation } from "./types.ts";
+import type { Belief, CognitiveParams, Episode, Intention, MemoryState, MindView, NeedState, Observation } from "./types.ts";
 
 /** §3's memory plus the host affordances and bookkeeping required by §2.4.
  * This ephemeral view may contain pure host expressions; never persist it in Runner state/logs.
@@ -22,6 +22,24 @@ export interface PolicyMemoryState extends MemoryState {
   };
 }
 
+/** Subjective diagnostics in observation order, then belief insertion order. */
+export interface ObservationUpdate {
+  readonly cue: string;
+  readonly observationIndex: number;
+  readonly attribute: string;
+  readonly about: string;
+  readonly prior: Belief;
+  readonly posterior: Belief;
+  /** Same JSON-safe singular KL representation as LearningTrace. */
+  readonly kl: number | "Infinity";
+}
+export interface ObservationTrace {
+  readonly updates: readonly ObservationUpdate[];
+}
+export interface ObservationResult extends MemoryState {
+  readonly trace: ObservationTrace;
+}
+
 /** DESIGN §1, §2.3: observe declared attributes in input order, without inventing priors.
  * Hosts must declare support/priors for every attribute they want learned. Existence
  * entries for the same entity also receive detection evidence, once per observation.
@@ -29,10 +47,11 @@ export interface PolicyMemoryState extends MemoryState {
 export function observeMemory(
   observations: readonly Observation[], memory: MemoryState, needs: NeedState,
   personality: PersonalityModel, params: CognitiveParams, t: SimTime,
-): MemoryState {
+): ObservationResult {
   simTime(t);
   let beliefs = memory.beliefs;
-  for (const observation of observations) {
+  const updates: ObservationUpdate[] = [];
+  for (const [observationIndex, observation] of observations.entries()) {
     simTime(observation.t);
     if (observation.t > t) throw new RangeError("Observation is in the future");
     const view: MindView = { beliefs, needs, params };
@@ -44,9 +63,14 @@ export function observeMemory(
       if (entry.about !== observation.about ||
           (entry.attribute !== observation.attribute && entry.belief.kind !== "existence")) continue;
       beliefs = setBelief(beliefs, entry.about, entry.attribute, updateFromObservation(entry.belief, observation, eta));
+      const posterior = getBelief(beliefs, entry.about, entry.attribute)!;
+      // DESIGN section 2.3, 2.5: diagnostic KL only; reuse the applied posterior.
+      const kl = klDivergence(posterior, entry.belief);
+      updates.push({ cue: observation.cue, observationIndex, attribute: entry.attribute, about: entry.about,
+        prior: entry.belief, posterior, kl: kl === Infinity ? "Infinity" : kl });
     }
   }
-  return { ...memory, beliefs };
+  return { ...memory, beliefs, trace: { updates } };
 }
 
 /** DESIGN §3: π(o,m,n,p,θ,rng,t), pure apart from the explicitly supplied stream.

@@ -5,7 +5,7 @@ import {
 } from "../../../src/index.ts";
 import type {
   CognitionEmission, LearningTrace, MindCommand, MindResult, MindsState, Observation, PersonalityModel,
-  PersonalityType, SelectionTrace, V1Context,
+  PersonalityType, ObservationTrace, SelectionTrace, V1Context,
 } from "../../../src/index.ts";
 import { ETA_MIN } from "../../personality-models.ts";
 import { data, FIXTURE } from "./field.ts";
@@ -27,7 +27,7 @@ export interface ProcessingTrace {
   candidates: SelectionTrace["inputs"]["generation"]["candidates"];
   evaluation: { action: string; target?: string; expectedUtility: number }[];
   beliefDeltas: LearningTrace["updates"];
-  observationBeliefDeltas: null;
+  observationBeliefDeltas: ObservationTrace["updates"];
   learning: LearningTrace;
   hooks: HookCall[];
 }
@@ -40,6 +40,7 @@ export class Forager {
   private hooks: HookCall[] = [];
   private sensed?: Sensed;
   private selection?: SelectionTrace;
+  private observationTrace?: ObservationTrace;
 
   constructor(seed: number, patches: readonly string[], configuration: Configuration = { version: "null" }) {
     let model: PersonalityModel = nullPersonality;
@@ -87,7 +88,7 @@ export class Forager {
     const mind = this.runner.state.minds[0];
     this.sensed = sensor({ beliefs: mind.memory.beliefs, needs: mind.needs, params: mind.params }, this.personality,
       (context) => { this.context = context; });
-    this.runner.run({ type: "observe", mind: this.id, t, observations: this.sensed.observations });
+    this.observationTrace = this.runner.run({ type: "observe", mind: this.id, t, observations: this.sensed.observations }).observationTrace!;
     this.runner.run({ type: "tickNeeds", mind: this.id, inputs: { signals: { "body.hunger_signal": hunger },
       elapsedSeconds: FIXTURE.epochMs / 1000, outcomeTags: [], cues: [] } });
     // fixture rule (DESIGN bench/scenarios §2): retrieve kind episodes using the most likely perceived colour at own location.
@@ -113,7 +114,7 @@ export class Forager {
     return { attention: sensed.attention, interpretation: sensed.interpretation, selection,
       candidates: selection.inputs.generation.candidates,
       evaluation: selection.candidates.map((row) => ({ action: row.candidate.action, target: row.candidate.target, expectedUtility: row.expectedUtility })),
-      // Existing public attribution deltas, as in hungry-pair. Observation-update deltas are not emitted (HANDOFF.md).
-      beliefDeltas: learning.updates, observationBeliefDeltas: null, learning, hooks: this.hooks };
+      // Copy public subjective diagnostics into the existing host epoch trace.
+      beliefDeltas: learning.updates, observationBeliefDeltas: this.observationTrace!.updates, learning, hooks: this.hooks };
   }
 }

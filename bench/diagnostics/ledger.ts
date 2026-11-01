@@ -18,7 +18,7 @@ export interface LedgerRecord {
   activation: 0 | 1; eligibility: Eligibility; triggerTags: string[]; domains: string[];
   needPriorities: { id: string; priority: number }[]; formulas: string[];
   changedHookCalls: number; attentionMoved: number; interpretationDeltas: Record<string, number>;
-  observationBeliefDeltas: null;
+  observationBeliefDeltas: EpochLog["trace"]["observationBeliefDeltas"] | null;
   generation: { added: string[]; removed: string[]; reordered: boolean; parameterMagnitude: number };
   learningContribution: number; deltaU: number | null;
   chosenAction: { action: string; target?: string }; laterLearning: EpochLog["trace"]["learning"]["updates"];
@@ -127,7 +127,8 @@ export function localRecord(row: EpochLog, ablate: ReturnType<typeof adapter>, d
     activation, eligibility: activation ? "activated" : relevant ? "eligible-not-activated" : "no-relevant-input",
     triggerTags: [...new Set([...domains, ...row.cues.flatMap((cue) => cue.tags)])], domains,
     needPriorities: row.trace.selection.needs.needs.map((need) => ({ id: need.definition.id, priority: need.priority })),
-    formulas: [...formulas], changedHookCalls, attentionMoved, interpretationDeltas, observationBeliefDeltas: null, generation,
+    formulas: [...formulas], changedHookCalls, attentionMoved, interpretationDeltas, observationBeliefDeltas:
+      disabled.hook === "pertinence" || disabled.hook === "interpret" ? row.trace.observationBeliefDeltas : null, generation,
     learningContribution, deltaU: null, chosenAction: { action: row.intention.action, target: row.intention.target }, laterLearning: row.trace.learning.updates };
 }
 
@@ -135,7 +136,7 @@ export function buildLedger(run: Run, level: LedgerLevel = "summary", execute = 
   if (!run.hostInputLog.length) throw new Error("Ledger needs a completed S1 run");
   const ledger: Ledger = { schema: "function-ledger/v1", scenario: run.scenario, seed: run.seed, configuration: run.configuration,
     method: "FL-1/formula-group-ablation", limitations: ["Shared formula groups overlap; function totals are not additive causal shares.",
-      "Observation belief deltas are unavailable; learning contribution is domain KL, not developmental E_f.",
+      "Observation deltas describe the base trajectory, not independent causal shares; learning contribution is domain KL, not developmental E_f.",
       "DeltaU is a full-trajectory ablation effect; absent comparable chosen actions are excluded, not zero."],
     developmentalStage: null, upbringing: null, totals: emptyTotals(), summary: [], domains: [], ...(level === "detailed" ? { records: [] } : {}) };
   const summary = new Map<string, SummaryRow>(), domains = new Map<string, SummaryRow>();
