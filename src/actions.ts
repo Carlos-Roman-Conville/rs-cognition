@@ -1,10 +1,11 @@
 import { categorical } from "./beliefs.ts";
 import { nullPersonality } from "./personality.ts";
 import type { GenerateParams, PersonalityModel } from "./personality.ts";
-import type { BeliefStore, Candidate, CategoricalBelief, Domain, MindView, PredictedOutcome } from "./types.ts";
+import type { AssetDefinition, ExchangeSpec, BeliefStore, Candidate, CategoricalBelief, Domain, MindView, PredictedOutcome } from "./types.ts";
 
 /** DESIGN §2.4: pure host expressions consume only this mind's beliefs. */
 export interface ActionDefinition {
+  readonly exchange?: ExchangeSpec;
   readonly id: string;
   readonly target?: string;
   /** DESIGN §2.4: host repertoire data passed through untouched; numbers only; Cognition never reads a term */
@@ -20,6 +21,7 @@ export interface ActionDefinition {
 }
 
 export interface GenerationInputs {
+  readonly assets?: readonly AssetDefinition[];
   readonly repertoire: readonly ActionDefinition[];
   /** Required host data, including its id: the engine has no reserved action ids. */
   readonly wait: ActionDefinition;
@@ -28,6 +30,7 @@ export interface GenerationInputs {
 }
 
 export interface GenerationResult {
+  readonly assets?: readonly AssetDefinition[];
   readonly candidates: readonly Candidate[];
   readonly params: GenerateParams;
   readonly thetaPre: number;
@@ -43,9 +46,16 @@ function nonnegative(value: number, name: string): void {
   if (!Number.isFinite(value) || value < 0) throw new RangeError(`${name} must be finite and nonnegative`);
 }
 
-function validateFeasibility(candidate: Pick<Candidate, "cost" | "capacityRequired" | "duration" | "preconditions" | "terms">): void {
+function validateFeasibility(candidate: Pick<Candidate, "cost" | "capacityRequired" | "duration" | "preconditions" | "terms" | "exchange">): void {
   for (const value of Object.values(candidate.terms ?? {})) {
     if (!Number.isFinite(value)) throw new RangeError("Term values must be finite numbers");
+  }
+  if (candidate.exchange) {
+    const { give, want } = candidate.exchange;
+    if (give.asset === want.asset) throw new RangeError("Exchange assets must differ");
+    for (const units of [give.units, ...(want.units === undefined ? [] : [want.units])]) {
+      if (!Number.isFinite(units) || units <= 0) throw new RangeError("Exchange units must be finite and positive");
+    }
   }
   nonnegative(candidate.cost, "cost");
   nonnegative(candidate.capacityRequired, "required capacity");
@@ -101,6 +111,7 @@ export function generateActions(
   if (thetaPre > 1) throw new RangeError("thetaPre must be <= 1");
   nonnegative(inputs.body.capacity_functional, "body.capacity_functional");
   const wait = inputs.wait;
+  if (wait.exchange !== undefined) throw new RangeError("The host fallback must have no exchange");
   if (wait.terms !== undefined) throw new RangeError("The host's fallback must have no terms");
   if (wait.preconditions.length !== 0 || wait.capacityRequired !== 0 || wait.cost !== 0 || wait.duration !== 1) {
     throw new RangeError("The host's fallback must be unconditional, zero-cost, zero-capacity and one epoch");
@@ -115,6 +126,7 @@ export function generateActions(
     }
     const metadata = {
       action: definition.id, target: definition.target, targetKind: definition.targetKind,
+      ...(definition.exchange === undefined ? {} : { exchange: definition.exchange }),
       ...(definition.terms === undefined ? {} : { terms: definition.terms }),
       domain: definition.domain, duration: definition.duration, cost: definition.cost,
       capacityRequired: definition.capacityRequired,
@@ -146,6 +158,6 @@ export function generateActions(
   if (result.some((candidate, i) => result.slice(0, i).some((other) => sameAction(candidate, other)))) {
     throw new RangeError("Generated action/target pairs must be unique");
   }
-  return { candidates: result.map(freezeCandidate), params: generated.params, thetaPre,
+  return { ...(inputs.assets === undefined ? {} : { assets: structuredClone(inputs.assets) }), candidates: result.map(freezeCandidate), params: generated.params, thetaPre,
     capacityFunctional: inputs.body.capacity_functional, checks };
 }

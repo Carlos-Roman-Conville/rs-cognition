@@ -3,10 +3,11 @@ import type { SimTime } from "@rex/kernel";
 import { validateCandidate } from "./actions.ts";
 import type { GenerationResult } from "./actions.ts";
 import { outcomeExpectations } from "./memory.ts";
+import { assetValue, believedRate } from "./valuation.ts";
 import { driveReward, goalReward } from "./needs.ts";
 import { nullPersonality } from "./personality.ts";
 import type { InterpretParams, PersonalityModel } from "./personality.ts";
-import type { Candidate, CategoricalBelief, Episode, MindView, PredictedOutcome } from "./types.ts";
+import type { AssetDefinition, Candidate, CategoricalBelief, DecisionTrace, Episode, MindView, PredictedOutcome } from "./types.ts";
 
 export interface OutcomeUtility {
   readonly outcome: string;
@@ -18,7 +19,11 @@ export interface OutcomeUtility {
   readonly value: number;
 }
 
+/** DESIGN �2.4 PA-Q2: keeper's proposed search bound; sourced: false. */
+export const R_MAX = 1e6;
+
 export interface Evaluation {
+  readonly ratioMin?: number;
   readonly candidate: Candidate;
   readonly interpret: InterpretParams;
   readonly counts: readonly number[];
@@ -31,6 +36,7 @@ export interface Evaluation {
 }
 
 export interface EvaluationResult {
+  readonly ineligible?: DecisionTrace["ineligible"];
   readonly generation: GenerationResult;
   readonly candidates: readonly Evaluation[];
   readonly view: MindView;
@@ -63,7 +69,7 @@ function confidenceDistribution(candidate: Candidate, distribution: CategoricalB
       ? p * confidence : p + removed * (failure === 0 ? 1 / failureCount : p / failure)) };
 }
 
-function outcomeUtility(effect: PredictedOutcome, probability: number, candidate: Candidate, ctx: MindView, lambda: number): OutcomeUtility {
+function outcomeUtility(effect: PredictedOutcome, probability: number, candidate: Candidate, ctx: MindView, lambda: number, assets: readonly AssetDefinition[], wantUnits?: number): OutcomeUtility {
   for (const id of Object.keys(effect.deficits)) {
     if (!ctx.needs.needs.some((need) => need.definition.id === id)) throw new RangeError(`Unknown predicted need: ${id}`);
   }
@@ -76,7 +82,14 @@ function outcomeUtility(effect: PredictedOutcome, probability: number, candidate
   const goals = ctx.needs.goals.reduce((sum, goal) => sum + goalReward(goal,
     Object.hasOwn(effect.goalProgress, goal.id) ? effect.goalProgress[goal.id] : goal.progress), 0);
   // DESIGN §2.4, Kahneman & Tversky (1979), Tversky & Kahneman (1992): v(x)=x or λx.
-  const netReward = finite(reward + goals - candidate.cost, "net reward");
+  let rawReward = reward + goals - candidate.cost;
+  if (candidate.exchange && effect.success === true) {
+    const { give, want } = candidate.exchange;
+    // DESIGN �2.4 payment acceptance: signed holdings value enters before v(x).
+    rawReward += -give.units * assetValue(give.asset, ctx, assets) +
+      (wantUnits ?? want.units!) * assetValue(want.asset, ctx, assets);
+  }
+  const netReward = finite(rawReward, "net reward");
   const value = finite(netReward < 0 ? lambda * netReward : netReward, "loss-adjusted value");
   return { outcome: effect.id, probability, driveReward: reward, goalReward: goals, cost: candidate.cost, netReward, value };
 }
@@ -88,7 +101,10 @@ export function evaluateActions(
 ): EvaluationResult {
   simTime(t);
   if (finite(ctx.params.gamma, "gamma") < 0 || ctx.params.gamma > 1) throw new RangeError("Gamma must be in [0,1]");
-  const candidates = generation.candidates.map((candidate): Evaluation => {
+  const assets = generation.assets ?? [];
+  const ineligible: NonNullable<DecisionTrace["ineligible"]>[number][] = [];
+  const reject = (candidate: Candidate, reason: string) => ineligible.push({ candidate, eligible: false, reason });
+  const rated = generation.candidates.flatMap((candidate): Evaluation[] => {
     validateCandidate(candidate);
     const base: InterpretParams = {
       eta: ctx.params.eta, alpha0: ctx.params.alpha0, lambda: ctx.params.lambda,
@@ -100,12 +116,48 @@ export function evaluateActions(
     const expectation = outcomeExpectations(episodes, candidate.action, context, candidate.outcomes, t,
       { ...ctx.params, alpha0: interpreted.alpha0 });
     const expectedOutcomes = confidenceDistribution(candidate, expectation.distribution, interpreted.confidence);
-    const outcomes = candidate.effects.map((effect, i) => outcomeUtility(effect, expectedOutcomes.probabilities[i], candidate, ctx, interpreted.lambda));
+    let wantUnits: number | undefined;
+    if (candidate.exchange && candidate.exchange.want.units === undefined) {
+      const rate = believedRate(candidate.exchange.give.asset, candidate.exchange.want.asset, ctx, assets);
+      if (rate === undefined) { reject(candidate, "No rate belief for offer"); return []; }
+      wantUnits = rate * candidate.exchange.give.units;
+    }
+    const outcomes = candidate.effects.map((effect, i) => outcomeUtility(effect, expectedOutcomes.probabilities[i], candidate, ctx, interpreted.lambda, assets, wantUnits));
     // DESIGN §2.4: EU = γ^(dur-1) Σ_o P_hat(o) v(r + Σ VΔp - cost).
     const discount = ctx.params.gamma ** (candidate.duration - 1);
     const expectedUtility = finite(discount * outcomes.reduce((sum, outcome) => sum + outcome.probability * outcome.value, 0), "expected utility");
-    return { candidate, interpret: interpreted, counts: expectation.counts, memoryDistribution: expectation.distribution,
-      expectedOutcomes, outcomes, discount, expectedUtility };
+    return [{ candidate, interpret: interpreted, counts: expectation.counts, memoryDistribution: expectation.distribution,
+      expectedOutcomes, outcomes, discount, expectedUtility }];
   });
-  return { generation, candidates, view: ctx, episodes, context, t };
+  const candidates = rated.flatMap((evaluation): Evaluation[] => {
+    const { candidate } = evaluation;
+    const exchange = candidate.exchange;
+    if (!exchange || exchange.want.units !== undefined) return [evaluation];
+    const samePair = (other: Candidate) => other.exchange &&
+      ((other.exchange.give.asset === exchange.give.asset && other.exchange.want.asset === exchange.want.asset) ||
+       (other.exchange.give.asset === exchange.want.asset && other.exchange.want.asset === exchange.give.asset));
+    const alternative = rated.reduce((best, other) => other === evaluation || samePair(other.candidate)
+      ? best : Math.max(best, other.expectedUtility), -Infinity);
+    // DESIGN �2.4: bisection uses the identical interpreted EU, including failure, cost, loss and discount.
+    const eu = (ratio: number) => evaluation.discount * candidate.effects.reduce((sum, effect, i) => {
+      const outcome = outcomeUtility(effect, evaluation.expectedOutcomes.probabilities[i], candidate, ctx,
+        evaluation.interpret.lambda, assets, ratio * exchange.give.units);
+      return sum + outcome.probability * outcome.value;
+    }, 0);
+    if (eu(R_MAX) < alternative) { reject(candidate, "No reservation ratio within R_MAX"); return []; }
+    if (evaluation.expectedUtility < 0) { reject(candidate, "Offer expects a loss at believed rate"); return []; }
+    let low = 0;
+    let high = R_MAX;
+    if (eu(0) >= alternative) high = 0;
+    // Relative interval tolerance; zero and subnormal roots terminate at floating-point resolution.
+    while (high - low > 1e-9 * high) {
+      const middle = low + (high - low) / 2;
+      if (middle === low || middle === high) break;
+      if (eu(middle) >= alternative) high = middle;
+      else low = middle;
+    }
+    return [{ ...evaluation, ratioMin: high }];
+  });
+  return { generation, candidates, view: ctx, episodes, context, t,
+    ...(ineligible.length === 0 ? {} : { ineligible }) };
 }

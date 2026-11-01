@@ -106,9 +106,27 @@ export const DEFAULT_COGNITIVE_PARAMS: Readonly<CognitiveParams> = Object.freeze
   m: 3, // DESIGN §2.2: Keramati & Gutkin 2014 starting value; m >= 1
 });
 
-export interface BeliefQuery {
+/** DESIGN �2.4: addresses subjective beliefs, never objective asset state. */
+export interface BeliefKey {
   readonly about: EntityHandle;
   readonly attribute: string;
+}
+
+export interface AssetDefinition {
+  readonly id: string;
+  readonly usefulness: Readonly<Record<string, number>>;
+  readonly issuer?: EntityHandle;
+  readonly accepted?: BeliefKey;
+  readonly genuine?: BeliefKey;
+  readonly rates?: Readonly<Record<string, BeliefKey>>;
+}
+
+export interface ExchangeSpec {
+  readonly give: { readonly asset: string; readonly units: number };
+  readonly want: { readonly asset: string; readonly units?: number };
+}
+
+export interface BeliefQuery extends BeliefKey {
   readonly value?: string;
 }
 
@@ -178,6 +196,7 @@ export interface PredictedOutcome {
 
 /** DESIGN §2.4: serializable subjective candidate, in host repertoire order. */
 export interface Candidate {
+  readonly exchange?: ExchangeSpec;
   readonly action: string;
   readonly target?: EntityHandle;
   /** DESIGN §2.4: host repertoire data passed through untouched; numbers only; Cognition never reads a term */
@@ -213,6 +232,7 @@ export interface CandidateTrace {
 }
 
 export interface DecisionTrace {
+  readonly ineligible?: readonly { readonly candidate: Candidate; readonly eligible: false; readonly reason: string }[];
   readonly mind: EntityHandle;
   readonly t: SimTime;
   readonly candidates: readonly CandidateTrace[];

@@ -14,3 +14,4 @@ export * from "./learning.ts";
 export * from "./policy.ts";
 export * from "./mind.ts";
 export * from "./process.ts";
+export * from "./valuation.ts";

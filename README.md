@@ -26,3 +26,5 @@ npm run typecheck   # tsc --noEmit
 - `selectAction` chooses an intention; `MindsRunner` emits `cognition.intention` events.
 
 Optional `terms` on repertoire entries, candidates and intentions carry finite numeric host data through to the intention event unchanged.
+
+**Payment acceptance.** Optional asset definitions and exchange candidates use the existing evaluator to combine direct usefulness with believed exchangeability. Offers derive a reservation ratio and carry `ratioMin` and `giveUnits` in intention terms; missing rate beliefs make offers ineligible. See [DESIGN §2.4](DESIGN.md) for the formulas and belief boundary.

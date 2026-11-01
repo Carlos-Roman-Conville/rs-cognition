@@ -85,9 +85,12 @@ export function selectAction(
     counters = minted.counters;
     intention = { id: minted.id, mind: inputs.mind, action: chosen.candidate.action, target: chosen.candidate.target,
       ...(chosen.candidate.terms === undefined ? {} : { terms: chosen.candidate.terms }),
+      ...(chosen.ratioMin === undefined ? {} : { terms: { ...chosen.candidate.terms,
+        ratioMin: chosen.ratioMin, giveUnits: chosen.candidate.exchange!.give.units } }),
       t, expectedOutcomes: chosen.expectedOutcomes, status: "active" };
   }
   const trace: SelectionTrace = {
+    ...(evaluation.ineligible === undefined ? {} : { ineligible: evaluation.ineligible }),
     mind: inputs.mind, t, beliefs: view.beliefs, needs: view.needs, params: view.params, intention,
     candidates: candidates.map((candidate, i) => ({ ...candidate, softmaxProbability: probabilities[i],
       probability: kept ? (i === index ? 1 : 0) : probabilities[i] })),
