@@ -317,7 +317,10 @@ the following hours as ordinary body signals, and §2.5's attribution handles th
 the host's repertoire entry and passed through untouched; the host maps its action names to each engine's
 operations (fixture names `acquire`, `sell`, `consume`, `work`, `refuse_work`); which market and whose inventory
 are resolved by the host from the mind's holder and location, never terms. Economy reads the event stream (one
-substrate, never a copy).
+substrate, never a copy). **Convention for `work` (controller, 2026-11-01; IF-27):** `terms` stays numbers only;
+the role or post handle goes in `target`, chosen by the generate step from the roles the mind perceives (IF-46
+affordances, never Settlement's internal list); a `work` intention with no `target` is not hired: the host resolves
+it `failed`, reason "no target". No type change.
 - **Never both (CG-23).** A buy by an individually simulated mind is a trade, not per-capita demand; a person with
 a `work` intention is not in the cohort's labour supply; the population provider's headcount must exclude
 simulated minds (Life's rule, C-Q26: each person or organism is held at exactly one resolution, an individual record or a cohort member; promotion and demotion move the count in the same transaction, Σ individuals + Σ cohort counts invariant; Society inherits it unchanged under DUP-41).
