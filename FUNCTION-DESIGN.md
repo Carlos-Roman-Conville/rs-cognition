@@ -1414,14 +1414,15 @@ changes and what it learns, to test the orientation principle (§2.2) against th
 
 ### 11.7 Build state
 
-As of 2026-11-01 (Cognition keeper's report after the review consensus): **landed** 5441 (the §22 correction,
-b460f15), 5442 (the optional engine hook points, 63823f9) and 5443 (the V2 package in `experimental/personality-v2/`
-with §4.5's allocation, 98a3046). **Queued:** 5459 (DESIGN.md amendment), 5463 (saturating habit, `g_f` removed from
-every operation, competence recorded only), 5446 (Fe as the audience map, §6.4), 5447 Te, 5448 Ne, 5449 Se and 5450
-encoding (all without `g`; Num-Q1 rulings below), 5451 ledger and the V1/V2 comparison, 5452 isolation tests, 5464
-(DESIGN §22.7 recording these changes). **Held, out of the queue until Rex rules:** 5444 Ti/Fi coherence (Ti-Q1,
-Fi-Q1, Fe-Q1, Coh-Q1, C-Q27) and 5445 Si (Si-Q1, Si-Q2, Coh-Q1). The operations are not built until their units land.
-§3.9 is a first step toward §11.6's map.
+As of 2026-11-01 (Cognition keeper's reports): **landed** 5441 (the §22 correction, b460f15), 5442 (the optional
+engine hook points, 63823f9), 5443 (the V2 package in `experimental/personality-v2/` with §4.5's allocation, 98a3046) and
+5463 (saturating habit; `g_f` removed from every operation). **Queued:** 5468 (removes the competence number 5463 still
+computed in allocation; keeps `E_f` for habit), 5459 and 5464 (DESIGN.md amendments; §22.7 states the §4.7
+architecture), 5446 (Fe as the audience map, §6.4), 5447 Te, 5448 Ne, 5449 Se and 5450 encoding (without `g`; Num-Q1
+rulings), 5451 ledger and the V1/V2 comparison (P9-T noted for its tests), 5452 isolation tests, and the Ti
+proof-of-mechanism experiment 5465–5467 (§12.7). **Held until Rex rules:** 5444 Ti/Fi coherence and 5445 Si. Stop-Q1 is
+recorded as core cognition's, not built; the registry keeper was asked to update the two stale personality rows. The
+operations are not built until their units land. §3.9 is a first step toward §11.6's map.
 
 ---
 
@@ -1522,6 +1523,25 @@ or memorising answers? Run in isolation; it does not replace the V2 Ti operation
 - **Report** the exact operation, learning update and results before generalising to Se, Si, Ne, Ni, Te, Fe, Fi.
 - Why Ti first: its outputs can be checked against formally defined logic problems without settling subjective values
   or social readings.
+- **As designed by the Cognition keeper (2026-11-01; units 5465 design, 5466 operation, 5467 learning, runner and
+  report; in `experimental/ti-mechanism/`, not touching V2's Ti).**
+  - *Problems:* propositional clause sets from chain, parity, pigeonhole and random 3-SAT families near the
+    clause-to-variable ratio 4.26, where random instances are hardest (researched: Mitchell, Selman & Levesque 1992;
+    Crawford & Auton 1993). Knowledge `L`: none, accurate, or partly false. Labels come from an exact evaluator outside
+    the mind.
+  - *Run_Ti:* a budgeted DPLL search (Davis, Logemann & Loveland 1962) returning contradiction, consistent within scope
+    or unresolved, with steps used and evidence.
+  - *θ_Ti:* softmax branching weights over atom features (occurrences by clause length, polarity, recent conflicts,
+    family tags): the search order.
+  - *Learn:* REINFORCE (Williams 1992) from received feedback only, under accurate, incomplete (`p_miss = 0.5`) and
+    misleading (`p_flip = 0.3`) regimes; both estimates.
+  - *Answer confidence:* a Beta belief recorded before feedback.
+  - *Controls:* shuffled `θ` and a memorising learner; every number marked estimate; cost sensitivity included.
+  - **Keeper check:** matches §4.7 and §12.7 point by point; `θ_Ti` is concrete (a search order), competence is measured
+    by the evaluator, the mind learns only from what it is told. One thing to watch in the report: "family tags" among
+    the features let `θ_Ti` key on which family a problem comes from rather than its structure; the transfer test on
+    unseen family mixes and the memorising control are what tell the two apart, so the report should show transfer with
+    and without that feature.
 
 ---
 
@@ -1656,3 +1676,4 @@ Every open item that touches the function theory. "Whose" says who decides.
 | 2026-11-01 | **Second paste:** review round by several AIs (a five-point formula reviewer, Venice on Ni, a reviewer proposing a Ti/Fi split, a mathematical reviewer's ten-item list as summarised by ChatGPT, a checker's verification, ChatGPT's syntheses); Rex: alter by the consensus. **Adopted as Rex's direction (consensus):** the revision standard (header); saturating habit replacing linear habit, decay kept separate (§4.6); competence as processing quality, confidence as a belief (§4.6); Fe keeps a per-listener map and leaves expression to response selection (§6.4). **Recorded as verified defects, forms open:** coherence scale `s` depends on irrelevant alternatives (§7.4, also §8.3); Ti pairwise misses three-way contradictions; Fi pair score is association; `C_Fe` type mismatch; Si matching narrowed to own-role conformity (§8.3); Ni objective self-validating; group prior invalid under overlap (§9.3); round/clip/encoding artifacts (§11.4); §12.5 confounded with encoding; identifiability (§12.6). **Keeper checks that disagreed with a reviewer:** Fe product cannot go undefined with Dirichlet smoothing; Ni's priority is representable through `B_f` (crude, C-Q10); V1's Ni in S1 is not exercised, not a negative; Ni-Q5 resolves without amending principle 10 if `M*` stays in learning. Superseded in place: §4.5 `H_f` and `g_f`; §6.4 pooling. Units affected: 5443 (built forms), 5445, 5446, 5447–5450; Cognition keeper told. New questions H-Q1–Q2, Comp-Q1, Coh-Q1, Ti-Q1, Fi-Q1, Fe-Q1–Q2, Si-Q2, Ni-Q5, Num-Q1. |
 | 2026-11-01 | Cognition keeper's application of 7cd2d0b recorded: 5463 saturating habit (`h = 1`, `E_0 = 22`, estimates) and `g_f` removed; 5446 redrafted as the Fe audience map; 5447–5450 without `g`, Num-Q1 ruled; 5444 and 5445 held until Rex rules; 5464 records it in DESIGN §22.7 (§4.6, §11.4, §11.7, §14, §15). |
 | 2026-11-01 | **Third paste:** Rex's review conversation on line item 1 (competence), ChatGPT and a second reviewer. **Adopted as Rex's direction:** the competence architecture (§4.7): allocation as a budget, the operation `Run_f`, learned parameters `θ_f`, competence measured outside the mind as a profile over tasks and budgets; quality and efficiency separate; knowledge separate from capability; answer and method confidence as beliefs; Ti's three outcomes; costs as labelled assumptions; the Ti proof-of-mechanism experiment first (§12.7); habit constants provisional and fixed, no decay yet (§4.6). **Changed:** §4.4's log competence form superseded as a definition, kept as a hypothesis; §4.6's competence table replaced by the reviewers' operational tests; §4.6 confidence and disuse refined; §7.4 Ti outcomes. **Flagged:** allocation-as-budget is new to the engine (no budget exists; the baseline decides in one pass), so inside V2 the budget lives in each hook call (Bud-Q1); the stopping rule is general cognition and needs a core owner, not personality (Stop-Q1); confidence needs a term to reach allocation (Alloc-Q1); registry rows `function_development` and `function_allocation` still carry the log form, competence feedback and `L_f`; principle 9 needs a direct test (P9-T). Recorded as Rex's adopted direction from this paste; the paste's own note that 'approved' is Rex's word stands, so he may overrule. |
+| 2026-11-01 | Cognition keeper's reply on de6625b recorded: 5468 removes the competence number from V2 allocation; the Ti experiment designed as 5465–5467 (budgeted DPLL over chain, parity, pigeonhole and near-4.26 random 3-SAT; θ as branching weights; REINFORCE from received feedback; Beta answer confidence; shuffled-θ and memorising controls) (§12.7, §11.7). Flagged in §12.7: the family-tag feature could let θ learn problem families instead of structure; the report should show transfer with and without it. |
