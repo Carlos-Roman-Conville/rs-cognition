@@ -1976,6 +1976,30 @@ them. A change in them appears only under "shared parameters".
 - **Every `estimate`** in §22.3 and §22.4 (`s`, `φ_0`, the `k` multipliers, `τ_enc`, the habit and motivation forms).
   The values are Rex's to accept or set.
 
+### 22.7 Review consensus adopted by Rex (2026-11-02; supersedes §22.3 and §22.4 where they differ)
+
+Source: FUNCTION-DESIGN.md (7cd2d0b) §4.6, §6.4, §11 and its Num-Q1 note, from the Function design keeper's review.
+- **Habit saturates.** `H_f = 1 + h · (1 − exp(−E_f / E_0))`, with `h = 1` and `E_0 = 22` as estimates. The shape is
+  from Lally et al. 2010; the mapping of `E_f` units to repetitions (H-Q1) and `h` (H-Q2) are open. The habit ratio
+  between two functions is bounded by `1 + h`. Unit 5463.
+- **No competence gain, and no competence in the mind (FUNCTION-DESIGN.md §4.7, adopted).** `g_f` is removed from
+  every operation, and the competence number is removed from V2's mind state (unit 5468). The mind's state per function
+  is `θ_f`, a concrete processing strategy learned from the feedback the mind receives. Competence `C_f(T, b)` is
+  measured outside the mind on task sets and budgets. Answer and method confidence are beliefs. Insufficient budget
+  gives "unresolved". The first case is the Ti proof-of-mechanism experiment (`experimental/ti-mechanism/`, units 5465
+  to 5467). The stopping rule belongs to core cognition (Stop-Q1); the budget source is Bud-Q1.
+- **Fe maps, it does not adopt.** Fe's own reading stays §5.1's; it records one reading per listener present, never
+  pooled. Expression is §21's response selection (Fe-Q2). Unit 5446.
+- **Counts and clipping (Num-Q1, keeper).** Te and Ne add a stochastically rounded expected count `2·A^eval` from a
+  seeded stream. Se uses `ψ = A^att_Se`. Encoding counts attention once, because V2 sets no pertinence weights.
+- **Held until Rex rules:**
+  - Ti/Fi coherence (unit 5444): Ti needs whole-set consistency (Ti-Q1), Fi compatibility is not mere association
+    (Fi-Q1), `C_Fe` has the wrong type (Fe-Q1), and the scale `s` breaks independence from irrelevant alternatives
+    (Coh-Q1, with C-Q27).
+  - Si (unit 5445): matching must be general (own actions, others, objects) and act as evidence (Si-Q2, with Si-Q1).
+- **Also open:** the §20 new-person prior under overlapping groups (G-Q3); an encoding-equalised comparison arm
+  (FUNCTION-DESIGN §12.5); Ni-Q5.
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -2025,3 +2049,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-11-01 | §22 Personality V2 recorded (Rex: V1 immutable, V2 built now in isolation; per-function contributions weighted by two softmax allocations; development measured, not fed back; five priorities with explicit gaps; comparison protocol; C-Q27, C-Q28 open) (unit 5426). |
 | 2026-11-02 | §22 corrected after Rex's audit of 49fb5fb: V2 designed, not built; operations as executable transformations with tests; allocation with usage habit, motivation and competence as execution gain (L_f, M_f placeholders removed); C-Q27 resolved as an evaluation term; Si reference update; ledger allocation / execution / influence; attention-weighted encoding; Ni open (unit 5441). |
 | 2026-11-02 | DESIGN amendments from the Function design keeper's review: C-Q27 reopened (5444 builds coherence scores as records only), §19 competence route superseded for V2, §16 stage 2 read as "leads", the orientation principle noted in §22, Si-Q1 and Ni-Q1 open (unit 5459). |
+| 2026-11-02 | §22.7 records Rex's adopted review consensus: saturating habit, no competence gain, Fe audience map, Num-Q1 rulings; Ti/Fi coherence and Si held (unit 5464). |
