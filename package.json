@@ -1,6 +1,6 @@
 {
   "name": "@rex/cognition",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "The cognition engine: perception, needs, beliefs and memory, action selection and learning. Generates an organism's intentions; never decides whether an attempt succeeds. A pure function of its inputs plus kernel streams; no game imports.",
   "private": true,
   "type": "module",
