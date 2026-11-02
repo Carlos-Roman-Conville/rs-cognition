@@ -32,7 +32,22 @@ Competence's effects on each function remain open (Comp-Q1); confidence is a bel
 never a meter.
 
 The test-only `mask` disables named function/operation pairs through `operationEnabled`.
-It does not disable allocation or practice. There are no executable operations yet; later
-operations must check both positive allocation and `operationEnabled`. Ni remains open.
+It does not disable allocation or practice. Operations check both positive allocation
+and `operationEnabled`. Ni remains open.
 Invalid/nonfinite inputs or results fail before state/trace writes, including motivation
 too large to serialize as a finite number. No memory, needs or shared parameters are changed.
+
+Fe audience interpretation (FUNCTION-DESIGN §6.4, corrected direction) is available through
+`comprehendV2(view, message, context, model, ctx)` in `fe.ts`. This experimental wrapper
+uses the existing public comprehension and meaning selection API; the engine does not
+automatically call it. It records allocation once, without advancing experience.
+Supply `context.audience` as `{ listener, bubble }[]` in host mint order, representing the
+mind's subjective identification of each listener's bubble. Each returned utterance has
+an optional `audienceMap`, an ordered entry per listener with its separate §5.1 distribution.
+An unknown term has `distribution: null`; listeners sharing a bubble still have separate entries.
+The map also appears as a snapshot in the result's Fe `meaningSelection` execution record.
+It is absent when there are no listeners, Fe has zero evaluation allocation or is absent
+from the stack, or `{ function: "Fe", operation: "meaningSelection" }` is masked.
+Fe's own `meaningSelection` hook returns its input unchanged. Audience distributions are
+never pooled or scaled, and competence does not affect them (Comp-Q1). No EU term or
+expression rule is added; response selection remains open (Fe-Q2).

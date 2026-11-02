@@ -1,5 +1,5 @@
 import { createEightFunctionV1, nullPersonality } from "../../src/index.ts";
-import type { CognitiveFunction, MindView, PersonalityModel, PersonalityType } from "../../src/index.ts";
+import type { CategoricalBelief, CognitiveFunction, MindView, PersonalityModel, PersonalityType } from "../../src/index.ts";
 import data from "./data.json" with { type: "json" };
 
 export type FunctionValues = Record<CognitiveFunction, number>;
@@ -117,6 +117,8 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
 
   return Object.freeze({
     ...nullPersonality, id: "eight-function", version: "v2", stack, state,
+    // FUNCTION-DESIGN §6.4 (corrected): Fe never adopts the audience's reading.
+    meaningSelection: (distribution: CategoricalBelief) => distribution,
     allocation(ctx: V2Context) {
       const records = compute(ctx);
       ctx.trace.allocations.push(...structuredClone(records));
