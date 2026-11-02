@@ -29,6 +29,8 @@ Optional `terms` on repertoire entries, candidates and intentions carry finite n
 
 **Payment acceptance.** Optional asset definitions and exchange candidates use the existing evaluator to combine direct usefulness with believed exchangeability. Offers derive a reservation ratio and carry `ratioMin` and `giveUnits` in intention terms; missing rate beliefs make offers ineligible. See [DESIGN §2.4](DESIGN.md) for the formulas and belief boundary.
 
+**Government recognition port.** `recognition(beliefs, officeHandle, domain)` is a read-only provider for `government.port.recognition`: it reads P("true") from the categorical `mind.belief` entry `(officeHandle, "ought_obey:" + domain)`. `createRecognitionReader(lookup)` adapts host-supplied person stores and actor-to-handle mappings to `recognition(person, actor, domain)`. A `null` result means missing (excluded from Government's aggregates), including unknown people or unmapped actors; an existing zero probability remains zero. Invalid belief kinds or missing "true" categories throw. Cognition never writes beliefs for Government or imports it; beliefs form through existing belief updates and attribution from Government events delivered by the host as observations or testimony.
+
 ### Communication inputs
 
 A host-delivered `world.message_received` enters `perceive` as a `kind: "message"`
