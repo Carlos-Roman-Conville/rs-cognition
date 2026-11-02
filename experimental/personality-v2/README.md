@@ -148,3 +148,40 @@ record cue inputs, share, dimension and resulting strengths. Masking a function'
 `encoding` contribution retains baseline attention and threshold filtering. With
 no encoding options the hook remains absent, preserving legacy episode encoding.
 The host must supply fresh metadata for each episode; V2 caches no cue state.
+
+
+## Scenario comparison and ledger (unit 5451)
+
+S1 and S3 accept `--personality v1|v2|both`; default and explicit `v1`
+preserve legacy output. Configuration keys remain `version/stack` (for example,
+`v1/ESTP`, `v2/ESTP`). `both` emits one null reference and both sets of stacks.
+Use `--seeds 2` for a smoke run; the 200-seed study belongs to the keeper.
+
+Both analysis CLIs accept `--comparison RUNS_JSONL`, where the input contains the
+runner's records, including the summary ledger for the mechanism table. This
+prints `## V1 against V2` with matched seed/stack metrics, V2 minus V1 differences,
+and the eight-function mechanism table under scenarios DESIGN section 10.
+Existing historical report modes and files are retained.
+
+V2 records `trace.v2.allocations` and `trace.v2.operations`. Detailed ledgers retain
+execution outputs and allocation records. Each counterfactual replays the identical
+prefix and masks one function/operation pair only at the measured epoch; repeated
+calls of that pair are masked together, as required by the V2 mask API. Beliefs
+are compared before host resolution. KL direction is base against masked;
+singular values are the string `Infinity`. Candidate sets use action/target
+identity. EU margin compares the base action against its strongest competitor in
+each run; absent actions or competitors produce null, never zero. Shares count
+executed or influential function/operation pairs, not additive causal magnitudes.
+Shared parameter changes are recorded separately. Snapshot replay includes V2's
+experience, and shuffled V2 permutes all eight function labels before execution.
+
+Fixture coverage is intentionally limited by supplied inputs: S1 supplies current
+touch affordances to Se and a physical colour-derived kind feature to encoding.
+S3 has no present-tagged direct cue and its episode context is empty. Neither
+fixture supplies a composition model, an active composition goal, or audience
+meaning pools, so Te/Ne generation and Fe audience mapping lack inputs. Meaning
+distribution records are empty in these fixtures. Ni and the held Ti/Fi/Si
+operations remain unimplemented under section 22.7. Competence/gain fields are
+not fabricated after their removal by that section. Immediate step influence does
+not measure later effects of encoding; zero immediate influence is not evidence
+that an operation has no future effect.

@@ -1,3 +1,4 @@
+import { buildV2Ledger } from "../../diagnostics/v2-ledger.ts";
 import { qualify, streams } from "@rex/kernel";
 import { randomTheta, thetaPersonality } from "../controls.ts";
 import type { Calibration, Control } from "../controls.ts";
@@ -28,25 +29,27 @@ export function commitmentCalibration() {
   return cachedCommitment;
 }
 
-export function configurations(stacks: "all" | "null"): Configuration[] {
+export function configurations(stacks: "all" | "null", personality: "v1" | "v2" | "both" = "v1"): Configuration[] {
   // fixture rule (DESIGN bench/scenarios section 4): same frozen-version and mint-order stack catalogue as personality-versions.ts.
+  if (personality !== "v1") return [{ version: "null" }, ...(stacks === "all" ?
+    (personality === "both" ? ["v1", "v2"] : ["v2"]).flatMap(version => TYPES.map(stack => ({ version, stack, ...(version === "v2" ? { id: `v2/${stack}` } : {}) }))) : [])];
   return [{ version: "null" }, ...(stacks === "all" ? TYPES.map((stack) => ({ version: "v1", stack })) : [])];
 }
 
 export function parseArgs(args: readonly string[]) {
   // fixture rule (DESIGN bench/scenarios section 4): 200 seeds for the later study; tests explicitly use two.
   let seeds = 200, stacks: "all" | "null" = "all";
-  let personality = "v1";
+  let personality: "v1" | "v2" | "both" = "v1";
   let control: Control | undefined;
   let ledger: LedgerLevel | "off" | undefined;
   for (let i = 0; i < args.length; i += 2) {
     const value = args[i + 1];
     if (args[i] === "--seeds" && value && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)) && Number(value) > 0) seeds = Number(value);
     else if (args[i] === "--stacks" && (value === "all" || value === "null")) stacks = value;
-    else if (args[i] === "--personality" && value === "v1") personality = value;
+    else if (args[i] === "--personality" && (value === "v1" || value === "v2" || value === "both")) personality = value;
     else if (args[i] === "--control" && (value === "none" || value === "random-theta" || value === "shuffled")) control = value;
     else if (args[i] === "--ledger" && (value === "summary" || value === "detailed" || value === "off")) ledger = value;
-    else throw new Error("Usage: run.ts [--personality v1] [--seeds N] [--stacks all|null] [--ledger summary|detailed|off] [--control none|random-theta|shuffled]");
+    else throw new Error("Usage: run.ts [--personality v1|v2|both] [--seeds N] [--stacks all|null] [--ledger summary|detailed|off] [--control none|random-theta|shuffled]");
   }
   // Keep the existing parser's unspecified-option shape; execution supplies the default.
   return { seeds, stacks, personality, ...(control === undefined ? {} : { control }), ...(ledger === undefined ? {} : { ledger }) };
@@ -88,13 +91,13 @@ export function runRecord(seed: number, configuration: Configuration, ledger: Le
     streams(seed).get("bench.control.theta", qualify("cognition", "mind.0001"))) : undefined;
   const run = runWorkshop({ seed, kappa: commitment.kappa, configuration: configured, ...(theta ? { personality: thetaPersonality(theta) } : {}) });
   return { ...run, header: { ...run.header, commitment }, ...(theta ? { controlTheta: theta } : {}), metrics: summarizeWorkshop(run),
-    ...(ledger === "off" ? {} : { ledger: workshopLedger(run, ledger) }) };
+    ...(ledger === "off" ? {} : { ledger: configuration.version === "v2" && !theta ? buildV2Ledger(run, ledger, (v2Mask, epochs) => runWorkshop({ seed, configuration: configured, epochs, kappa: commitment.kappa, v2Mask }).hostInputLog.at(-1)!) : workshopLedger(run, ledger) }) };
 }
 
 if ((import.meta as ImportMeta & { main?: boolean }).main) {
   try {
     const options = parseArgs(process.argv.slice(2));
-    const configs = configurations(options.stacks);
+    const configs = configurations(options.stacks, options.personality);
     const commitment = commitmentCalibration();
     const ledgers: Ledger[] = [];
     const output = new URL("./out/", import.meta.url);
@@ -110,7 +113,7 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
         if (record.ledger) {
           writeFileSync(new URL(`ledger-${seed}-${config.version}-${config.stack ?? "null"}${options.control && options.control !== "none" ? `+${options.control}` : ""}.json`, output), `${JSON.stringify(record.ledger)}\n`);
           const { records: _records, ...summary } = record.ledger;
-          ledgers.push(summary);
+          if (summary.schema === "function-ledger/v1") ledgers.push(summary);
         }
         process.stdout.write(`${JSON.stringify(record)}\n`);
       }

@@ -104,9 +104,11 @@ describe("S3 Workshop: DESIGN sections 4, 9, 10.4", () => {
 
   it("supports V1/control/ledger options, shared exogenous draws, and section 10 tables", () => {
     expect(configurations("all")).toHaveLength(17);
+    expect(parseArgs(["--personality", "v2"]).personality).toBe("v2");
+    expect(configurations("all", "both")).toHaveLength(33);
     expect(parseArgs(["--seeds", "2", "--stacks", "all", "--personality", "v1", "--control", "shuffled", "--ledger", "summary"]))
       .toEqual({ seeds: 2, stacks: "all", personality: "v1", control: "shuffled", ledger: "summary" });
-    for (const args of [["--personality", "v2"], ["--seeds", "0"], ["--control", "bad"]]) expect(() => parseArgs(args)).toThrow("Usage");
+    for (const args of [["--personality", "v3"], ["--seeds", "0"], ["--control", "bad"]]) expect(() => parseArgs(args)).toThrow("Usage");
     const records = [1, 2].flatMap(seed => [runRecord(seed, { version: "null" }), runRecord(seed, { version: "v1", stack: "ENTJ" }, "detailed")]);
     const report = analyze(records);
     expect(report.groups.find(g => g.key === "v1/none")!.mechanisms).toHaveLength(8);

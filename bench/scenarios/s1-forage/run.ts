@@ -1,3 +1,4 @@
+import { buildV2Ledger } from "../../diagnostics/v2-ledger.ts";
 import { qualify, streams } from "@rex/kernel";
 import { randomTheta, thetaPersonality } from "../controls.ts";
 import type { Calibration, Control } from "../controls.ts";
@@ -12,26 +13,30 @@ import { buildReport, reportJSON, reportMarkdown } from "../../diagnostics/repor
 
 declare const process: { argv: string[]; stdout: { write(text: string): void }; stderr: { write(text: string): void }; exitCode: number };
 
-export function configurations(stacks: "all" | "null"): Configuration[] {
+export function configurations(stacks: "all" | "null", personality: "v1" | "v2" | "both" = "v1"): Configuration[] {
   // fixture rule (DESIGN bench/scenarios §2): same frozen-version and mint-order stack catalogue as personality-versions.ts.
+  if (personality !== "v1") return [{ version: "null" }, ...(stacks === "all" ?
+    (personality === "both" ? ["v1", "v2"] : ["v2"]).flatMap(version => TYPES.map(stack => ({ version, stack, ...(version === "v2" ? { id: `v2/${stack}` } : {}) }))) : [])];
   return [{ version: "null" }, ...(stacks === "all" ? discoverVersions().flatMap((version) => TYPES.map((stack) => ({ version: version.id, stack }))) : [])];
 }
 
 export function parseArgs(args: readonly string[]) {
   // fixture rule (DESIGN bench/scenarios §2): 200 seeds for the later study; tests explicitly use eight.
   let seeds = 200, stacks: "all" | "null" = "all";
+  let personality: "v1" | "v2" | "both" = "v1";
   let control: Control | undefined;
   let ledger: LedgerLevel | "off" | undefined;
   for (let i = 0; i < args.length; i += 2) {
     const value = args[i + 1];
     if (args[i] === "--seeds" && value && /^\d+$/.test(value) && Number.isSafeInteger(Number(value)) && Number(value) > 0) seeds = Number(value);
     else if (args[i] === "--stacks" && (value === "all" || value === "null")) stacks = value;
+    else if (args[i] === "--personality" && (value === "v1" || value === "v2" || value === "both")) personality = value;
     else if (args[i] === "--control" && (value === "none" || value === "random-theta" || value === "shuffled")) control = value;
     else if (args[i] === "--ledger" && (value === "summary" || value === "detailed" || value === "off")) ledger = value;
-    else throw new Error("Usage: run.ts [--seeds N] [--stacks all|null] [--ledger summary|detailed|off] [--control none|random-theta|shuffled]");
+    else throw new Error("Usage: run.ts [--personality v1|v2|both] [--seeds N] [--stacks all|null] [--ledger summary|detailed|off] [--control none|random-theta|shuffled]");
   }
   // Keep the existing parser's unspecified-option shape; execution supplies the default.
-  return { seeds, stacks, ...(control === undefined ? {} : { control }), ...(ledger === undefined ? {} : { ledger }) };
+  return { seeds, stacks, ...(personality === "v1" ? {} : { personality }), ...(control === undefined ? {} : { control }), ...(ledger === undefined ? {} : { ledger }) };
 }
 
 /** DESIGN scenarios §10.3: calibration uses all sixteen V1 runs on this seed.
@@ -64,13 +69,13 @@ export function runRecord(seed: number, configuration: Configuration, ledger: Le
     streams(seed).get("bench.control.theta", qualify("cognition", "mind.0001"))) : undefined;
   const run = runForage({ seed, configuration: configured, ...(theta ? { personality: thetaPersonality(theta) } : {}) });
   return { ...run, ...(theta ? { controlTheta: theta } : {}), metrics: summarizeForage(run),
-    ...(ledger === "off" ? {} : { ledger: buildLedger(run, ledger) }) };
+    ...(ledger === "off" ? {} : { ledger: configuration.version === "v2" && !theta ? buildV2Ledger(run, ledger, (v2Mask, epochs) => runForage({ seed, configuration: configured, epochs, patches: run.hostInputLog[0].before.patches, v2Mask }).hostInputLog.at(-1)!) : buildLedger(run, ledger) }) };
 }
 
 if ((import.meta as ImportMeta & { main?: boolean }).main) {
   try {
     const options = parseArgs(process.argv.slice(2));
-    const configs = configurations(options.stacks);
+    const configs = configurations(options.stacks, options.personality);
     const ledgers: Ledger[] = [];
     const output = new URL("./out/", import.meta.url);
     if (options.ledger !== "off") {
@@ -85,7 +90,7 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
         if (record.ledger) {
           writeFileSync(new URL(`ledger-${seed}-${config.version}-${config.stack ?? "null"}${options.control && options.control !== "none" ? `+${options.control}` : ""}.json`, output), `${JSON.stringify(record.ledger)}\n`);
           const { records: _records, ...summary } = record.ledger;
-          ledgers.push(summary);
+          if (summary.schema === "function-ledger/v1") ledgers.push(summary);
         }
         process.stdout.write(`${JSON.stringify(record)}\n`);
       }

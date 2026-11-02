@@ -80,6 +80,6 @@ describe("T-1 controls (scenarios DESIGN §10.3)", () => {
       expect(run.configuration.id).toBe("v1/ESTP+shuffled");
       expect(run.replayed).toBe(true);
     }
-    expect(() => shuffledV2(nullPersonality, () => 0)).toThrow("Personality V2 not built");
+    expect(() => shuffledV2(nullPersonality, () => 0)).toThrow("Expected Personality V2");
   }, 60_000);
 });

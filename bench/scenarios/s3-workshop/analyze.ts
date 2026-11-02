@@ -1,3 +1,7 @@
+declare const process: { argv: string[]; stdout: { write(s: string): void } };
+import { renderComparison } from "../../diagnostics/v2-comparison.ts";
+export { renderComparison } from "../../diagnostics/v2-comparison.ts";
+import type { V2Ledger } from "../../diagnostics/v2-ledger.ts";
 import { readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { buildReport } from "../../diagnostics/report.ts";
@@ -12,7 +16,8 @@ import type { Ledger } from "../../diagnostics/ledger.ts";
 import type { Configuration } from "./cognition.ts";
 import type { summarizeWorkshop } from "./metrics.ts";
 export const METRICS = ["completionRate", "switchesPerCompletedTask", "verifyBeforeContinueRate", "lowOpinionAcceptance", "lowProceduralAcceptance"] as const;
-export interface RecordInput { seed: number; configuration: Configuration; header: { kappa: number }; metrics: ReturnType<typeof summarizeWorkshop>; ledger?: Ledger }
+export interface RecordInput { seed: number; configuration: Configuration; header: { kappa: number }; metrics: ReturnType<typeof summarizeWorkshop>; ledger?: Ledger | V2Ledger }
+const legacyLedger = (r: RecordInput) => r.ledger?.schema === "function-ledger/v1" ? r.ledger : undefined;
 const control = (r: RecordInput) => r.configuration.control ?? "none";
 export function analyze(records: readonly RecordInput[]) {
   if (!records.length) throw new Error("No S3 records");
@@ -21,16 +26,25 @@ export function analyze(records: readonly RecordInput[]) {
   const kappas = [...new Set(records.map(r => r.header.kappa))];
   if (kappas.length !== 1 || !Number.isFinite(kappas[0]) || kappas[0] <= 0) throw new Error("Missing or inconsistent calibrated kappa");
   const groups = [...new Set(records.map(r => `${r.configuration.version}/${control(r)}`))];
-  return { scenario: "s3-workshop", kappa: kappas[0], thresholds: CLASSIFICATION_THRESHOLDS, groups: groups.map(key => {
+  return { ...(records.some(r => r.configuration.version === "v2") ? { comparison: renderComparison(records, METRICS) } : {}), scenario: "s3-workshop", kappa: kappas[0], thresholds: CLASSIFICATION_THRESHOLDS, groups: groups.map(key => {
     const group = records.filter(r => `${r.configuration.version}/${control(r)}` === key).sort((a, b) => a.seed - b.seed);
     const seeds = [...new Set(group.map(r => r.seed))];
     if (control(group[0]) === "none" && group[0].configuration.version !== "null" && group.some(r => !r.ledger)) throw new Error("Mechanism classification requires --ledger summary");
     const available = group.every(r => !!r.ledger) && control(group[0]) === "none";
     const totals = (rows: Ledger["summary"]) => { const sum = emptyTotals(); rows.forEach(row => addTotals(sum, row)); return sum; };
     const inputs = FUNCTIONS.map(f => ({ key: f,
-      eligibility: totals(group.flatMap(r => r.ledger?.summary.filter(s => s.function === f) ?? [])).eligibility,
-      seedEffects: seeds.map(seed => { const sum = totals(group.filter(r => r.seed === seed).flatMap(r => r.ledger?.summary.filter(s => s.function === f) ?? [])); return sum.meanDeltaU; }) }));
-    const mechanisms = available ? classifyMechanisms(inputs) : [];
+      eligibility: totals(group.flatMap(r => legacyLedger(r)?.summary.filter(s => s.function === f) ?? [])).eligibility,
+      seedEffects: seeds.map(seed => { const sum = totals(group.filter(r => r.seed === seed).flatMap(r => legacyLedger(r)?.summary.filter(s => s.function === f) ?? [])); return sum.meanDeltaU; }) }));
+    const v2Rows = (rows: readonly RecordInput[], f: string) => rows.flatMap(r => r.ledger?.schema === "function-ledger/v2" ? r.ledger.summary.filter(s => s.function === f) : []);
+    const v2Inputs = FUNCTIONS.map(f => {
+      const rows = v2Rows(group, f), eligible = rows.reduce((s, r) => s + r.eligible, 0);
+      return { key: f, eligibility: { activated: eligible, "eligible-not-activated": 0,
+        "no-relevant-input": rows.reduce((s, r) => s + r.opportunities, 0) - eligible },
+        seedEffects: seeds.map(seed => { const own = v2Rows(group.filter(r => r.seed === seed), f);
+          const n = own.reduce((s, r) => s + r.deltaUCount, 0);
+          return n ? own.reduce((s, r) => s + r.deltaUSum, 0) / n : null; }) };
+    });
+    const mechanisms = available ? classifyMechanisms(group[0].configuration.version === "v2" ? v2Inputs : inputs) : [];
     const stacks = [...new Set(group.map(r => r.configuration.stack ?? "null"))];
     const behaviour = stacks.flatMap(stack => {
       const runs = group.filter(r => (r.configuration.stack ?? "null") === stack);
@@ -40,7 +54,12 @@ export function analyze(records: readonly RecordInput[]) {
         if (!baseline) throw new Error(`Missing unmodified null for seed ${r.seed}`);
         return { r, baseline };
       });
-      const exercised = FUNCTIONS.flatMap(f => { const sum = totals(runs.flatMap(r => r.ledger?.summary.filter(s => s.function === f) ?? []));
+      const exercised = FUNCTIONS.flatMap(f => {
+        if (group[0].configuration.version === "v2") {
+          const rows = v2Rows(runs, f), total = rows.reduce((s, r) => s + r.opportunities, 0);
+          return rows.some(r => r.influenced) ? [{ key: f, o_f: total ? rows.reduce((s, r) => s + r.eligible, 0) / total : 0 }] : [];
+        }
+        const sum = totals(runs.flatMap(r => legacyLedger(r)?.summary.filter(s => s.function === f) ?? []));
         return sum.changedHookCalls ? [{ key: f, o_f: opportunityRate(sum.eligibility) }] : []; });
       // Controls cannot be attributed to unpermuted function groups. Report the actual hook opportunity separately.
       const controlGroups = control(group[0]) !== "none" && runs.some(r => Object.values(r.metrics.trace.hooks).some(h => h.changedCalls))
@@ -62,7 +81,7 @@ export function renderReport(result: ReturnType<typeof analyze>) {
     for (const row of group.behaviour) lines.push(`| ${row.stack} | ${row.metric} | ${row.all.mean} | ${JSON.stringify(row.all.interval95)} | ${row.s_f} | ${row.exercised.join(", ")} | ${row.classification} |`);
     lines.push("", `Evidence: ${group.evidence.join(", ")}. Controls are compared with the unmodified null; effects present under controls are not attributable to function structure.`, "");
   }
-  return lines.join("\n");
+  return lines.join("\n") + (result.comparison ? "\n\n" + result.comparison : "");
 }
 export interface StudyRecord {
   scenario: string; seed: number; configuration: Configuration; replayed: boolean;
@@ -198,6 +217,10 @@ export function renderStudyReport(a: ReturnType<typeof analyzeStudy>, p: StudyPr
 }
 
 if ((import.meta as ImportMeta & { main?: boolean }).main) {
+  if (process.argv[2] === "--comparison") {
+    const records = readFileSync(process.argv[3], "utf8").trim().split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line));
+    process.stdout.write(renderComparison(records, METRICS));
+  } else {
   const root = join(import.meta.dirname, "out"), inputs: StudyProvenance["inputs"] = [];
   const read = (name: string) => {
     const path = join(root, name), text = readFileSync(path, "utf8");
@@ -221,4 +244,5 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
   writeFileSync(join(import.meta.dirname, "REPORT.md"), renderStudyReport(analysis, { source: sourceHash(), inputs,
     commits: "S3 fixture 9c17e42; own-opportunity amendments e0f7a37; analysis checkout bb24f86",
     commitment: commitmentCalibration() }));
+  }
 }

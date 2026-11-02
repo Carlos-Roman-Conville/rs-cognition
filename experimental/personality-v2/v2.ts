@@ -33,6 +33,10 @@ export interface V2Context extends MindView {
   readonly trace: { allocations: AllocationRecord[] };
 }
 export interface V2Options {
+  /** DESIGN scenarios section 10.3: permutation of function labels, preserving B. */
+  readonly labels?: Readonly<Record<CognitiveFunction, CognitiveFunction>>;
+  /** DESIGN section 22.5: scope an operation mask to one replayed step. */
+  readonly maskActive?: () => boolean;
   readonly encoding?: EncodingOptions;
   readonly se?: SeOptions;
   readonly te?: TeOptions;
@@ -46,6 +50,7 @@ export interface EightFunctionV2 extends PersonalityModel {
   readonly version: "v2";
   readonly stack: readonly CognitiveFunction[];
   readonly state: V2State;
+  relabel(labels: Readonly<Record<CognitiveFunction, CognitiveFunction>>): EightFunctionV2;
   allocation(ctx: V2Context): readonly AllocationRecord[];
   advance(ctx: V2Context, dt: number): readonly AllocationRecord[];
   operationEnabled(f: CognitiveFunction, operation: string): boolean;
@@ -88,8 +93,13 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
   // DESIGN §22.2: read the existing factory's stack/W; etaMin is required by V1
   // but no V1 hooks run. Proposed 1 is inert here and never reaches engine params.
   const baseline = createEightFunctionV1(type, { etaMin: 1 });
-  const stack = baseline.stack;
-  const B = stack.map(f => baseline.weights[f]);
+  if (options.labels) {
+    const functions: CognitiveFunction[] = ["Se", "Si", "Ne", "Ni", "Te", "Ti", "Fe", "Fi"];
+    const labels = functions.map(f => options.labels![f]);
+    if (new Set(labels).size !== functions.length || labels.some(f => !functions.includes(f))) throw new RangeError("Function labels must be a permutation");
+  }
+  const stack = baseline.stack.map(f => options.labels?.[f] ?? f);
+  const B = baseline.stack.map(f => baseline.weights[f]);
   const state: V2State = structuredClone(options.state ?? { minds: {} });
   const mask = options.mask?.map(entry => ({ ...entry })) ?? [];
 
@@ -131,6 +141,7 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
       // Both operations compose original repertoire entries, never each other's additions.
       return options.ne ? generateNe(candidates, base, mind, this, options.ne, result.candidates) : result;
     },
+    relabel: (labels: Readonly<Record<CognitiveFunction, CognitiveFunction>>) => createEightFunctionV2(type, { ...options, state, labels }),
     allocation(ctx: V2Context) {
       const records = compute(ctx);
       ctx.trace.allocations.push(...structuredClone(records));
@@ -147,7 +158,7 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
       ctx.trace.allocations.push(...structuredClone(records));
       return records;
     },
-    operationEnabled: (f: CognitiveFunction, operation: string) => !mask.some(m => m.function === f && m.operation === operation),
+    operationEnabled: (f: CognitiveFunction, operation: string) => options.maskActive?.() === false || !mask.some(m => m.function === f && m.operation === operation),
   });
   return model;
 }

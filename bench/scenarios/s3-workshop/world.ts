@@ -1,3 +1,4 @@
+import type { StepMask } from "../../../experimental/personality-v2/scenario.ts";
 // Host outcomes only: no belief or policy reads.
 import { canonical, restore, streams, take } from "@rex/kernel";
 import type { Snapshot } from "@rex/kernel";
@@ -11,7 +12,7 @@ export interface Task { id: string; steps: number; defects: boolean[]; finished:
 export interface WorkshopState { epoch: number; tasks: Task[]; active: string; hunger: number; reliability: number; instruction: boolean }
 export interface HostOutcome { action: string; target?: string; task: string; success: boolean; result: string; revealed: boolean | null; completed: boolean; switched: boolean; ongoing: boolean }
 export interface EpochLog { mind: string; epoch: number; t: number; before: WorkshopState; after: WorkshopState; cues: CueMetadata[]; intention: Intention; outcome: HostOutcome; testimony: Sensed["testimony"]; trace: ProcessingTrace }
-export interface RunOptions { seed: number; epochs?: number; configuration?: Configuration; personality?: PersonalityModel; kappa?: number; taskIds?: [string, string]; label?: string }
+export interface RunOptions { v2Mask?: StepMask; seed: number; epochs?: number; configuration?: Configuration; personality?: PersonalityModel; kappa?: number; taskIds?: [string, string]; label?: string }
 export class WorkshopWorld {
   readonly random;
   readonly agent: Worker;
@@ -28,7 +29,7 @@ export class WorkshopWorld {
     // section 10.4 Bernoulli half probability, not forced balance in small samples. Stable slot stream preserves id-swap symmetry.
     const reliability = this.random.get("s3.foreman", "workshop")() < 0.5 ? 0.9 : 0.4;
     this.state = { epoch: 0, tasks: taskIds.map(id => ({ id, steps: 0, defects: [], finished: false })), active: taskIds[0], hunger: FIXTURE.hunger, reliability, instruction: true };
-    this.agent = new Worker(options.seed, taskIds, options.configuration, options.personality, options.kappa ?? 0);
+    this.agent = new Worker(options.seed, taskIds, options.configuration, options.personality, options.kappa ?? 0, options.v2Mask);
     this.initial = take(this.participants(), { version: 2, t: 0, epoch: null, epochLabel: "s3-workshop", catalogue_hash: null, seed: options.seed, eventCounter: 0, rng: this.random.state() });
   }
   private participants() {

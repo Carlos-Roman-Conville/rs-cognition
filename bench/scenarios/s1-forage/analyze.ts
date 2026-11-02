@@ -1,3 +1,5 @@
+import { renderComparison } from "../../diagnostics/v2-comparison.ts";
+export { renderComparison } from "../../diagnostics/v2-comparison.ts";
 import { mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { Ledger } from "../../diagnostics/ledger.ts";
@@ -72,7 +74,7 @@ export function analyze(records: readonly MetricRecord[], splitSeed = 100) {
   };
   const counts = { stable: 0, "context-dependent": 0, none: 0 };
   for (const p of paired) counts[p.classification]++;
-  return { recordCount: records.length, seeds, splitSeed, configurations, paired, counts, vectors: equality(METRICS), vectorsByMetric: Object.fromEntries(METRICS.map((m) => [m, equality([m])])) };
+  return { ...(records.some(r => r.configuration.version === "v2") ? { comparison: renderComparison(records, METRICS) } : {}), recordCount: records.length, seeds, splitSeed, configurations, paired, counts, vectors: equality(METRICS), vectorsByMetric: Object.fromEntries(METRICS.map((m) => [m, equality([m])])) };
 }
 export type Analysis = ReturnType<typeof analyze>;
 const number = (n: number | null) => n === null ? "unavailable" : n === 0 ? "0" : Number(n.toPrecision(9)).toString();
@@ -123,7 +125,7 @@ export function renderReport(a: Analysis, ledger: Report, provenance: Provenance
     "S1 supplies categorical colour/size cues. F6's targeted Weber-precision modification is recorded but categorical identification does not consume that precision; the present-physical attention lever is active. Current S1 traces record observationBeliefDeltas with subjective prior/posterior beliefs and KL; older report inputs may predate these diagnostics. Frozen context also has no remembered flag.",
     "The ledger cost ceiling limited influence evidence to 24 seeds: exact full-trajectory counterfactuals cost several worlds and lightweight summaries do not meet the requested small constant overhead. No 200-seed mechanism-influence claim is made. Missing comparable chosen actions are excluded from ΔU, never replaced by zero.",
     `This is level-5 evidence of model behavior, not human validation; human comparison waits until S6. T-3's 16 → 3 measured behaviors become ${a.configurations.length - 1} → ${a.vectors.distinct} on these S1 metrics. F1–F13, fixture, parameters and engine are unchanged; no tuning is proposed.`,
-  ].join("\n\n") + "\n";
+  ].join("\n\n") + "\n" + (a.comparison ?? "");
 }
 export function parseRecords(text: string): MetricRecord[] { return text.trim().split(/\r?\n/).map((line) => JSON.parse(line) as MetricRecord); }
 export const ADDENDUM_HEADING = "## Addendum (2026-11-02): reclassification under §10";
@@ -230,6 +232,10 @@ export function renderAddendum2(ledger: Report, runs: readonly Ledger[]): string
 }
 if ((import.meta as ImportMeta & { main?: boolean }).main) {
   try {
+    if (process.argv[2] === "--comparison") {
+      const records = readFileSync(process.argv[3], "utf8").trim().split(/\r?\n/).filter(Boolean).map(line => JSON.parse(line));
+      process.stdout.write(renderComparison(records, METRICS));
+    } else {
     const args = process.argv.slice(2), addendum = args[0] === "--addendum", addendum2 = args[0] === "--addendum2";
     const defaults = ["s1-200.metrics.jsonl", "s1-24-ledger.metrics.jsonl", "ledger-report.json", "ledger-report.md"].map((p) => join(import.meta.dirname, "out", p));
     const paths = addendum || addendum2 ? (args.length === 1 ? defaults : args.slice(1)) : args;
@@ -278,5 +284,6 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
       }
       process.stdout.write(`Updated ${reportPath}\n`);
     } else process.stdout.write(renderReport(analysis, ledger, { source: sourceHash(), inputs: paths.map((path, i) => ({ path, bytes: (statSync(path) as { size: number; isDirectory(): boolean }).size, lines: texts[i].trimEnd().split(/\r?\n/).length })) }));
+    }
   } catch (error) { process.stderr.write(`${String(error)}\n`); process.exitCode = 1; }
 }

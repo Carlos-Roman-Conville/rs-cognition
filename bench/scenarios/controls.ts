@@ -1,3 +1,5 @@
+import type { EightFunctionV2 } from "../../experimental/personality-v2/v2.ts";
+import type { CognitiveFunction } from "../../src/index.ts";
 import type { RandomStream } from "@rex/kernel";
 import { nullPersonality } from "../../src/index.ts";
 import type { Domain, PersonalityModel, V1Context } from "../../src/index.ts";
@@ -83,6 +85,15 @@ export function shuffledV1(v1Model: PersonalityModel, rng: RandomStream, context
   };
 }
 
-export function shuffledV2(_v2Model: PersonalityModel, _rng: RandomStream): PersonalityModel {
-  throw new Error("Personality V2 not built");
+export function shuffledV2(v2Model: PersonalityModel, rng: RandomStream): EightFunctionV2 {
+  const model = v2Model as EightFunctionV2;
+  if (model.version !== "v2" || !model.relabel) throw new Error("Expected Personality V2");
+  // DESIGN scenarios §10.3: permute all eight labels, preserving position weights.
+  const labels: CognitiveFunction[] = ["Se", "Si", "Ne", "Ni", "Te", "Ti", "Fe", "Fi"];
+  const shuffled = [...labels];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return model.relabel(Object.fromEntries(labels.map((f, i) => [f, shuffled[i]])) as Record<CognitiveFunction, CognitiveFunction>);
 }

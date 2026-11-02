@@ -1,3 +1,4 @@
+import type { StepMask } from "../../../experimental/personality-v2/scenario.ts";
 // Host world only. Cognition selects intentions; this file resolves them without reading subjective state.
 import { canonical, qualify, restore, streams, take } from "@rex/kernel";
 import type { Snapshot } from "@rex/kernel";
@@ -9,7 +10,7 @@ import type { FieldState, Patch } from "./field.ts";
 import { makeSensor, perceiveResult } from "./perception.ts";
 import type { CueMetadata } from "./perception.ts";
 
-export interface RunOptions { seed: number; epochs?: number; configuration?: Configuration; patches?: Patch[]; personality?: PersonalityModel }
+export interface RunOptions { v2Mask?: StepMask; seed: number; epochs?: number; configuration?: Configuration; patches?: Patch[]; personality?: PersonalityModel }
 export interface HostOutcome {
   action: string; target?: string; success: boolean; food: number; result: string;
   from: string; to: string; novelVisit: boolean; visit: boolean;
@@ -36,7 +37,7 @@ export class ForageWorld {
     if (!patches.length || new Set(patches.map((p) => p.id)).size !== patches.length || new Set(patches.map((p) => `${p.x},${p.y}`)).size !== patches.length) throw new RangeError("Invalid patches");
     patches.forEach(kindOf);
     this.state = { epoch: 0, patches, position: patches[0].id, visited: [patches[0].id], hunger: FIXTURE.hunger, food: 0 };
-    this.agent = new Forager(options.seed, patches.map((p) => p.id), options.configuration, options.personality);
+    this.agent = new Forager(options.seed, patches.map((p) => p.id), options.configuration, options.personality, options.v2Mask);
     this.initial = take(this.participants(), { version: 2, t: 0, epoch: null, epochLabel: "s1-forage", catalogue_hash: null,
       seed: options.seed, eventCounter: 0, rng: this.random.state() });
   }
