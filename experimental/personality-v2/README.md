@@ -3,7 +3,7 @@
 Experimental implementation of DESIGN §22.2–§22.3 and the allocation row of §22.4.
 Select with `createPersonality` in `select.ts`; V1 requires its existing `options.etaMin`.
 The null selection returns the existing null model. V2 uses only the public Cognition API,
-including the V1 factory's read-only stack and weights. All engine hooks are currently identity.
+including the V1 factory's read-only stack and weights. Hooks are identity unless an operation is configured.
 
 Call `model.allocation(ctx)` with a `V2Context` extending the existing `MindView`:
 `mind` is the host's mind ID, `attended` contains subjective categories and attended weights,
@@ -56,3 +56,29 @@ from the stack, or `{ function: "Fe", operation: "meaningSelection" }` is masked
 Fe's own `meaningSelection` hook returns its input unchanged. Audience distributions are
 never pooled or scaled. No EU term or
 expression rule is added; response selection remains open (Fe-Q2).
+
+Te external reconfiguration runs through `model.generate` when `options.te` is supplied.
+Its `context(mind)` returns a `TeContext`: the usual allocation context plus an existing
+`activeGoal` ID, the host's kernel `random` streams and an `operations` trace array.
+Its `compound(a, b, mind)` supplies the subjective candidate model for two ordered
+eligible repertoire entries (or undefined). As in V1, the host owns joint outcome and
+precondition semantics; Te never invents a world transition. The existing
+`V1CompoundCandidate.steps` shape records the supplied entries' action/target IDs.
+All ordered pairs are considered in repertoire order, including repeated steps if the
+host supports them. Allocation context should describe this decision's candidates.
+
+Candidates with positive expected progress on the active goal are ranked by
+`expected progress / cost / duration`; ties preserve repertoire order. Proposed boundary
+convention: positive progress at zero cost ranks first. Missing progress retains current
+goal progress, matching the core evaluator. Existing action/target identities are skipped
+and additions are deduplicated. The host must supply feasible compound preconditions and
+capacity requirements; the core generation boundary applies its usual feasibility checks.
+No original candidate is removed, no goal is created and shared parameters are unchanged.
+
+DESIGN §22.7 / Num-Q1 supplies the estimated count `2*A.eval`, rounded stochastically
+using `cognition.personality.v2.Te.generate` scoped by mind. Only fractional counts draw;
+save/restore the host kernel streams alongside V2 state for replay. Available distinct
+compositions cap the realised additions. Execution records snapshot goal, expected count,
+rounded count and added candidates. Mask `{ function: "Te", operation: "generate" }`
+disables execution; absent goals, absent Te and zero allocation are inert. No competence
+gain, learning strategy, new memory store or Ni operation is introduced.

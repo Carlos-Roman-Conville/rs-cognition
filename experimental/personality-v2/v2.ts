@@ -1,6 +1,8 @@
 import { createEightFunctionV1, nullPersonality } from "../../src/index.ts";
-import type { CategoricalBelief, CognitiveFunction, MindView, PersonalityModel, PersonalityType } from "../../src/index.ts";
+import type { Candidate, GenerateParams, CategoricalBelief, CognitiveFunction, MindView, PersonalityModel, PersonalityType } from "../../src/index.ts";
 import data from "./data.json" with { type: "json" };
+import { generateTe } from "./te.ts";
+import type { TeOptions } from "./te.ts";
 
 export type FunctionValues = Record<CognitiveFunction, number>;
 export interface V2State {
@@ -25,6 +27,7 @@ export interface V2Context extends MindView {
   readonly trace: { allocations: AllocationRecord[] };
 }
 export interface V2Options {
+  readonly te?: TeOptions;
   /** Proposed initial experience is zero; supply a snapshot to resume replay. */
   readonly state?: V2State;
   /** Test-only counterfactual control for future operations (DESIGN §22.5). */
@@ -108,6 +111,9 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
     ...nullPersonality, id: "eight-function", version: "v2", stack, state,
     // FUNCTION-DESIGN §6.4 (corrected): Fe never adopts the audience's reading.
     meaningSelection: (distribution: CategoricalBelief) => distribution,
+    generate(candidates: readonly Candidate[], base: GenerateParams, mind: MindView) {
+      return options.te ? generateTe(candidates, base, mind, this, options.te) : { candidates, params: base };
+    },
     allocation(ctx: V2Context) {
       const records = compute(ctx);
       ctx.trace.allocations.push(...structuredClone(records));
