@@ -246,3 +246,87 @@ scenario's own tests and `tsc` only (PLATFORM §11b); the 200-seed studies run a
 | SC-3 | Upbringing epoch counts for S5 (estimates) | keeper; Rex may set |
 | SC-4 | Neuroticism | **(Rex, 2026-11-01)** no dedicated Neuroticism mechanism. Investigate whether neuroticism-related patterns emerge from the existing stress, appraisal, physiological and learning mechanisms; design a later stress-response experiment (S7, not yet written) without blocking S1–S6. S6's Neuroticism indicator stays null until S7 exists |
 | SC-5 | S4 stacks | **(Rex, 2026-11-01)** mixed-type village gatherings, with controlled comparison runs that hold the social environment and the other participants fixed while one participant's stack varies. CB-6's identical-agent symmetry is checked in a separate all-same-stack control run |
+
+## 10. Classification rule v2 and the T-1 controls (Rex, 2026-11-02)
+
+**Rex's review (2026-11-02, his position).** The three classes (stable, context-dependent, none) stay, and a fourth
+is added: **not exercised**, for a function whose opportunities had no input. An unexercised function is never
+labelled ineffective. Classification uses normalised activation opportunities, processing traces and seed-to-seed
+consistency. **Thresholds are fixed in this design before a scenario's results are examined, never in a report.**
+S1's original results and rule stay as recorded. S1 is reclassified under this rule only as an addendum. S3 is
+released, and the approved sequence S1, S3, S2, S4, S5, S6 continues without a further approval per scenario.
+F1–F13 are never tuned to force separation.
+
+### 10.1 The rule (keeper's operational form)
+
+Two tables per scenario and personality version.
+
+**Mechanism table** (one row per function group: V1's eight groups, V2's eight functions):
+1. **Normalised input opportunity** `o_f = (opportunities with eligible input) / (all opportunities)`, from the
+   ledger's eligibility counts (active / eligible / no input). If `o_f < θ_ex`, the class is **not exercised**, and
+   no effect is reported as an absence.
+2. Otherwise the effect is the group's per-seed ablation effect: ΔU for V1 (whole-formula groups, overlapping);
+   exact per-function masking for V2. It is summarised as the mean over seeds with a two-sided `1 − α` interval
+   (`seedInterval`). **Seed-to-seed consistency** `s_f` is the share of seeds whose per-seed effect has the sign of
+   the mean.
+3. **Stable:** the interval excludes 0 over all seeds and in both seed halves with the same sign, and `s_f ≥ θ_s`.
+   **Context-dependent:** the interval excludes 0 in exactly one half, or the halves disagree in sign, or the
+   all-seed interval excludes 0 with `s_f < θ_s`. **None:** otherwise.
+
+**Behaviour table** (one row per stack and metric, as S1): S1's three classes against null, with the seed-consistency
+condition added to *stable*. Each row carries a column listing the function groups that were exercised. A row is
+**not exercised** when every function group by which the stack's hook outputs differ from null's had `o_f < θ_ex`.
+
+**Thresholds, pre-registered on 2026-11-02, before any S3 result and before the S1 addendum was computed. They hold
+for every scenario unless that scenario's section overrides them before its run:**
+- `α = 0.05`, two-sided. **Sourced convention:** the conventional significance level (Fisher 1925, *Statistical
+  Methods for Research Workers*).
+- `θ_s = 0.6`. **Keeper-chosen.** With no effect, the share of same-sign seeds is about 0.5, with a binomial standard
+  deviation of about 0.035 at 200 seeds. So 0.6 sits about 2.8 standard deviations above chance at 200 seeds, and
+  about 1 at 24 seeds. That is why ledger-based (24-seed) mechanism rows also need the interval condition.
+- `θ_ex = 0.05`. **Keeper-chosen.** Below one opportunity in twenty, a group's inputs are too sparse in a 12–16-epoch
+  run to estimate a per-seed effect. It is set equal to `α` as a round convention, not fitted to any result.
+- Halves split at the middle seed. **Keeper-chosen**, following S1's original rule.
+None of these values is changed after results are seen. A changed threshold would be a new, dated rule, and the old
+classification would be kept beside it.
+
+**Processing traces** remain the evidence for every class. The report links each class to the trace fields it rests
+on: eligibility counts, hook parameters, cue shares, candidate EUs and learning KL.
+
+### 10.2 S1 addendum (does not overwrite)
+
+`bench/scenarios/s1-forage/REPORT.md` keeps every existing section byte-identical. A section `## Addendum
+(2026-11-02): reclassification under §10` is appended, recomputed from the same reduced inputs (no new run):
+- the mechanism table, from the 24-seed ledger; S1's judging functions had no eligible input, so they are expected
+  to read **not exercised**, never "none";
+- the behaviour table under §10.1;
+- a short list of every row whose class changed from the original rule.
+The identical type pairs and the negative findings stay stated as found.
+
+### 10.3 T-1 controls (runner option; required before S3's controls run)
+
+`--control none | random-theta | shuffled` on the scenario runners:
+- **random-theta:** the null personality, with each mind's hook-reachable cognitive parameters (`η`, `α0`, `λ`,
+  `confidence`, `κ`, the pertinence multipliers and the learning rate) drawn per mind and seed. Each is drawn
+  uniformly between the minimum and maximum that the sixteen stacks' hook outputs produce for that parameter on the
+  same seed, in a calibration pass. The draw uses the kernel stream `bench.control.theta`. The control spans the
+  same parameter variation without any function structure.
+- **shuffled (V1):** a wrapper around the unchanged V1 model. Per seed, a permutation of V1's four domains (`space`,
+  `adaptation`, `meta`, `cohesion`) is drawn from stream `bench.control.shuffle`. The wrapper calls V1's hooks with
+  the permuted domain, and moves pertinence outputs across the permuted domains' cue categories. V1's code and data
+  are never edited.
+- **shuffled (V2):** the function labels of V2's contribution tables are permuted per seed (exact).
+A stack effect that also appears under a control is reported as not attributable to function structure.
+
+### 10.4 S3 fixture values (fixed before the run; SC-1, SC-2 estimates)
+
+- **Defects.** `p_defect = 0.2` per step (estimate; no source chosen, SC-1).
+- **Foreman.** Reliability is high `r = 0.9` or low `r = 0.4`, half the seeds each, drawn from stream
+  `s3.foreman` (fixture). Instruction context `procedural` or `opinion`, alternating by step (fixture).
+- **Commitment.** `κ = 0.25 × m`, where `m` is the median, over the null run's decisions at seed 1, of the EU gap
+  between the best and second-best candidates. It is computed once by the runner and recorded in the report header.
+  This is an estimate tied to the scenario's own EU scale; Rex may set it (SC-2).
+- **Length.** 16 epochs; two tasks of four steps; payment of hunger relief per finished task (fixture).
+- **Configurations.** Null, the sixteen V1 stacks, the sixteen V2 stacks (once units 5426–5432 land; until then
+  V1 only), and the two controls. 200 seeds.
+- **Thresholds.** §10.1's defaults.
