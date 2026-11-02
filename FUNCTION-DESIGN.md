@@ -36,6 +36,12 @@ his theory register.
 recorded beside it with its date, and its status says whether it is accepted, proposed or superseded. The change log
 (§16) says what came in, what changed and what was flagged.
 
+**The revision standard (Rex, 2026-11-01, from the review consensus).** Every mathematical revision states the
+intended cognitive operation, shows where the existing equation fails (a counterexample or a derivation), names the
+properties the replacement must preserve, and says whether it is a proposal or an approved design. A plausible concern
+alone never changes an equation. The standing risk the reviews named: substituting an easy numerical proxy (strength,
+co-occurrence, pairwise agreement) for the transformation Rex intends.
+
 **Section map.**
 1. Founding principles
 2. The structure of the eight functions
@@ -47,7 +53,7 @@ recorded beside it with its date, and its status says whether it is accepted, pr
 8. Reference matching: Si
 9. Applications: preference, attraction, groups, self and expression, communication, legitimacy, aura and culture
 10. Personality V1 (frozen) in full
-11. Personality V2 (designed)
+11. Personality V2 (designed; foundation built)
 12. How the theory is tested
 13. Results so far
 14. Equation inventory
@@ -397,6 +403,24 @@ E_relations(M) = Σ_{(a,b) ∈ R} w_ab · d( r_ab^observed, r_ab^M )
      with the orientation principle (§2.2). V1's F10 stays V1's.
   6. *The matrix.* Rex's matrix entry for Ni ("self-referenced strategy") is V1's source and is not edited from here;
      whether it is a product of relational integration or a separate statement is Rex's (Ni-Q1).
+- **Second review round (2026-11-01; Venice, a mathematical reviewer, ChatGPT), with the keeper's check of each.**
+  1. *The objective can validate itself (valid).* `E_relations` compares the model with relations the mind itself
+     inferred, so a model can agree with its own inferences and score well while wrong. **Required:** an independent
+     check: `E_trajectory` is measured against later observations the model did not produce. That is the term that
+     makes apophenia costly.
+  2. *A motivational anchor (Venice; Ni-Q5).* Venice: `M*` optimises model quality without serving a need, the same
+     defect as C-Q27. ChatGPT's reply: a learning objective that governs how a representation updates is not an
+     organism-level goal. **Keeper check:** ChatGPT's reply holds if, and only if, `M*` acts in the learning hook (how
+     the structure updates when observations arrive, as belief update already does) and never in decision: Ni never
+     adds candidates or utility for gathering information to improve its model; any such seeking comes from a need.
+     Stated that way it respects principle 10 without amending it.
+  3. *Ni's "priority" has nowhere to live (Venice; overstated).* The baseline `B_f` (the light) is exactly "this mind
+     weights Ni by default", and allocation carries it per decision. What is true is that `B_f` is V1's crude
+     position-derived weight (C-Q10), so the priority is representable but not yet sourced.
+  4. *V1's Ni never fired (Venice; partly).* In S1 the generate hook never changed a candidate, so F9–F11, V1's Ni
+     included, showed no effect. Under the four-class rule that is **not exercised** (S1 is a space scenario with no
+     compound or other-mind opportunities), not a negative result; S3 and S4 are designed to exercise F10 and F11. Still
+     true: there is no V1 evidence about Ni for V2 to beat.
 - **Experiment.** §12.5 (surface against structure, with and without a hint).
 - **Attraction sensitivity (hypothesis).** Symbolic meaning and anticipated trajectory.
 - **Group beliefs (hypothesis).** Integrates observations into an overall reading of a group or its intentions.
@@ -589,6 +613,63 @@ g_f   = C_f / C_f,0                                          competence scales h
 Competence never enters allocation. Habit and motivation forms are estimates (sources: habit strength rises with
 repetition, Lally et al. 2010; Wood & Neal 2007).
 
+**Two defects found 2026-11-01 (review consensus; both verified by the keeper against these equations and against
+`experimental/personality-v2/v2.ts`, built by 5443 with exactly these forms).**
+- **Habit lock-in.** `Ē` is shared by every function, so it cancels when the softmax normalises:
+  `A_f / A_j = (B_f R_f M_f / B_j R_j M_j) · (1 + E_f)/(1 + E_j)`. The habit ratio between two functions grows without
+  bound: 10,000 against 10 experience units is about 909 to 1, so a situation would need to be about 909 times more
+  relevant to the weaker function to recruit it. That breaks principle 9 in practice (an inferior function is never
+  prevented from leading) and it does not match its own source: Lally et al. 2010 found habit strength rising on an
+  asymptotic curve, steep early and flattening with repetition, not linearly.
+- **Competence as loudness.** `g_f = C_f / C_f,0` multiplies each operation's strength (`ψ`, `φ`, the `k` counts, the
+  coherence and Si terms). A practised function therefore pushes harder without working better: an experienced Ti makes
+  a wrong coherence judgement count more, without detecting contradictions any better.
+
+### 4.6 Saturating habit; competence as processing quality (Rex, 2026-11-01; adopted direction, forms open)
+
+Rex adopted the review consensus as the V2 direction. It supersedes `H_f` and `g_f` of §4.5 (kept above for the record).
+
+**Habit saturates (strong candidate):**
+
+```
+H_f = 1 + h · (1 − exp(−E_f / E_0))
+```
+
+- `H_f = 1` with no experience; rises with diminishing returns; approaches `1 + h`, so the habit ratio between any two
+  functions is at most `1 + h` and a strong enough situation can always recruit a weaker function (principle 9).
+- `E_0` sets how fast habit forms; `h` how much habit can ever weigh. Both **estimate**. The curve's shape is
+  **researched** (Lally et al. 2010: an asymptotic curve; median 66 days to reach 95 % of the plateau, range 18 to 254,
+  in daily repetitions). How `E_f`'s units (allocation × relevance × time) map onto repetitions is open (H-Q1); `h` has
+  no source (H-Q2).
+- **Saturation is not decay.** A deep habit still does not weaken with disuse under this form; that stays C-Q21, a
+  separate learning-and-forgetting rule. Lifetime experience `E_f` still feeds competence even when habit changes.
+
+**Competence improves the operation, never its loudness (agreed direction):**
+
+| Function | What greater competence could improve (proposed; equations open) |
+|---|---|
+| Se | sensory discrimination; detecting an opportunity that exists now |
+| Si | telling relevant precedents from misleading similarities |
+| Ne | more useful and more varied alternatives |
+| Ni | better-supported relational structures |
+| Te | more effective arrangements within the available resources |
+| Ti | detecting contradictions, including ones spread across several claims (§7.4) |
+| Fe | distinguishing what each audience will hear more accurately (§6.4) |
+| Fi | finer compatibility judgements within its evaluative structure |
+
+- Each effect must improve a **measurable property of that function's own operation** (accuracy, discrimination,
+  search depth, representation), per the revision standard.
+- **Confidence is separate from competence.** A mind's confidence in a function's output is a belief in the one belief
+  store (how reliable its judgements of that kind have proven, learned from outcomes, as V1's F7 already treats believed
+  own success), never a meter. So a practised mind can be confidently wrong when its experience misled it.
+- **Boundary.** This is the function's processing quality across domains, not a task skill (`cognition.skill.practice`,
+  reserved) and not intelligence (§4.4 invariant).
+
+**The developmental cycle (Rex's light and crystal, kept):** allocation → practice → competence → processing quality
+→ outcomes and learning → future allocation. **Not guaranteed upward:** competence does not force more use. The mind's
+own beliefs, preferences and needs mediate the return path, so a mind can become excellent at something and then avoid
+it because what came with it was unpleasant (§4.4's indirect route).
+
 ---
 
 ## 5. The experience pipeline and memory
@@ -728,6 +809,24 @@ P'(m) ∝ P(m | w, b*)^(1−φ) · Π_{b ∈ audience} P(m | w, b)^(φ / |audien
 
 The resolved meaning shifts with who is present only when Fe executes. `φ_0 = 0.5` is an estimate.
 
+**Corrected direction (Rex, 2026-11-01, review consensus): Fe maps what each listener will hear; it does not adopt
+it.** The pooling above moves Fe's own resolved meaning toward the audience's reading, which models Fe as taking on
+what the room means. Rex's profile (§6.2) has Fe map where each meaning comes from and notice who present would be hurt
+by a word; an Fe-weighted mind can understand two audiences perfectly and still choose words that comfort one,
+challenge the other or conceal something. The proposed form keeps two outputs apart:
+
+```
+P_self(m | w, b*)                       Fe's own reading, selected by the bubble it is in (§6.2, C-Q18; unchanged)
+{ P(m | w, b) : b ∈ audience }          its model of each listener's reading, kept distinct, never pooled
+```
+
+and leaves expression to ordinary cognition: §9.4's third stage (response selection: communicate, persuade, conceal,
+confront, accommodate) reads the audience map like any other belief. Fe competence (§4.6) is how accurately the map
+matches what listeners actually resolve. No new mechanism: the per-bubble distributions are §6.3's. **Keeper check:**
+the reviewers' numerical point, that the product can become undefined when one audience gives a meaning zero
+probability, does not hold with the built Dirichlet smoothing (`α > 0` keeps every pooled meaning positive); the
+conceptual point holds. Unit 5446 was to build the pooling.
+
 ---
 
 ## 7. Coherence: the shared primitive
@@ -810,6 +909,35 @@ coherence act through belief (an incoherent plan is believed less likely to succ
 all. Unit 5444 was narrowed before it ran (Cognition keeper, 2026-11-01): it builds the Ti and Fi coherence scores as
 execution records only and adds nothing to EU until Rex decides.
 
+**A route per function for C-Q27 (proposed 2026-11-01 by one reviewer; the most specific proposal so far).**
+- **Ti → through belief.** An incoherent argument or plan is believed less likely to work. That is how Ti's rejection
+  of contradiction should reach choice, and it adds no value term.
+- **Fi → gated utility.** The belief route fails for Fi: when an Fi mind rejects an item that clashes with its identity
+  (the goth example, §3.8), it does not believe the item will fail at anything; it just does not fit. Gating keeps
+  principle 10: the need for clothing gives the reason to act, and Fi coherence decides among the outfits that meet it.
+- Qualification from the consensus: Ti coherence may affect more than predicted success, and Fi can change beliefs as
+  well as valuation; the split is a candidate, not the final answer. **Keeper check:** both halves respect principle 10;
+  neither adds a need.
+
+**Four defects in the current forms (2026-11-01 reviews; each verified by the keeper).**
+1. **The scale depends on irrelevant alternatives.** `s = 0.25 × (max EU − min EU)` is set by the spread of the whole
+   candidate set. Add one extreme, unrelated option and `s` grows, the coherence bonus grows against the gap between two
+   close options, and their order can flip. §8.3's Si term uses the same `s`. **Required of a replacement:** the scale
+   comes from the stake of the need the candidates serve, never from the range of options (Coh-Q1; form open). This
+   matters only on the utility route.
+2. **Ti's pairwise sum misses spread-out contradictions.** The claims A, "A implies B" and "not B" are consistent pair
+   by pair and inconsistent together. **Required:** Ti checks consistency of the whole set. Proposal: `C_Ti` counts the
+   inconsistent subsets the mind finds up to a search depth; joint consistency is hard in general (satisfiability is
+   NP-complete, Cook 1971), so the depth is bounded, and that depth is a natural Ti competence effect (§4.6) (Ti-Q1).
+3. **Fi's pair score is association, not evaluative compatibility.** `(pos − neg)/(n + 1)` over episodes containing both
+   items measures learned co-occurrence. Two things can each be pleasant and still clash together, and a pair never
+   experienced together scores zero. **Required:** association stays as evidence; the operation also needs compatibility
+   learned over feature pairs, so it reaches new items sharing features, and the identity term (C-Q22, C-Q23) for clashes
+   with the established structure (Fi-Q1).
+4. **`C_Fe` has the wrong type.** `meaning(X, c)` returns a distribution over meanings; every other coherence score is a
+   number. Proposal under §6.4's corrected Fe: `C_Fe(X, c) = Σ_{b ∈ audience} w_b · P(X is read as intended | b)`, the
+   expected chance the combination communicates what it is meant to (Fe-Q1).
+
 ### 7.5 Tests (Rex)
 
 The wardrobe test: give an Fi-weighted mind items with perceived characteristics; over hundreds of decisions, the
@@ -876,6 +1004,17 @@ match(a, R) = ( Σ_x P(x ∈ R)·[x ∈ a] − Σ_x P(x ∈ R̄)·[x ∈ a] ) / 
 entering the decision term with `C = match` in place of `match − ½`. Unit 5445 builds §8.3 as written until Rex
 decides (Si-Q1).
 
+**Matching is general; why it matters comes from the task (2026-11-01 reviews; keeper-verified).** §8.1 makes role
+consistency one application of reference matching (a remembered person, a familiar environment, a procedure, a
+history), but §8.3 computes the match only inside a decision term for the mind's own actions, weighted by
+`P(role applies to me) × relatedness`. That covers role conformity and nothing else: it cannot check a machine against
+its remembered operating pattern, or recognise that someone else is acting like a knight without the "I should act
+like one" part. **Required (Si-Q2):** `match(·, R)` applies to any observed or proposed thing (an action of one's own,
+another person's behaviour, an object's state); its output enters ordinary cognition as evidence (a mismatching machine
+is believed faulty; a person matching "knight" is believed to be one), and the authority-weighted term for one's own
+role is one use of it, not its definition. This keeps §8.2's split of fidelity and authority in the formula, not only
+in the prose. The same `s` defect as §7.4 applies to the authority term.
+
 ### 8.4 The knight test (Rex; planned after the S1 and ledger chains)
 
 Several simulated children receive different accounts of what a knight is (formal rules; heroic stories; real knights
@@ -939,6 +1078,12 @@ P'(θ_g) ∝ P(θ_g) · L(obs | θ_g)^(η · ã_g · S_e),   ã_g = a_g / max_c 
 P(θ_k) = Σ_g P(k ∈ g | cues) · P(θ_g) + (1 − Σ_g P(k ∈ g | cues)) · P_0(θ)     (prior for a new person; individuation follows)
 π_j += ρ · c_g · rel(j, θ_g),   c_g = 1 − H(P(θ_g)) / H_max         (expectation-driven attention; ρ open)
 ```
+
+**Defect in the prior for a new person (2026-11-01 review; keeper-verified).** Groups overlap (a person can be a
+merchant and a foreigner), so `Σ_g P(k ∈ g | cues)` can exceed 1; the weight on `P_0` then turns negative and the
+mixture is no longer a probability. **Required:** mixture weights that stay non-negative and sum to one under overlap,
+for example `w_g = P(k ∈ g) / max(1, Σ_g P(k ∈ g))` with `w_0 = 1 − Σ_g w_g`, or combining overlapping group beliefs by
+the belief rule rather than by mixture. Which, is G-Q3 (overlapping groups), already open.
 
 **The gate is attention:** an experience whose group cue was not attended updates no group belief. A confident belief
 raises attention to confirming cues (illusory correlation, Hamilton & Gifford 1976; confirmation bias, Nickerson 1998).
@@ -1105,7 +1250,7 @@ had nothing to act on in early fixtures. V1 stays frozen for historical comparis
 
 ---
 
-## 11. Personality V2 (designed, not built)
+## 11. Personality V2 (designed; foundation built, operations not built)
 
 ### 11.1 Rex's strategy and priorities (2026-11-01, 2026-11-02)
 
@@ -1124,22 +1269,32 @@ only when its function's allocation is positive, scaled by `A · g`.
 ### 11.3 Allocation
 
 The V2 allocation is §4.5: habit and motivation set the choice to use a function, and competence scales how strongly
-its operation acts.
+its operation acts. **Direction changed 2026-11-01 (§4.6):** habit saturates, and competence improves the operation's
+quality instead of its strength. 5443 built the §4.5 forms; they are superseded, not yet rebuilt.
 
 ### 11.4 The operations
 
 | Function | Operation | Equation (summary) | Section |
 |---|---|---|---|
-| Ti | conceptual coherence | `C_Ti` from beliefs about contradiction | §7.4 |
-| Fi | evaluative coherence | `C_Fi` from episode valence | §7.4 |
-| (C-Q27) | coherence into EU | `A·g·s·tanh(C/n_pairs)` | §7.4 |
-| Si | reference matching and update | `match(a, R)`, authority-weighted | §8.3 |
-| Fe | contextual semantic modification | audience-weighted meaning selection | §6.4 |
+| Ti | conceptual coherence | `C_Ti` from beliefs about contradiction; whole-set check required (Ti-Q1) | §7.4 |
+| Fi | evaluative coherence | `C_Fi` from episode valence; feature-level compatibility required (Fi-Q1) | §7.4 |
+| (C-Q27) | coherence into decisions | `A·g·s·tanh(C/n_pairs)`, reopened; `s` defect (Coh-Q1); Ti-belief / Fi-gated split proposed | §7.4 |
+| Si | reference matching and update | `match(·, R)`, general; authority-weighted for one's own role (Si-Q2) | §8.3 |
+| Fe | audience interpretation | own reading plus a kept-apart reading per listener; expression by response selection (Fe-Q2) | §6.4 |
 | Te | external reconfiguration | adds goal-efficient arrangements, removes none | §3.5 |
 | Ne | branching | adds novel two-entry compositions | §3.3 |
 | Se | immediate response | present evidence on preconditions | §3.1 |
 | Ni | **open**; relational integration proposed (Ni-Q1) | `M* = argmin [E_traj + λK + γE_rel]`, not yet computable | §3.4 |
 | all | attention-weighted encoding | `e_c` with `τ_enc` | §5.5 |
+
+**Numerical artifacts (2026-11-01 review; implementation refinements, Num-Q1).**
+- `k_Te`, `k_Ne = round(A·g·2)` jump: nothing below `A·g = 0.25`, then one composition, then two at 0.75. A small
+  change in allocation flips a whole candidate in or out. A smooth form (the expected count, realised by seeded
+  stochastic rounding so replay stays deterministic) avoids the jump.
+- `ψ = min(1, A·g)` and `φ = min(1, A·g·φ_0)` clip: with gain above 1 a moderate allocation already saturates. Under
+  §4.6 the gain leaves these terms, which removes most of it.
+- Encoding may count attention twice: `a_c` is already reweighted by the attention allocation, and `e_c` multiplies by
+  `A^att` again (§5.5). To check when unit 5450 is drafted.
 
 ### 11.5 The ledger for V2
 
@@ -1227,7 +1382,19 @@ each run with and without a hint pointing at the relational structure:
   structural similarity what is judged sound (Gentner, Rattermann & Forbus 1993), and spontaneous transfer is rare
   until a hint is given (Gick & Holyoak 1980). That is the general human baseline the function hypothesis is tested
   against.
+- **Confound with encoding (Venice; valid).** §5.3 and §5.5 already encode Si as physical detail and Ni as an abstract
+  lattice, and §8.3's match is a feature-set match that cannot hold a relation. Run as written, Si-weighted minds look
+  surface-biased because they were built to encode surfaces, so the result is close to guaranteed and tests the encoding
+  profile, not the operation. **Required:** a second arm with encoding equalised (the same features and relations stored
+  for both, by masking the encoding term, §11.5), so any remaining difference comes from what each operation recruits.
 - **Precondition:** an Ni operation (Ni-Q1, Ni-Q2). Until then the experiment is designed, not runnable.
+
+### 12.6 Identifiability (2026-11-01 review)
+
+Different mechanisms can produce the same behaviour, so a behavioural difference alone never names the operation that
+caused it. The ledger's masking (§11.5) attributes influence inside one run; each experiment must also include at least
+one condition where the candidate mechanisms predict **different** outcomes (as §12.5's second arm does), or its result
+is reported as unattributed.
 
 ---
 
@@ -1269,7 +1436,7 @@ it invalidates in the change log.
 | `ω_f = (5 − i)/4`, `Δ = ρ_E − ρ_I` | V1 stack weights and attitude tilt | §4.2 | V1 built; crude |
 | `A_f = softmax(ln B + ln R + ln L + ln M)` | the light and the crystal | §4.3 | designed 2026-10-30; superseded for V2 by §4.5 |
 | `E_f`, `C_f = C_f,0 + k_f·log(1 + E_f)` | experience and competence over a life | §4.4 | designed; constants open (C-Q20) |
-| `A^x_f`, `H_f`, `M_f`, `g_f` | V2 allocation: habit, motivation, competence as gain | §4.5 | V2, built in `experimental/` (5443) |
+| `A^x_f`, `H_f`, `M_f`, `g_f` | V2 allocation: habit, motivation, competence as gain | §4.5 | built in `experimental/` (5443); `H_f` and `g_f` superseded by §4.6 |
 | `w_c`, `a_c`; ACT-R `B_e`, `P_retrieve` | attention and retrievability | §5.4 | attention and memory built; per-function cue weights open (C-Q17) |
 | `e_c = a_c·(1 + Σ A·g·enc)`, `τ_enc` | attention-weighted encoding | §5.5 | V2 designed (5450); `τ_enc` estimate |
 | `P(m|w,c)`, `L(v')`, `F`, `w_b` | meaning pools, testimony, fit, bubble exposure | §6.3 | built |
@@ -1288,6 +1455,10 @@ it invalidates in the change log.
 | `D_i(L)`, `V_i(L)`, `w_c` | identity mismatch and semantic variability | §9.4 | designed diagnostics |
 | `tolerance = σ(β·(max EU(turn) − EU(leave)))` | conversation tolerance | §9.5 | built |
 | `Y_f = F_f(X, R, G, C)` | the common interface (orientation) | §2.2 | proposed architecture |
+| `H_f = 1 + h·(1 − e^(−E_f/E_0))` | saturating habit | §4.6 | adopted direction 2026-11-01; `h`, `E_0` estimates (H-Q1, H-Q2) |
+| competence effects per function; confidence as a belief | processing quality, not strength | §4.6 | adopted direction; equations open |
+| `P_self`, `{P(m|w,b)}` per listener | Fe audience interpretation | §6.4 | adopted direction (Fe-Q2) |
+| `C_Fe = Σ_b w_b·P(read as intended | b)` | Fe coherence as a number | §7.4 | proposed (Fe-Q1) |
 
 ---
 
@@ -1303,7 +1474,7 @@ Every open item that touches the function theory. "Whose" says who decides.
 | C-Q17 | The episode detail vector and the cue-type retrieval weights, and their sources | Rex, matrix |
 | C-Q19 | Whether Ne and Ni actively resolve meaning; Fi's "what it notices" | Rex |
 | C-Q20 | Sources and ranges for `k_f`, `C_f,0`, the form of `R_f` | Rex |
-| C-Q21 | Whether function experience decays without practice | Rex |
+| C-Q21 | Whether function experience decays without practice; separate from habit saturation (§4.6), which does not make a habit weaken | Rex |
 | C-Q23 | Which structure is the self-model behind Fi's identity term (keeper: beliefs for traits, identity nodes for memberships) | Rex |
 | C-Q24 | Coherence principles for Ni, Se and Ne; Ni's exact reference (outcome, causal model or pattern). Candidate answer for Ni: the relational pattern, with outcomes and causal models as its products (§3.4; Ni-Q1) | Rex |
 | C-Q27 | How coherence or Si match enters a decision. Designed in V2 (§7.4, §8.3); **reopened 2026-11-01**: the term adds value without a need. Keeper proposal: gate it to candidates that serve an active need, or act through belief | Rex |
@@ -1316,11 +1487,22 @@ Every open item that touches the function theory. "Whose" says who decides.
 | Si-Q1 | Add prohibited features to Si's reference (`R̄`, §8.3)? | Rex |
 | Cul-Q1 | Is one extraverted plus one introverted function per culture a rule, or the predicted outcome of learned cultural weights (§9.9)? Is the order of the two really irrelevant? | Rex; touches Society |
 | Cul-Q2 | What "the two do not overlap" means: different domains, or something else | Rex |
+| H-Q1 | How `E_f`'s units map onto Lally et al.'s daily repetitions, to set `E_0` | Rex; Cognition keeper drafts |
+| H-Q2 | The ceiling `h` on habit (no source) | Rex |
+| Comp-Q1 | Each function's competence effect as an equation (§4.6 table), and how confidence is learned | Rex; Cognition keeper drafts |
+| Coh-Q1 | The scale of the coherence and Si terms, from the stake of the need served instead of the candidate range | Rex |
+| Ti-Q1 | Whole-set consistency for Ti, with a bounded search depth as Ti competence | Rex |
+| Fi-Q1 | Fi compatibility over feature pairs plus the identity term, with association as evidence only | Rex |
+| Fe-Q1 | `C_Fe` as the expected chance of being read as intended | Rex |
+| Fe-Q2 | Confirm Fe keeps its own reading and a per-listener map, and expression is ordinary response selection (replaces the §6.4 pooling) | Rex |
+| Si-Q2 | General matching (own actions, others' behaviour, objects) as evidence; role authority as one use | Rex |
+| Ni-Q5 | Ni's objective only in learning, never in decision (principle 10 kept), or a motivational anchor | Rex |
+| Num-Q1 | Smooth `k` counts, clipping, possible double attention in encoding (§11.4) | Cognition keeper; Rex if a constant |
 | C-Q28 | The form of motivational modulation `M_f` | **proposed in V2** (§4.5); Rex may replace |
 | Te-Q1 | Does Te keep its measures fixed while reconfiguring, or change measures when another serves the objective better? | Rex |
 | Ori-Q1 | Where an extraverted function's objective comes from (axis partner, group, need, task), compatible with "personality never sets a goal" | Rex |
 | B1, B2, B3 | Matrix questions: Si weakness emphasis; Ne acts or only predicts; grudge or grip | Rex |
-| G-Q1 to G-Q4 | Group association: strength and asymmetry of expectation-driven attention; significance of an experience; overlapping groups; confirm the Ne, Ni, Fe, Te routes | Rex |
+| G-Q1 to G-Q4 | Group association: strength and asymmetry of expectation-driven attention; significance of an experience; overlapping groups (now also: the new-person prior is not a probability under overlap, §9.3); confirm the Ne, Ni, Fe, Te routes | Rex |
 | SR-Q1 to SR-Q4 | Contextual meaning: the self-model (= C-Q23); the shared meaning space; overlap split and context pooling; audience features | Rex |
 | P-Q1 to P-Q4, A-Q1 to A-Q6 | Preference learning and attraction forms, sources and scenarios | Rex |
 | C-G2, C-G3a | Legitimacy: how the belief enters obedience; the estimated likelihood ratios | Rex |
@@ -1337,3 +1519,4 @@ Every open item that touches the function theory. "Whose" says who decides.
 | 2026-11-02 | Document created by the Cognition keeper at Rex's request, from DESIGN §9, §13, §14, §16, §18–§22, the scenarios design, the S1 report and Rex's statements of 2026-10-30 to 2026-11-02, including the orientation principle (§2.2), recorded here for the first time. |
 | 2026-11-01 | **First paste to the Function design keeper:** ChatGPT's Ni proposal, Gemini (two answers) and Venice reviews, ChatGPT's assessment of the reviews; Rex's Se and aura observation with ChatGPT's reply; ChatGPT's review of this document. **Came in and was recorded:** Ni as relational integration, with the graph, the objective, apophenia, rigidity as a consequence to test, the Ni–Ti boundary and what was not adopted (§3.4); Se as the present observable state and the Se–Ni axis (§3.1); aura and cultural valuation (§9.9); the Ni–Si transfer experiment (§12.5). **Changed:** two status markers and a rule against silent rewrites (header); the domain-pair and axis-pair distinction (§2.1); the orientation principle's status (§2.2, it is recorded in ENGINES); §4.3 and §4.4 marked superseded for V2 by §4.5, with the indirect route by which competence still reaches allocation; §5.1 stage roles read as leading, not exclusive; §7 and §7.3 retitled (coherence is not judging-only); §11.7 build state corrected (5441–5443 landed); new §3.9 derivation table and §14 equation inventory; open questions renumbered §15, this log §16. **Flagged:** C-Q27 reopened (the coherence term adds value without a need; keeper proposal to gate it); Si's match does not penalise forbidden features (half the review's point; keeper proposal Si-Q1); Ni's graph must live in the belief store and its rigidity must not reuse shared belief inertia (§3.4 check); `λ`, `γ`, `w_ab` have no values; Rex's one-pair-per-culture rule against the paste's learned-distribution form (Cul-Q1, touches Society). **Not adopted, as the paste itself concluded:** Gemini's claims that rigidity is explained and that Ni is more visionary or accurate; Venice's "structure mapping renamed". New open items Ni-Q1–Q4, Se-Q1–Q2, Si-Q1, Cul-Q1–Q2. |
 | 2026-11-01 | Cognition keeper's reply recorded: 5444 narrowed (coherence scores as execution records, no EU term until C-Q27 is decided); 5445 keeps the positive-only match (Si-Q1 open); 5459 amends DESIGN.md to match §4.4, §5.1, §2.2 and the reopened items (§7.4, §11.7). |
+| 2026-11-01 | **Second paste:** review round by several AIs (a five-point formula reviewer, Venice on Ni, a reviewer proposing a Ti/Fi split, a mathematical reviewer's ten-item list as summarised by ChatGPT, a checker's verification, ChatGPT's syntheses); Rex: alter by the consensus. **Adopted as Rex's direction (consensus):** the revision standard (header); saturating habit replacing linear habit, decay kept separate (§4.6); competence as processing quality, confidence as a belief (§4.6); Fe keeps a per-listener map and leaves expression to response selection (§6.4). **Recorded as verified defects, forms open:** coherence scale `s` depends on irrelevant alternatives (§7.4, also §8.3); Ti pairwise misses three-way contradictions; Fi pair score is association; `C_Fe` type mismatch; Si matching narrowed to own-role conformity (§8.3); Ni objective self-validating; group prior invalid under overlap (§9.3); round/clip/encoding artifacts (§11.4); §12.5 confounded with encoding; identifiability (§12.6). **Keeper checks that disagreed with a reviewer:** Fe product cannot go undefined with Dirichlet smoothing; Ni's priority is representable through `B_f` (crude, C-Q10); V1's Ni in S1 is not exercised, not a negative; Ni-Q5 resolves without amending principle 10 if `M*` stays in learning. Superseded in place: §4.5 `H_f` and `g_f`; §6.4 pooling. Units affected: 5443 (built forms), 5445, 5446, 5447–5450; Cognition keeper told. New questions H-Q1–Q2, Comp-Q1, Coh-Q1, Ti-Q1, Fi-Q1, Fe-Q1–Q2, Si-Q2, Ni-Q5, Num-Q1. |
