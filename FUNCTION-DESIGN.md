@@ -46,7 +46,7 @@ co-occurrence, pairwise agreement) for the transformation Rex intends.
 1. Founding principles
 2. The structure of the eight functions
 3. The eight functions, one by one (§3.9: the derivation table)
-4. The stack, allocation and development
+4. The stack, allocation and development (§4.8–§4.9: abstraction and dark abstraction)
 5. The experience pipeline and memory
 6. Meaning: semantic systems
 7. Coherence: the shared primitive
@@ -769,6 +769,144 @@ computation (Russell & Wefald 1991; Lieder & Griffiths 2017, keeper-added source
    keeper's rows to update.
 5. *Boundary.* `θ_f` is a function's processing strategy across domains: not a belief (knowledge stays in the belief
    store, so no duplicate memory), not a task skill (`cognition.skill.practice`), not intelligence (§4.4).
+
+### 4.8 Abstraction: one function expressed through another (Rex, 2026-11-02; proposed)
+
+**Rex's statement.** Abstraction is when one function is pulled through another and expressed through it, with its
+lingering essence still visible. For an ESTP, inferior Ni pushed through dominant Se: what comes out looks like Se, but
+Ni's shape shows. Like a fist pushed through playdough, or an object pressed into a pin-art board: the impression on
+the other side is not the object's exact shape, because the medium alters it. Rex expects this is where the
+calculation becomes hard to measure, because the concept is nebulous.
+
+*Term:* Rex's "abstraction" here means cross-function expression. It is not principle 2's "lower layer of abstraction"
+(levels of description) and not Ni's relational integration (§3.4).
+
+**What it adds.** Until now functions combine as weighted contributions (`Y = Σ_f A_f Y_f`, addition). Abstraction is
+**composition**: one function's output becomes another's input, and order matters (`Run_Se(x; z_Ni) ≠ Run_Ni(x; z_Se)`).
+That gives the dominant–inferior relation a possible asymmetry that addition cannot express.
+
+**The interface (proposed; the smallest form, from the review round):**
+
+```
+z_f       = Run_f(x, R_f, θ_f, b_f)                    the source function's output (§4.7)
+z_{f→g}   = P_{f→g}(z_f)                               what crosses: a selection or reformatting the receiver can read
+y_g       = Run_g(x, R_g, θ_g, b_g; z_{f→g})           the receiver processes its own input with the source's output available
+```
+
+- **The source stays intact.** Ni can keep a rich model while only one prediction ("the opponent shifts left,
+  confidence 0.7") reaches Se. Failing to express the whole model does not degrade it. This is closer to the pin-art
+  board than "lossy encoding": the object is unchanged; the impression depends on the medium.
+- **What survives is a named property.** For Ni through Se in a fight: Ni's directional expectation survives; Se adds
+  its translation into an action available here and now; the relational explanation need not appear in the action.
+  "Essence" is measured as that property, not as a score.
+- **No encoder–decoder and no 64 pair equations yet.** `P_{f→g}` starts as a projection onto fields the receiver
+  already reads.
+- **Three claims, tested separately:** (1) one function supplies information to another (changing the supplied
+  information changes the receiver); (2) the receiver transforms it (the same source output gives different results
+  under different receivers or contexts); (3) dominance sets the usual direction (the allocation and routing rules
+  produce that asymmetry across situations). (1) and (2) do not establish (3). "The inferior expresses through the
+  dominant" stays Rex's hypothesis about the usual route, never a compulsory route written into every decision.
+- **Both directions.** The dominant can also be expressed through the inferior; hierarchy may set how often each
+  direction is used and how practised the receiver is. Two kinds of weakness follow: **weak generation** (the source
+  produces poor information) and **weak integration** (good information, poorly taken up).
+- **Routing is a third relation**, beside allocation and competence: which path a function's output takes. An ESTP can
+  use Ni directly, Se directly, or Ni through Se; the ledger must tell the three apart, and record the connection's
+  influence separately so one contribution is not counted as Ni's and again as Se's.
+- **Allocation, competence, confidence, transformation** stay four things; there is no "abstraction" score.
+
+**Keeper check (2026-11-02).**
+1. *One crossing already exists.* §5.1 (Rex) has the extraverted function filter and the introverted function encode:
+   every experience already passes one function's output to another. DeepSeek read this as the routing mechanism;
+   ChatGPT rejected it as "stages, not routing". Both are half right: §5.1 is one fixed crossing per experience, not a
+   general router. Abstraction must reuse that crossing for the filter-to-encode case rather than build a second one
+   (one owner per mechanism), and generalise only beyond it.
+2. *Allocation untouched.* Abstraction acts on what happens to information after recruitment (expression fidelity),
+   never on allocation, so §4.6's lock-in repair and principle 9 hold at any depth (Abs-Q2).
+3. *Fidelity is a diagnostic, not the mechanism.* A product of per-stage retentions `Q_k = Π r_i` is commutative: it
+   cannot tell Ni → Ti → Se from Ni → Se → Ti, the very order that composition was introduced to capture (DeepSeek;
+   verified). The transformations stay ordered; retention is measured afterwards.
+4. *Leading is not routing.* An inferior function can supply the decisive information while its expression passes
+   through others (Ni spots the danger; the action comes out as Se). So a serial route does not by itself break
+   principle 9 (ChatGPT, against DeepSeek's "serial is excluded"); it stays a candidate.
+5. *No new hook needed for V2 tests:* the source output enters the receiver as an extra input inside V2's own
+   operations (§11.1, existing hooks only).
+
+### 4.9 Dark abstraction and the shadow positions (Rex, 2026-11-02; proposed)
+
+**Rex's statements and questions.**
+- **Dark abstraction** is when the shadow functions present themselves.
+- **Do abstractions co-occur with the other functions?** When an ESTP uses Ni, is Ni pushed through Fe, then Ti, then
+  Se, or does it happen in isolation? And does Fi then pass through all seven?
+- **A possible reason for the hierarchy:** the fourth function may be weaker because it is abstracted through so many
+  others, and positions 5–8 so weak that they are called shadows because each function in front muddles their
+  representation, so they often come out negatively unless one is at ease with them ("whatever that means, or if that
+  is even possible").
+
+**What this would give (if it holds):** a mechanism for the eight positions instead of eight assigned strengths.
+Whether it does is untested; a mechanism that *can* produce position differences is not yet a derivation of the
+eight-position hierarchy (ChatGPT, against DeepSeek's "the positions are now derivable").
+
+**Three candidate causes of difficult expression, kept separate and measurable (review consensus):**
+
+| Hypothesis | What makes expression difficult | Distinguishing prediction |
+|---|---|---|
+| A. Transformation depth | the output passes through several operations and changes form | difficulty grows with particular routes or depth |
+| B. Criterion collision (DeepSeek) | the output arrives intact and fails the receiving function's coherence criterion (§7.1) | difficulty grows with criterion distance, even on a direct connection |
+| C. Low practice or competence | the source operation itself performs poorly | difficulty persists when its output is used directly |
+
+They can coexist; the engine measures each one's share.
+
+**Criterion collision, in more detail (proposed).** Fi's valuation passing through Ti is checked for contradiction; an
+evaluative claim is not propositional, so it can fail Ti's check though nothing was lost. Outcomes: Ti recognises it as
+personally meaningful without proving it; translates it into a consistency argument; finds no justification and treats
+it as unimportant; or builds a consistent justification that does not explain the original. DeepSeek's examples: an
+INTJ's eighth-position Si arrives as a technically true, beside-the-point exception that fails Ni's pattern; an INFP's
+eighth-position Te turns a valuation into "what's the number for this". Form:
+
+```
+c_{f,g} = K_g(z_f, R_g)        whether receiver g can interpret and use the source's output under its own criterion
+```
+
+with **understanding, accepting and integrating kept apart**: Ti can understand an Fi valuation without endorsing it,
+and Ni can recognise a contradicting Si detail without revising its model. Otherwise every disagreement would be coded
+as a processing failure.
+
+**What reaches expression: four outcomes the trace must tell apart** (the original signal, the receiver's
+interpretation and the final output recorded separately):
+1. **Successful abstraction:** correctly translated; different form, relevant significance kept (the pin-art case).
+2. **Suppression:** understood, then withheld or overridden.
+3. **Transformation failure:** misread; the expression no longer represents the source.
+4. **Irrelevance:** the receiver finds it beside the task; neither suppression nor failure.
+
+**Negativity is never a coefficient.** Collision does not by itself mean resentment: the mind may feel confusion,
+curiosity, frustration, indifference, or satisfaction at resolving it. An emotional response comes from the existing
+pipeline (§5.1 stages 3–4: appraisal, Life's chemistry, re-interpretation), meeting the mind's needs, expectations and
+memories. No shadow output is multiplied by a negative number.
+
+**"At ease" (proposed; Abs-Q4).** DeepSeek: being at ease with a shadow function is `θ_g` learning to admit the
+source's criterion as a valid check (a Ti search order that includes evaluative consistency among the constraints it
+tests), i.e. §4.7's `Learn_g`, with no new machinery. Open alternatives: it changes competence, interpretability,
+integration or routing. **Keeper note:** Rex's matrix already has a "balanced" column for the advantage–hypocrisy cycle
+("true balanced Se takes up space without formulating a guilt mentality") and states that the lower a function sits, the
+less confident the user is and the more they avoid its domain. "At ease" may be that balanced column, and the lower
+confidence is now a belief learned from experience (§4.7), never assigned by position. Whether they are the same is
+Rex's.
+
+**Keeper check (2026-11-02).**
+1. *Positions 5–8 are not written (principle 6).* The matrix names them (Oppositional, Critical Parent, Deceiving, Devil)
+   but writes no behaviour for them, and `stacks.json` holds four functions per type. The paste's ESTP shadow order
+   (Si, Te, Fi, Ne) is a common convention, not Rex's text. Nothing about positions 5–8 enters executable V2 until Rex
+   gives the order (Abs-Q0). A seven-stage chain for the eighth position cannot be claimed while the stack stops at four.
+2. *Four mechanisms or eight?* If depth and criterion distance produce the positions, the eight functions could reduce
+   to four mechanisms with attitude as a modifier (DeepSeek). That collides with §3's eight distinct operations, though
+   it may sit with the orientation principle (§2.2), where attitude is what an operation holds fixed. Rex's to decide
+   deliberately (Abs-Q3).
+3. *Does the eighth generate its own information?* If it does, shadow weakness comes from routing and expression; if it
+   is reconstructed from the first seven, the shadows are emergent transformations, not independent operations. That
+   decides whether the architecture needs eight mechanisms (Abs-Q3).
+4. *Rex's own question* is the one to answer first: is a shadow function's information **unwelcome** to the dominant
+   structure (collision) or **hard to express accurately** (transformation)? The two lead to different mathematics
+   (Abs-Q1, Abs-Q5).
 
 ---
 
@@ -1543,6 +1681,53 @@ or memorising answers? Run in isolation; it does not replace the V2 Ti operation
     unseen family mixes and the memorising control are what tell the two apart, so the report should show transfer with
     and without that feature. **Added (2026-11-01):** 5466 gains a switch that removes every tag-dependent feature (tested); 5467 adds a no-tags arm and reports transfer with and without tags beside the memorising control in one table.
 
+
+### 12.8 Competing architectures, with the simulator as the testing ground (Rex, 2026-11-02; adopted direction)
+
+**Rex's position.** Build competing models and see which gives the most realistic outcomes; the game simulator is the
+testing ground, so whichever backend gives more realistic outcomes, with all the variables of existence present,
+decides validity.
+
+**How the reviews sharpen it (consensus, keeper-checked):**
+- **Factors, not five unrelated backends.** Routing (independent contributions; compulsory serial chain; selective,
+  context-dependent connections), criterion handling (preserve the source criterion; translate it; apply the
+  receiver's criterion indiscriminately), learning (fixed against learned routes), source capability (equal first,
+  varied later). Then an effect can be traced to route, translation, learning or their interaction. Criterion collision
+  must arise from specified operations and inputs, never from a switch that directly produces difficulty.
+- **A competitor without eight functions.** Comparing only eight-function variants answers "which interaction works
+  best given eight functions", not "are eight needed". **Keeper note:** that competitor already exists: the null
+  personality (`nullPersonality`, identity on every hook) is general cognition with memory, needs, learning and context
+  but no functions, and T-1 already uses it with random parameters as a control (§12.1). The ladder is: null → eight
+  functions without routing → selective routing → serial routing.
+- **Realism needs outside observations.** A flexible model can be adjusted until it looks right. Develop on one set of
+  scenarios, freeze, then test on unseen ones; compare with independent data (habit curves, analogical transfer,
+  conformity, choice and confidence calibration, demographic and historical records), consistent with "historical data
+  first" (PRODUCTION §5). The ledger's traces explain the model; they do not validate its psychology, because people
+  carry no routing labels: comparisons with people use observable consequences (choices, response times, confidence,
+  explanations, recall errors, reactions to changed information, learning across encounters).
+- **Having every variable is not having the right relations.** Different equations over the same variables give
+  different worlds, and two wrong mechanisms can cancel (too much conflict in cognition hidden by a too-forgiving social
+  system). Whole-world runs ask both: does it reproduce the pattern, and through a credible chain of intermediate
+  effects?
+- **Report separately, never one score:** fit to observations, which mechanism explains each success and failure,
+  generalisation to unseen conditions, computational cost (parameter count is not complexity). A weighted total
+  `S(M) = Σ w_k D_k + λC` would need weights nobody has sourced.
+- **Four result classes** (aligned with §12.3): supported, contradicted, inconclusive, not exercised. A strongly
+  contradicted preregistered prediction counts heavily; it does not automatically eliminate a whole architecture.
+- **The winner** is "best supported for the tested conditions", not "the valid model of cognition"; models may stay
+  indistinguishable, or each win in different settings.
+- **Two layers.** Layer 1: small controlled mechanism tests where the models disagree. Layer 2: whole-world runs with
+  Life, Reality, Society, Economy and Government, from identical starts and seeds, read alongside short controlled
+  scenarios because long runs diverge in environment as well as cognition.
+
+**First experiment (proposed): direct against mediated, one pair.** Hold the source output and total budget fixed;
+vary only how the receiver takes it: (A) source output used directly; (B) source → receiver, compatible; (C) source →
+receiver, criterion mismatch; (D) source → intermediate → receiver. Measure fidelity (what survived), comprehension
+(was it understood), integration (accepted, rejected, unresolved), expression (what reached the decision), and the four
+outcomes of §4.9; any emotional response measured separately through the mind–body pipeline. The reviews proposed Fi →
+Ti. **Keeper check:** neither Fi's nor Ti's V2 operation is built (5444 is held on C-Q27, Ti-Q1, Fi-Q1), so Fi → Ti
+cannot run until those are ruled; a pair from operations already queued (Se, Ne, Te, Fe) could run sooner (Abs-Q6).
+Positions 5–8 and any negativity assumption stay out of executable V2.
 ---
 
 ## 13. Results so far
@@ -1607,6 +1792,8 @@ it invalidates in the change log.
 | competence effects per function; confidence as a belief | processing quality, not strength | §4.6 | adopted direction; equations open |
 | `b_f = A_f·B`; `y_f = Run_f(x, R, θ_f, b_f)`; `θ_f ← Learn_f`; `C_f(T, b) = Evaluate_f` | the competence architecture | §4.7 | adopted direction (Comp-Q1); algorithms open; `B` and costs estimates (Bud-Q1) |
 | `E_mind[ΔU next step] ≤ C_processing` | when to stop processing | §4.7 | proposed; needs a core owner (Stop-Q1) |
+| `z_{f→g} = P_{f→g}(z_f)`; `y_g = Run_g(…; z_{f→g})` | abstraction: one function expressed through another | §4.8 | proposed |
+| `c_{f,g} = K_g(z_f, R_g)` | criterion collision | §4.9 | proposed (Abs-Q1) |
 | `P_self`, `{P(m|w,b)}` per listener | Fe audience interpretation | §6.4 | adopted direction (Fe-Q2) |
 | `C_Fe = Σ_b w_b·P(read as intended | b)` | Fe coherence as a number | §7.4 | proposed (Fe-Q1) |
 
@@ -1644,6 +1831,13 @@ Every open item that touches the function theory. "Whose" says who decides.
 | Stop-Q1 | The stopping rule's owner (core Cognition, not personality) and its bounded estimate | Rex; Cognition keeper |
 | Alloc-Q1 | How method confidence (the believed benefit of processing with `f`) enters allocation beside habit and motivation | Rex |
 | P9-T | A direct test that an inferior function can lead under the full allocation rule (principle 9) | Cognition keeper |
+| Abs-Q0 | The order of positions 5–8 for each type (the matrix names the positions, not which function sits in each) | Rex |
+| Abs-Q1 | Is a shadow function's information unwelcome to the receiving structure (criterion collision), hard to express (transformation), or both? | Rex |
+| Abs-Q2 | Abstraction acts on expression only, never on allocation, so principle 9 holds at any depth? | Rex |
+| Abs-Q3 | Does the eighth position generate its own information, or is it reconstructed from the first seven? And do the eight functions reduce to four mechanisms with attitude as a modifier (against §3's eight operations)? | Rex |
+| Abs-Q4 | What "at ease" changes: competence (`θ` admits the source criterion), interpretability, integration or routing; and is it the matrix's "balanced" column? | Rex |
+| Abs-Q5 | Routing: independent, serial, selective or a mix; what sets the active route; does the receiver select, reinterpret or reconstruct? | Rex; tested by §12.8 |
+| Abs-Q6 | The first direct-against-mediated pair (Fi → Ti waits on 5444; a pair from Se, Ne, Te, Fe could run sooner) | Rex; Cognition keeper drafts |
 | Coh-Q1 | The scale of the coherence and Si terms, from the stake of the need served instead of the candidate range | Rex |
 | Ti-Q1 | Whole-set consistency for Ti, with a bounded search depth as Ti competence | Rex |
 | Fi-Q1 | Fi compatibility over feature pairs plus the identity term, with association as evidence only | Rex |
@@ -1678,3 +1872,4 @@ Every open item that touches the function theory. "Whose" says who decides.
 | 2026-11-01 | **Third paste:** Rex's review conversation on line item 1 (competence), ChatGPT and a second reviewer. **Adopted as Rex's direction:** the competence architecture (§4.7): allocation as a budget, the operation `Run_f`, learned parameters `θ_f`, competence measured outside the mind as a profile over tasks and budgets; quality and efficiency separate; knowledge separate from capability; answer and method confidence as beliefs; Ti's three outcomes; costs as labelled assumptions; the Ti proof-of-mechanism experiment first (§12.7); habit constants provisional and fixed, no decay yet (§4.6). **Changed:** §4.4's log competence form superseded as a definition, kept as a hypothesis; §4.6's competence table replaced by the reviewers' operational tests; §4.6 confidence and disuse refined; §7.4 Ti outcomes. **Flagged:** allocation-as-budget is new to the engine (no budget exists; the baseline decides in one pass), so inside V2 the budget lives in each hook call (Bud-Q1); the stopping rule is general cognition and needs a core owner, not personality (Stop-Q1); confidence needs a term to reach allocation (Alloc-Q1); registry rows `function_development` and `function_allocation` still carry the log form, competence feedback and `L_f`; principle 9 needs a direct test (P9-T). Recorded as Rex's adopted direction from this paste; the paste's own note that 'approved' is Rex's word stands, so he may overrule. |
 | 2026-11-01 | Cognition keeper's reply on de6625b recorded: 5468 removes the competence number from V2 allocation; the Ti experiment designed as 5465–5467 (budgeted DPLL over chain, parity, pigeonhole and near-4.26 random 3-SAT; θ as branching weights; REINFORCE from received feedback; Beta answer confidence; shuffled-θ and memorising controls) (§12.7, §11.7). Flagged in §12.7: the family-tag feature could let θ learn problem families instead of structure; the report should show transfer with and without it. |
 | 2026-11-01 | Family-tag check answered: 5466 switch, 5467 no-tags arm and one comparison table (§12.7). |
+| 2026-11-02 | **Fourth paste:** Rex's abstraction idea (one function expressed through another; the pin-art board), dark abstraction and the shadow positions, and his proposal to test competing models in the simulator; reviews by ChatGPT (several), Gemini and DeepSeek with ChatGPT's syntheses. **Recorded:** §4.8 abstraction as composition with the smallest interface (source output as an extra input through a projection; source intact; three claims tested separately; both directions; routing as a third relation); §4.9 dark abstraction with three candidate causes (depth, criterion collision, low practice), the four expression outcomes and 'at ease'; §12.8 competing architectures as factors, the simulator as testing ground, held-out tests and outside observations, four result classes, and a direct-against-mediated first experiment. **Keeper checks:** §5.1 already holds one fixed crossing (reuse it); a product of retentions cannot express order; abstraction never touches allocation; leading is not routing, so serial stays a candidate; positions 5–8 are unwritten (principle 6), so nothing about them is executable until Rex gives their order; the competitor without functions already exists as the null personality; Fi → Ti cannot run until 5444 is ruled; 'at ease' may be the matrix's 'balanced' column. **Not adopted:** that the positions are already derivable; that serial routing is excluded; a single weighted realism score; resentment as a direct result of collision. New open items Abs-Q0 to Abs-Q6. |
