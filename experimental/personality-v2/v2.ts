@@ -17,7 +17,6 @@ export interface AllocationRecord {
   readonly A: { readonly att: number; readonly eval: number };
   readonly E: number;
   readonly C: number;
-  readonly g: number;
 }
 /** Extends the existing subjective ctx; nothing is added to engine memory. */
 export interface V2Context extends MindView {
@@ -65,7 +64,7 @@ function relevance(stack: readonly CognitiveFunction[], items: V2Context["attend
 }
 
 /** DESIGN §22.3: softmax(log B + log R + log H + log M), max shifted.
- * R is omitted only if every stack relevance is zero. C and g are absent by design.
+ * R is omitted only if every stack relevance is zero. C is absent by design.
  */
 function allocate(B: readonly number[], R: readonly number[], logH: readonly number[], logM: readonly number[]): number[] {
   const useR = R.some(r => r > 0);
@@ -89,9 +88,11 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
     if (!ctx.mind) throw new RangeError("V2 requires a mind id");
     const own = Object.hasOwn(state.minds, ctx.mind) ? state.minds[ctx.mind] : undefined;
     const E = stack.map(f => nonnegative(own?.E[f] ?? 0, "experience"));
-    // DESIGN §22.3, Lally/Wood & Neal: habit form is an estimate.
-    const mean = E.reduce((sum, e) => sum + e / stack.length, 0);
-    const logH = E.map(e => Math.log1p(e) - Math.log1p(mean));
+    // FUNCTION-DESIGN §4.6 supersedes DESIGN §22.3: Lally et al. 2010 supports
+    // the asymptotic shape; h and E_0 are estimates (H-Q2 and H-Q1). expm1
+    // preserves small experience increments without subtractive cancellation.
+    const H = E.map(e => 1 - data.habit.h.value * Math.expm1(-e / data.habit.E_0.value));
+    const logH = H.map(h => Math.log(h));
     const att = relevance(stack, ctx.attended);
     const evaluation = relevance(stack, ctx.candidates.map(c => ({ category: c.domain, weight: 1 })));
     // DESIGN §22.3: p_k is read directly, in need-record order; never rewritten.
@@ -105,11 +106,12 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
       if (C0 === 0) throw new RangeError("C0 must be positive");
       const k = nonnegative(coefficients?.k?.[f] ?? data.competence.k[f], "k");
       // DESIGN §22.3/§19: diminishing returns, separate from choice to use.
+      // FUNCTION-DESIGN §4.6: competence's effects on each function are open
+      // (Comp-Q1). Confidence is a belief, never a meter; no execution gain.
       const C = nonnegative(C0 + k * Math.log1p(E[i]), "competence");
-      const g = nonnegative(C / C0, "gain");
       const M = nonnegative(Math.exp(logM[i]), "motivation");
       return { mind: ctx.mind, function: f, B: B[i], R: { att: att[i], eval: evaluation[i] },
-        H: Math.exp(logH[i]), M, A: { att: Aatt[i], eval: Aeval[i] }, E: E[i], C, g };
+        H: H[i], M, A: { att: Aatt[i], eval: Aeval[i] }, E: E[i], C };
     });
   }
 

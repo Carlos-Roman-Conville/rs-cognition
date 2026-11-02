@@ -4,10 +4,23 @@
   "sourced": false,
   "citations": ["DESIGN.md §22.2–§22.5", "DESIGN.md §9 and §19"],
   "habit": {
-    "form": "(1 + E_f) / (1 + mean(E))",
+    "form": "1 + h * (1 - exp(-E_f / E_0))",
     "status": "estimate",
     "sourced": false,
-    "citations": ["DESIGN.md §22.3", "Lally et al. 2010; Wood & Neal 2007 (repetition and habit, not this equation)"]
+    "citations": ["FUNCTION-DESIGN.md §4.6 (supersedes DESIGN.md §22.3)", "Lally et al. 2010 (asymptotic habit formation; median 66 daily repetitions to 95% of plateau)"],
+    "h": {
+      "value": 1,
+      "status": "estimate",
+      "sourced": false,
+      "citations": ["FUNCTION-DESIGN.md §4.6; H-Q2 (ceiling has no empirical source)"]
+    },
+    "E_0": {
+      "value": 22,
+      "status": "estimate",
+      "sourced": false,
+      "citations": ["FUNCTION-DESIGN.md §4.6; H-Q1", "Lally et al. 2010 (median 66 daily repetitions to 95% of plateau)"],
+      "note": "3 * E_0 = 66 reaches approximately 95% of the habit increment, assuming one full-allocation, full-relevance epoch counts as one repetition. This units mapping remains open (H-Q1)."
+    }
   },
   "motivation": {
     "form": "exp(sum_k priority_k * rel(f, category_k)))",

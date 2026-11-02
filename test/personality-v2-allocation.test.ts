@@ -30,9 +30,9 @@ describe("DESIGN §22.3 V2 allocation", () => {
       const total = masses.reduce((a, b) => a + b, 0);
       rows.forEach((r, i) => expect(r.A[phase]).toBeCloseTo(masses[i] / total, 14));
     }
-    expect(rows[0].H).toBeCloseTo(2);
+    expect(rows[0].H).toBeCloseTo(1 + (1 - Math.exp(-3 / 22)), 14);
     expect(rows[0].C).toBeCloseTo(1 + Math.log(4));
-    expect(rows[0].g).toBe(rows[0].C);
+    rows.forEach(r => expect(r).not.toHaveProperty("g"));
     expect(c.trace.allocations).toEqual(rows);
   });
 
@@ -57,7 +57,7 @@ describe("DESIGN §22.3 V2 allocation", () => {
     expect(p.state.minds["mind.0002"]).toBeUndefined();
   });
 
-  it("equal experience with different competence changes gain, never either allocation", () => {
+  it("equal experience with different competence changes C, never either allocation", () => {
     const E = { Se: 2, Ti: 3, Fe: 4, Ni: 5 };
     const p = createEightFunctionV2("ESTP", {
       state: { minds: { a: { E }, b: { E } } },
@@ -67,7 +67,7 @@ describe("DESIGN §22.3 V2 allocation", () => {
     const b = p.allocation(ctx("b"));
     expect(a.map(r => r.A)).toEqual(b.map(r => r.A));
     expect(a.map(r => r.H)).toEqual(b.map(r => r.H));
-    expect(b[0].g).toBeGreaterThan(a[0].g);
+    expect(b[0].C).toBeGreaterThan(a[0].C);
     expect(b[0].C).toBeCloseTo(1 + 2 * Math.log(3));
   });
 
@@ -107,7 +107,7 @@ describe("DESIGN §22.3 V2 allocation", () => {
     const rows = p.allocation(c);
     expect(rows[0].R.att).toBe(0.5);
     expect(rows.reduce((sum, r) => sum + r.A.att, 0)).toBeCloseTo(1);
-    expect(rows.every(r => Number.isFinite(r.g))).toBe(true);
+    expect(rows.every(r => Number.isFinite(r.C) && Number.isFinite(r.H))).toBe(true);
     const bytes = JSON.stringify({ state: p.state, trace: c.trace });
     for (const dt of [-1, NaN, Infinity]) expect(() => p.advance(c, dt)).toThrow();
     expect(() => p.advance({ ...c, attended: [{ category: "space", weight: -1 }] }, 1)).toThrow();
