@@ -807,7 +807,8 @@ statements still require coherence to change choices (Fi rejects items that conf
 §3.8). **Keeper proposal (Rex decides):** apply the coherence term only among candidates that serve an active need or
 goal, so coherence decides between ways of meeting a need and never creates a reason to act. An alternative is to let
 coherence act through belief (an incoherent plan is believed less likely to succeed), which adds no value term at
-all. Unit 5444 builds this term; the Cognition keeper has been told it is reopened.
+all. Unit 5444 was narrowed before it ran (Cognition keeper, 2026-11-01): it builds the Ti and Fi coherence scores as
+execution records only and adds nothing to EU until Rex decides.
 
 ### 7.5 Tests (Rex)
 
@@ -1155,8 +1156,9 @@ changes and what it learns, to test the orientation principle (§2.2) against th
 
 As of 2026-11-01 (Cognition repo log): landed are 5441 (the §22 correction, b460f15), 5442 (the optional engine hook
 points with identity defaults, 63823f9) and 5443 (the V2 package in `experimental/personality-v2/` and
-experience-dependent allocation, §4.5, 98a3046). Queued: 5444 Ti/Fi coherence and the C-Q27 term (reopened, §7.4),
-5445 Si (prohibited features proposed, §8.3), 5446 Fe, 5447 Te, 5448 Ne, 5449 Se, 5450 encoding, 5451 ledger and the
+experience-dependent allocation, §4.5, 98a3046). Queued: 5444 Ti/Fi coherence scores as execution records only (the
+C-Q27 term held, §7.4), 5445 Si with the positive-only match (prohibited features proposed, §8.3), 5459 the DESIGN.md
+amendment (§19 superseded route, §16 "leads", the orientation principle in §22, C-Q27, Si-Q1, Ni-Q1), 5446 Fe, 5447 Te, 5448 Ne, 5449 Se, 5450 encoding, 5451 ledger and the
 V1/V2 comparison, 5452 isolation tests. The operations are not built until their units land. §3.9 is a first step toward
 §11.6's map.
 
@@ -1334,3 +1336,4 @@ Every open item that touches the function theory. "Whose" says who decides.
 |---|---|
 | 2026-11-02 | Document created by the Cognition keeper at Rex's request, from DESIGN §9, §13, §14, §16, §18–§22, the scenarios design, the S1 report and Rex's statements of 2026-10-30 to 2026-11-02, including the orientation principle (§2.2), recorded here for the first time. |
 | 2026-11-01 | **First paste to the Function design keeper:** ChatGPT's Ni proposal, Gemini (two answers) and Venice reviews, ChatGPT's assessment of the reviews; Rex's Se and aura observation with ChatGPT's reply; ChatGPT's review of this document. **Came in and was recorded:** Ni as relational integration, with the graph, the objective, apophenia, rigidity as a consequence to test, the Ni–Ti boundary and what was not adopted (§3.4); Se as the present observable state and the Se–Ni axis (§3.1); aura and cultural valuation (§9.9); the Ni–Si transfer experiment (§12.5). **Changed:** two status markers and a rule against silent rewrites (header); the domain-pair and axis-pair distinction (§2.1); the orientation principle's status (§2.2, it is recorded in ENGINES); §4.3 and §4.4 marked superseded for V2 by §4.5, with the indirect route by which competence still reaches allocation; §5.1 stage roles read as leading, not exclusive; §7 and §7.3 retitled (coherence is not judging-only); §11.7 build state corrected (5441–5443 landed); new §3.9 derivation table and §14 equation inventory; open questions renumbered §15, this log §16. **Flagged:** C-Q27 reopened (the coherence term adds value without a need; keeper proposal to gate it); Si's match does not penalise forbidden features (half the review's point; keeper proposal Si-Q1); Ni's graph must live in the belief store and its rigidity must not reuse shared belief inertia (§3.4 check); `λ`, `γ`, `w_ab` have no values; Rex's one-pair-per-culture rule against the paste's learned-distribution form (Cul-Q1, touches Society). **Not adopted, as the paste itself concluded:** Gemini's claims that rigidity is explained and that Ni is more visionary or accurate; Venice's "structure mapping renamed". New open items Ni-Q1–Q4, Se-Q1–Q2, Si-Q1, Cul-Q1–Q2. |
+| 2026-11-01 | Cognition keeper's reply recorded: 5444 narrowed (coherence scores as execution records, no EU term until C-Q27 is decided); 5445 keeps the positive-only match (Si-Q1 open); 5459 amends DESIGN.md to match §4.4, §5.1, §2.2 and the reopened items (§7.4, §11.7). |
