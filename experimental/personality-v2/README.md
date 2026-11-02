@@ -125,3 +125,26 @@ the filtered cues, epoch, action/precondition, input probabilities, share and ou
 Beliefs, needs, experience and shared parameters remain unchanged; the existing core
 generation boundary still checks every precondition and capacity. Hosts must supply
 the current epoch on every call; Se keeps no observation cache or competence effect.
+
+Attention-weighted encoding runs through the optional `encoding` hook when
+`options.encoding` is supplied. Its `context(mind)` returns an `EncodingContext`
+with the allocation context and an `operations` trace array. Its `cue(key, mind)`
+returns this episode feature's engine attention share and subjective dimension.
+The host maps feature keys to attended cues; no attention is inferred from feature
+values, and missing/invalid shares must not be replaced with invented attention.
+V2 leaves pertinence and the engine's attention shares unchanged (Num-Q1).
+
+DESIGN §22.4, corrected by §22.7, supplies
+`e_c = a_c * (1 + sum_f A.att_f * enc[f, dimension])` without competence gain.
+The §16.2 profiles use proposed unit indicator weights: Si physical, Fi valence,
+Ti structural and Fe social; other dimensions receive only baseline attention.
+Ni's pattern profile and Se/Ne/Te profiles remain open. The threshold is the
+specified estimate `tauEnc = 0.1`; equality is retained. Core `encodeEpisode`
+filters features and stores strengths, and core `outcomeExpectations` subsequently
+conditions on those stored features. No separate memory store is introduced.
+
+Allocation is recorded once per hook call and active profile execution snapshots
+record cue inputs, share, dimension and resulting strengths. Masking a function's
+`encoding` contribution retains baseline attention and threshold filtering. With
+no encoding options the hook remains absent, preserving legacy episode encoding.
+The host must supply fresh metadata for each episode; V2 caches no cue state.

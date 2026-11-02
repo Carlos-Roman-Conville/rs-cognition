@@ -7,6 +7,8 @@ import { generateNe } from "./ne.ts";
 import type { NeOptions } from "./ne.ts";
 import { seEvidence } from "./se.ts";
 import type { SeOptions } from "./se.ts";
+import { encodeV2 } from "./encoding.ts";
+import type { EncodingOptions } from "./encoding.ts";
 
 export type FunctionValues = Record<CognitiveFunction, number>;
 export interface V2State {
@@ -31,6 +33,7 @@ export interface V2Context extends MindView {
   readonly trace: { allocations: AllocationRecord[] };
 }
 export interface V2Options {
+  readonly encoding?: EncodingOptions;
   readonly se?: SeOptions;
   readonly te?: TeOptions;
   readonly ne?: NeOptions;
@@ -113,8 +116,10 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
     });
   }
 
-  return Object.freeze({
+  const model: EightFunctionV2 = Object.freeze({
     ...nullPersonality, id: "eight-function", version: "v2", stack, state,
+    ...(options.encoding ? { encoding: (cues: Parameters<typeof encodeV2>[0], mind: MindView) =>
+      encodeV2(cues, mind, model, options.encoding!) } : {}),
     // FUNCTION-DESIGN §6.4 (corrected): Fe never adopts the audience's reading.
     meaningSelection: (distribution: CategoricalBelief) => distribution,
     preconditionEvidence(candidate: Candidate, precondition: Candidate["preconditions"][number],
@@ -144,4 +149,5 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
     },
     operationEnabled: (f: CognitiveFunction, operation: string) => !mask.some(m => m.function === f && m.operation === operation),
   });
+  return model;
 }
