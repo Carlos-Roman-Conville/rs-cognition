@@ -1,4 +1,7 @@
-import { readFileSync, statSync } from "node:fs";
+import { readFileSync, statSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import type { Ledger } from "../../diagnostics/ledger.ts";
+import { classifyBehaviour, classifyMechanisms, CLASSIFICATION_THRESHOLDS, opportunityRate } from "../classify.ts";
 import { seedInterval } from "../../diagnostics/report.ts";
 import type { Report } from "../../diagnostics/report.ts";
 import { sourceHash } from "../../hungry-pair/report-integrity.ts";
@@ -121,9 +124,74 @@ export function renderReport(a: Analysis, ledger: Report, provenance: Provenance
   ].join("\n\n") + "\n";
 }
 export function parseRecords(text: string): MetricRecord[] { return text.trim().split(/\r?\n/).map((line) => JSON.parse(line) as MetricRecord); }
+export const ADDENDUM_HEADING = "## Addendum (2026-11-02): reclassification under §10";
+/** Preserve the complete original UTF-8 prefix, including its final whitespace. */
+export function replaceAddendum(original: string, body: string): string {
+  const start = original.indexOf(ADDENDUM_HEADING);
+  if (start >= 0) return original.slice(0, start + ADDENDUM_HEADING.length) + "\n\n" + body;
+  return original + ADDENDUM_HEADING + "\n\n" + body;
+}
+
+export function renderAddendum(records: readonly MetricRecord[], analysis: Analysis, ledger: Report, runs: readonly Ledger[]): string {
+  const seeds = [...new Set(runs.map((r) => r.seed))].sort((a, b) => a - b);
+  // Match diagnostics/report.ts: sum margins/counts across configurations and hooks WITHIN a seed,
+  // then give independent seeds equal weight. Retain the original report's null control rows.
+  const inputs = ledger.byFunction.map((row) => ({ key: row.key, eligibility: row.eligibility,
+    seedEffects: seeds.map((seed) => {
+      const rows = runs.filter((r) => r.seed === seed).flatMap((r) => r.summary.filter((s) => s.function === row.key));
+      const count = rows.reduce((n, r) => n + r.deltaUCount, 0);
+      return count ? rows.reduce((n, r) => n + r.deltaUSum, 0) / count : null;
+    }) }));
+  const mechanisms = classifyMechanisms(inputs);
+  // Fail closed if individual reduced ledgers do not reproduce the aggregate input report.
+  for (const row of ledger.byFunction) {
+    const source = runs.flatMap((r) => r.summary.filter((s) => s.function === row.key));
+    for (const field of ["activated", "eligible-not-activated", "no-relevant-input"] as const) {
+      if (source.reduce((n, r) => n + r.eligibility[field], 0) !== row.eligibility[field]) throw new Error(`Ledger eligibility mismatch: ${row.key}`);
+    }
+    const result = mechanisms.find((r) => r.key === row.key)!;
+    if (result.all.n !== row.seeds || (result.all.mean === null) !== (row.meanDeltaU === null) ||
+      Math.abs((result.all.mean ?? 0) - (row.meanDeltaU ?? 0)) > 1e-12) throw new Error(`Ledger effect mismatch: ${row.key}`);
+  }
+  const baseline = new Map(records.filter((r) => key(r) === "null").map((r) => [r.seed, r]));
+  const behaviour = analysis.paired.map((p) => {
+    // Shared formula-group output changes are directly observed, not inferred from type letters.
+    const stackRows = ledger.byStack.filter((r) => r.key.startsWith(`${p.name}/`) && r.changedHookCalls > 0);
+    const exercised = stackRows.map((r) => ({ key: r.key.slice(p.name.length + 1), o_f: opportunityRate(r.eligibility) }));
+    const differences = records.filter((r) => key(r) === p.name).sort((a, b) => a.seed - b.seed)
+      .map((r) => r.metrics[p.metric] - baseline.get(r.seed)!.metrics[p.metric]);
+    return { name: p.name, metric: p.metric, original: p.classification, ...classifyBehaviour(differences, exercised) };
+  });
+  const changed = behaviour.filter((r) => r.original !== r.classification).map((r) => `- ${r.name} × ${r.metric}: ${r.original} → ${r.classification}.`);
+  const mechanismChanges = mechanisms.flatMap((r) => {
+    const original = classify(r.all, r.first, r.second);
+    return original === r.classification ? [] : [`- ${r.key}: ${original} → ${r.classification} (original S1 rule applied retrospectively to ledger effects).`];
+  });
+  const thresholds = CLASSIFICATION_THRESHOLDS;
+  return [
+    "Reproduce (updates only this addendum): `node --experimental-strip-types bench/scenarios/s1-forage/analyze.ts --addendum`.",
+    `Recomputed from the existing out/s1-200.metrics.jsonl, out/s1-24-ledger.metrics.jsonl, out/ledger-report.json and the 408 out/ledger-{seed}-{version}-{stack}.json summaries. No simulation rerun. [Rule: DESIGN §10.1](../DESIGN.md#101-the-rule-keepers-operational-form): α=${thresholds.alpha}, θ_s=${thresholds.thetaS}, θ_ex=${thresholds.thetaEx}; halves split at the middle seed (12/24 and 100/200). seedInterval retains its conservative Student-t critical-value bins. Zero effects have no sign; unavailable effects are excluded, never replaced by zero.`,
+    "### Mechanisms (24 seeds)",
+    "Same aggregation as the original ledger report: V1's sixteen stacks plus the null control, pooled within seed, then equally weighted seeds. Groups overlap. o_f uses (active + eligible-not-activated) / (active + eligible-not-activated + no-input); the ledger's opportunities field counts eligible opportunities only. Effects are mean ΔU [95% interval].",
+    table(["Group", "o_f", "s_f", "All seeds", "First half", "Second half", "Classification"], mechanisms.map((r) => [r.key, number(r.o_f), number(r.s_f), interval(r.all), interval(r.first), interval(r.second), r.classification])),
+    "**Evidence discrepancy with §10.2's expectation:** the saved ledger gives Te/Ti/Fe/Fi 4608 active and 14976 no-input opportunities each (o_f = 0.235294118), not zero eligible input. Its shared F1/F2/F3 fallback counts internal-state opportunities outside each function's nominal domain (bench/diagnostics/ledger.ts localRecord; diagnostics/README.md). Applying §10.1 to these unchanged counts therefore does not label those groups not exercised. This is not evidence of domain-specific judging activity. The keeper must reconcile the expected domain-only interpretation with the recorded whole-formula groups; no counts, formulas or thresholds were changed.",
+    "### Behaviour (200 paired seeds)",
+    "Exercised groups are those with observed changedHookCalls in the stack's 24-seed byStack ledger and o_f ≥ θ_ex. These are measured whole-formula output differences; no per-function causal attribution is claimed. The 24-seed opportunity evidence is not a 200-seed ledger. Behaviour retains S1's original opposite-half-means clause (requires an all-seed interval excluding zero), adding seed consistency to stable and the all-groups-unexercised class.",
+    table(["Stack", "Metric", "Exercised groups", "s_f", "All seeds", "First half", "Second half", "Classification"], behaviour.map((r) => [r.name, r.metric, r.exercised.join(", ") || "none", number(r.s_f), interval(r.all), interval(r.first), interval(r.second), r.classification])),
+    "### Changed classes",
+    changed.length ? changed.join("\n") : "No behaviour row changed from the original rule.",
+    "The original report did not assign mechanism classes. For comparison only, applying its three-class rule to the same ledger effects gives these changes:",
+    mechanismChanges.length ? mechanismChanges.join("\n") : "No mechanism row changes in that retrospective comparison.",
+    "### Processing evidence and limits",
+    "Each mechanism row rests on summary.eligibility and deltaUSum/deltaUCount from the saved ledgers; each behaviour row rests on paired metrics and byStack.changedHookCalls/eligibility. The underlying trace fields are hooks (parameters), attention.shares (cue shares), evaluation.expectedUtility (candidate EUs), and learning.updates[].kl (learning KL); reduced summaries retain interpretationMagnitude, attentionMoved and learningContribution. Full per-epoch traces were not retained, so context-specific attribution remains unavailable. See the original Function ledger and Aggregate hook trace tables above and [diagnostic attribution notes](../../diagnostics/README.md).",
+    `The original negative findings and identical pairs remain: ${analysis.vectors.distinct} distinct joint metric vectors, ${analysis.vectors.identicalPairs} identical unordered stack pairs. T-1 control support now exists (unit 5435), but these stored inputs contain no control runs; no attribution to function structure is established. Level-5 model evidence only.`,
+  ].join("\n\n") + "\n";
+}
 if ((import.meta as ImportMeta & { main?: boolean }).main) {
   try {
-    const paths = process.argv.slice(2);
+    const args = process.argv.slice(2), addendum = args[0] === "--addendum";
+    const defaults = ["s1-200.metrics.jsonl", "s1-24-ledger.metrics.jsonl", "ledger-report.json", "ledger-report.md"].map((p) => join(import.meta.dirname, "out", p));
+    const paths = addendum ? (args.length === 1 ? defaults : args.slice(1)) : args;
     if (paths.length !== 4) throw new Error("Usage: analyze.ts METRICS_JSONL LEDGER_METRICS_JSONL LEDGER_REPORT_JSON LEDGER_REPORT_MD (Markdown to stdout)");
     const texts = paths.map((p) => readFileSync(p, "utf8"));
     const records = parseRecords(texts[0]), subset = parseRecords(texts[1]);
@@ -134,6 +202,18 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
     for (const r of subset) if (JSON.stringify(r) !== JSON.stringify(main.get(`${r.seed}/${key(r)}`))) throw new Error("Ledger metrics differ from main run");
     const ledger = JSON.parse(texts[2]) as Report;
     if (ledger.schema !== "function-ledger-report/v1" || ledger.seedCount !== 24) throw new Error("Unexpected ledger schema/seed count");
-    process.stdout.write(renderReport(analysis, ledger, { source: sourceHash(), inputs: paths.map((path, i) => ({ path, bytes: (statSync(path) as { size: number; isDirectory(): boolean }).size, lines: texts[i].trimEnd().split(/\r?\n/).length })) }));
+    if (addendum) {
+      const runs = subset.map((r) => {
+        const path = join(dirname(paths[2]), `ledger-${r.seed}-${r.configuration.version}-${r.configuration.stack ?? "null"}.json`);
+        const run = JSON.parse(readFileSync(path, "utf8")) as Ledger;
+        if (run.schema !== "function-ledger/v1" || run.scenario !== r.scenario || run.seed !== r.seed ||
+          run.configuration.version !== r.configuration.version || run.configuration.stack !== r.configuration.stack) throw new Error(`Invalid ledger: ${path}`);
+        return run;
+      });
+      const reportPath = join(import.meta.dirname, "REPORT.md");
+      const body = renderAddendum(records, analysis, ledger, runs);
+      writeFileSync(reportPath, replaceAddendum(readFileSync(reportPath, "utf8"), body));
+      process.stdout.write(`Updated ${reportPath}\n`);
+    } else process.stdout.write(renderReport(analysis, ledger, { source: sourceHash(), inputs: paths.map((path, i) => ({ path, bytes: (statSync(path) as { size: number; isDirectory(): boolean }).size, lines: texts[i].trimEnd().split(/\r?\n/).length })) }));
   } catch (error) { process.stderr.write(`${String(error)}\n`); process.exitCode = 1; }
 }

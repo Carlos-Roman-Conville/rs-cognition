@@ -1,0 +1,2 @@
+# Preserve REPORT's repository bytes on Windows for the §10.2 append-only check.
+s1-forage/REPORT.md text eol=lf

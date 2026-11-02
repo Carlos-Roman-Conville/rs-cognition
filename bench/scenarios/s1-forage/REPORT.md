@@ -267,3 +267,110 @@ S1 supplies categorical colour/size cues. F6's targeted Weber-precision modifica
 The ledger cost ceiling limited influence evidence to 24 seeds: exact full-trajectory counterfactuals cost several worlds and lightweight summaries do not meet the requested small constant overhead. No 200-seed mechanism-influence claim is made. Missing comparable chosen actions are excluded from ΔU, never replaced by zero.
 
 This is level-5 evidence of model behavior, not human validation; human comparison waits until S6. T-3's 16 → 3 measured behaviors become 16 → 8 on these S1 metrics. F1–F13, fixture, parameters and engine are unchanged; no tuning is proposed.
+## Addendum (2026-11-02): reclassification under §10
+
+Reproduce (updates only this addendum): `node --experimental-strip-types bench/scenarios/s1-forage/analyze.ts --addendum`.
+
+Recomputed from the existing out/s1-200.metrics.jsonl, out/s1-24-ledger.metrics.jsonl, out/ledger-report.json and the 408 out/ledger-{seed}-{version}-{stack}.json summaries. No simulation rerun. [Rule: DESIGN §10.1](../DESIGN.md#101-the-rule-keepers-operational-form): α=0.05, θ_s=0.6, θ_ex=0.05; halves split at the middle seed (12/24 and 100/200). seedInterval retains its conservative Student-t critical-value bins. Zero effects have no sign; unavailable effects are excluded, never replaced by zero.
+
+### Mechanisms (24 seeds)
+
+Same aggregation as the original ledger report: V1's sixteen stacks plus the null control, pooled within seed, then equally weighted seeds. Groups overlap. o_f uses (active + eligible-not-activated) / (active + eligible-not-activated + no-input); the ledger's opportunities field counts eligible opportunities only. Effects are mean ΔU [95% interval].
+
+| Group | o_f | s_f | All seeds | First half | Second half | Classification |
+| --- | --- | --- | --- | --- | --- | --- |
+| Se | 1 | 0.916666667 | 0.00281967669 [0.00177662247, 0.00386273091] | 0.00353981447 [0.00208859733, 0.00499103161] | 0.0020995389 [0.00069400947, 0.00350506833] | stable |
+| Si | 1 | 0.916666667 | 0.00282521394 [0.00202884846, 0.00362157942] | 0.00359115052 [0.00270633994, 0.0044759611] | 0.00205927736 [0.000901840434, 0.00321671429] | stable |
+| Ne | 0.235294118 | 0.625 | -6.37683824e-8 [-1.45778187e-7, 1.82414221e-8] | -7.21581056e-8 [-1.9018063e-7, 4.58644186e-8] | -5.53786592e-8 [-1.74258507e-7, 6.35011884e-8] | none |
+| Ni | 0.235294118 | 0.541666667 | 1.11861975e-8 [-4.07116039e-8, 6.3083999e-8] | 6.87692515e-9 [-6.60692449e-8, 7.98230952e-8] | 1.54954699e-8 [-6.14806762e-8, 9.24716161e-8] | none |
+| Te | 0.235294118 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | none |
+| Ti | 0.235294118 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | none |
+| Fe | 0.235294118 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | none |
+| Fi | 0.235294118 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | none |
+
+**Evidence discrepancy with §10.2's expectation:** the saved ledger gives Te/Ti/Fe/Fi 4608 active and 14976 no-input opportunities each (o_f = 0.235294118), not zero eligible input. Its shared F1/F2/F3 fallback counts internal-state opportunities outside each function's nominal domain (bench/diagnostics/ledger.ts localRecord; diagnostics/README.md). Applying §10.1 to these unchanged counts therefore does not label those groups not exercised. This is not evidence of domain-specific judging activity. The keeper must reconcile the expected domain-only interpretation with the recorded whole-formula groups; no counts, formulas or thresholds were changed.
+
+### Behaviour (200 paired seeds)
+
+Exercised groups are those with observed changedHookCalls in the stack's 24-seed byStack ledger and o_f ≥ θ_ex. These are measured whole-formula output differences; no per-function causal attribution is claimed. The 24-seed opportunity evidence is not a 200-seed ledger. Behaviour retains S1's original opposite-half-means clause (requires an all-seed interval excluding zero), adding seed consistency to stable and the all-groups-unexercised class.
+
+| Stack | Metric | Exercised groups | s_f | All seeds | First half | Second half | Classification |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| v1/ENFJ | inspectBeforeGatherShare | Se, Ni, Ti, Fe | 0.065 | -0.00708333333 [-0.0494649265, 0.0352982598] | -0.0333333333 [-0.0849818463, 0.0183151796] | 0.0191666667 [-0.0477990423, 0.0861323756] | none |
+| v1/ENFJ | novelPatchVisitShare | Se, Ni, Ti, Fe | 0.105 | -0.0118214286 [-0.034300089, 0.0106572318] | 0.00126190476 [-0.0293540157, 0.0318778252] | -0.0249047619 [-0.0577204004, 0.00791087663] | none |
+| v1/ENFJ | bestKnownReturnRate | Se, Ni, Ti, Fe | 0.025 | 0.0000833333333 [-0.0145630272, 0.0147296939] | 0 [-0.0199248868, 0.0199248868] | 0.000166666667 [-0.021406357, 0.0217396904] | none |
+| v1/ENFJ | foodGathered | Se, Ni, Ti, Fe | 0.095 | -0.09 [-0.212540011, 0.0325400107] | -0.02 [-0.20187165, 0.16187165] | -0.16 [-0.323703479, 0.00370347851] | none |
+| v1/ENFP | inspectBeforeGatherShare | Si, Ne, Te, Fi | 0.045 | -0.00791666667 [-0.0422298004, 0.026396467] | -0.0325 [-0.0713671955, 0.00636719552] | 0.0166666667 [-0.0395656999, 0.0728990332] | none |
+| v1/ENFP | novelPatchVisitShare | Si, Ne, Te, Fi | 0.075 | -0.00735714286 [-0.0226067, 0.00789241426] | 0.00492857143 [-0.0162856708, 0.0261428137] | -0.0196428571 [-0.0413156846, 0.00202997028] | none |
+| v1/ENFP | bestKnownReturnRate | Si, Ne, Te, Fi | 0.025 | -0.00141666667 [-0.0114711329, 0.00863779956] | -0.00866666667 [-0.0264369913, 0.00910365795] | 0.00583333333 [-0.0034054566, 0.0150721233] | none |
+| v1/ENFP | foodGathered | Si, Ne, Te, Fi | 0.075 | -0.08 [-0.194291929, 0.0342919286] | -0.07 [-0.212529842, 0.0725298423] | -0.09 [-0.269414844, 0.0894148436] | none |
+| v1/ENTJ | inspectBeforeGatherShare | Se, Ni, Te, Fi | 0.065 | -0.00708333333 [-0.0494649265, 0.0352982598] | -0.0333333333 [-0.0849818463, 0.0183151796] | 0.0191666667 [-0.0477990423, 0.0861323756] | none |
+| v1/ENTJ | novelPatchVisitShare | Se, Ni, Te, Fi | 0.105 | -0.0118214286 [-0.034300089, 0.0106572318] | 0.00126190476 [-0.0293540157, 0.0318778252] | -0.0249047619 [-0.0577204004, 0.00791087663] | none |
+| v1/ENTJ | bestKnownReturnRate | Se, Ni, Te, Fi | 0.025 | 0.0000833333333 [-0.0145630272, 0.0147296939] | 0 [-0.0199248868, 0.0199248868] | 0.000166666667 [-0.021406357, 0.0217396904] | none |
+| v1/ENTJ | foodGathered | Se, Ni, Te, Fi | 0.095 | -0.09 [-0.212540011, 0.0325400107] | -0.02 [-0.20187165, 0.16187165] | -0.16 [-0.323703479, 0.00370347851] | none |
+| v1/ENTP | inspectBeforeGatherShare | Si, Ne, Ti, Fe | 0.045 | -0.00791666667 [-0.0422298004, 0.026396467] | -0.0325 [-0.0713671955, 0.00636719552] | 0.0166666667 [-0.0395656999, 0.0728990332] | none |
+| v1/ENTP | novelPatchVisitShare | Si, Ne, Ti, Fe | 0.075 | -0.00735714286 [-0.0226067, 0.00789241426] | 0.00492857143 [-0.0162856708, 0.0261428137] | -0.0196428571 [-0.0413156846, 0.00202997028] | none |
+| v1/ENTP | bestKnownReturnRate | Si, Ne, Ti, Fe | 0.025 | -0.00141666667 [-0.0114711329, 0.00863779956] | -0.00866666667 [-0.0264369913, 0.00910365795] | 0.00583333333 [-0.0034054566, 0.0150721233] | none |
+| v1/ENTP | foodGathered | Si, Ne, Ti, Fe | 0.075 | -0.08 [-0.194291929, 0.0342919286] | -0.07 [-0.212529842, 0.0725298423] | -0.09 [-0.269414844, 0.0894148436] | none |
+| v1/ESFJ | inspectBeforeGatherShare | Si, Ne, Ti, Fe | 0.03 | 0.00625 [-0.0170714793, 0.0295714793] | -0.0075 [-0.0380608006, 0.0230608006] | 0.02 [-0.0151230512, 0.0551230512] | none |
+| v1/ESFJ | novelPatchVisitShare | Si, Ne, Ti, Fe | 0.025 | -0.0014047619 [-0.0134373056, 0.0106277818] | 0.00416666667 [-0.0113065208, 0.0196398542] | -0.00697619048 [-0.025402274, 0.0114498931] | none |
+| v1/ESFJ | bestKnownReturnRate | Si, Ne, Ti, Fe | 0.01 | -0.000416666667 [-0.00768553188, 0.00685219855] | -0.000833333333 [-0.0154071316, 0.0137404649] | 0 [0, 0] | none |
+| v1/ESFJ | foodGathered | Si, Ne, Ti, Fe | 0.035 | -0.04 [-0.108557692, 0.0285576924] | -0.06 [-0.148561111, 0.0285611113] | -0.02 [-0.12493995, 0.0849399495] | none |
+| v1/ESFP | inspectBeforeGatherShare | Se, Ni, Te, Fi | 0.11 | -0.02875 [-0.0718775951, 0.0143775951] | -0.0308333333 [-0.0886326791, 0.0269660125] | -0.0266666667 [-0.0909810019, 0.0376476685] | none |
+| v1/ESFP | novelPatchVisitShare | Se, Ni, Te, Fi | 0.13 | -0.00118452381 [-0.0311049955, 0.0287359478] | -0.000571428571 [-0.0434818809, 0.0423390237] | -0.00179761905 [-0.0437223066, 0.0401270685] | none |
+| v1/ESFP | bestKnownReturnRate | Se, Ni, Te, Fi | 0.045 | 0.00166666667 [-0.0133014564, 0.0166347897] | 0.00716666667 [-0.0132093236, 0.0275426569] | -0.00383333333 [-0.0257989902, 0.0181323235] | none |
+| v1/ESFP | foodGathered | Se, Ni, Te, Fi | 0.11 | 0.025 [-0.126858756, 0.176858756] | 0.02 [-0.244927261, 0.284927261] | 0.03 [-0.120070804, 0.180070804] | none |
+| v1/ESTJ | inspectBeforeGatherShare | Si, Ne, Te, Fi | 0.03 | 0.00625 [-0.0170714793, 0.0295714793] | -0.0075 [-0.0380608006, 0.0230608006] | 0.02 [-0.0151230512, 0.0551230512] | none |
+| v1/ESTJ | novelPatchVisitShare | Si, Ne, Te, Fi | 0.025 | -0.0014047619 [-0.0134373056, 0.0106277818] | 0.00416666667 [-0.0113065208, 0.0196398542] | -0.00697619048 [-0.025402274, 0.0114498931] | none |
+| v1/ESTJ | bestKnownReturnRate | Si, Ne, Te, Fi | 0.01 | -0.000416666667 [-0.00768553188, 0.00685219855] | -0.000833333333 [-0.0154071316, 0.0137404649] | 0 [0, 0] | none |
+| v1/ESTJ | foodGathered | Si, Ne, Te, Fi | 0.035 | -0.04 [-0.108557692, 0.0285576924] | -0.06 [-0.148561111, 0.0285611113] | -0.02 [-0.12493995, 0.0849399495] | none |
+| v1/ESTP | inspectBeforeGatherShare | Se, Ni, Ti, Fe | 0.11 | -0.02875 [-0.0718775951, 0.0143775951] | -0.0308333333 [-0.0886326791, 0.0269660125] | -0.0266666667 [-0.0909810019, 0.0376476685] | none |
+| v1/ESTP | novelPatchVisitShare | Se, Ni, Ti, Fe | 0.13 | -0.00118452381 [-0.0311049955, 0.0287359478] | -0.000571428571 [-0.0434818809, 0.0423390237] | -0.00179761905 [-0.0437223066, 0.0401270685] | none |
+| v1/ESTP | bestKnownReturnRate | Se, Ni, Ti, Fe | 0.045 | 0.00166666667 [-0.0133014564, 0.0166347897] | 0.00716666667 [-0.0132093236, 0.0275426569] | -0.00383333333 [-0.0257989902, 0.0181323235] | none |
+| v1/ESTP | foodGathered | Se, Ni, Ti, Fe | 0.11 | 0.025 [-0.126858756, 0.176858756] | 0.02 [-0.244927261, 0.284927261] | 0.03 [-0.120070804, 0.180070804] | none |
+| v1/INFJ | inspectBeforeGatherShare | Se, Ni, Ti, Fe | 0.06 | -0.0125 [-0.0506198131, 0.0256198131] | -0.0383333333 [-0.0899427242, 0.0132760576] | 0.0133333333 [-0.0424463614, 0.0691130281] | none |
+| v1/INFJ | novelPatchVisitShare | Se, Ni, Ti, Fe | 0.095 | -0.0104047619 [-0.0276374344, 0.00682791064] | 0.000928571429 [-0.0237022271, 0.02555937] | -0.0217380952 [-0.0457026677, 0.00222647718] | none |
+| v1/INFJ | bestKnownReturnRate | Se, Ni, Ti, Fe | 0.02 | 0.000333333333 [-0.0112314805, 0.0118981472] | -0.0045 [-0.0256515206, 0.0166515206] | 0.00516666667 [-0.00421159362, 0.014544927] | none |
+| v1/INFJ | foodGathered | Se, Ni, Ti, Fe | 0.1 | -0.115 [-0.236504972, 0.00650497186] | -0.11 [-0.268014065, 0.0480140652] | -0.12 [-0.305421499, 0.0654214989] | none |
+| v1/INFP | inspectBeforeGatherShare | Si, Ne, Te, Fi | 0.05 | 0.0104166667 [-0.0208128013, 0.0416461347] | -0.0175 [-0.0552213566, 0.0202213566] | 0.0383333333 [-0.0108576883, 0.087524355] | none |
+| v1/INFP | novelPatchVisitShare | Si, Ne, Te, Fi | 0.055 | -0.00319047619 [-0.0172256486, 0.0108446963] | 0.00492857143 [-0.0153180595, 0.0251752024] | -0.0113095238 [-0.0306844141, 0.00806536643] | none |
+| v1/INFP | bestKnownReturnRate | Si, Ne, Te, Fi | 0.015 | 0.000833333333 [-0.00856556609, 0.0102322328] | -0.00416666667 [-0.0205153442, 0.0121820109] | 0.00583333333 [-0.0034054566, 0.0150721233] | none |
+| v1/INFP | foodGathered | Si, Ne, Te, Fi | 0.055 | -0.055 [-0.147366167, 0.0373661669] | -0.03 [-0.141766473, 0.0817664732] | -0.08 [-0.227458333, 0.0674583329] | none |
+| v1/INTJ | inspectBeforeGatherShare | Se, Ni, Te, Fi | 0.06 | -0.0125 [-0.0506198131, 0.0256198131] | -0.0383333333 [-0.0899427242, 0.0132760576] | 0.0133333333 [-0.0424463614, 0.0691130281] | none |
+| v1/INTJ | novelPatchVisitShare | Se, Ni, Te, Fi | 0.095 | -0.0104047619 [-0.0276374344, 0.00682791064] | 0.000928571429 [-0.0237022271, 0.02555937] | -0.0217380952 [-0.0457026677, 0.00222647718] | none |
+| v1/INTJ | bestKnownReturnRate | Se, Ni, Te, Fi | 0.02 | 0.000333333333 [-0.0112314805, 0.0118981472] | -0.0045 [-0.0256515206, 0.0166515206] | 0.00516666667 [-0.00421159362, 0.014544927] | none |
+| v1/INTJ | foodGathered | Se, Ni, Te, Fi | 0.1 | -0.115 [-0.236504972, 0.00650497186] | -0.11 [-0.268014065, 0.0480140652] | -0.12 [-0.305421499, 0.0654214989] | none |
+| v1/INTP | inspectBeforeGatherShare | Si, Ne, Ti, Fe | 0.05 | 0.0104166667 [-0.0208128013, 0.0416461347] | -0.0175 [-0.0552213566, 0.0202213566] | 0.0383333333 [-0.0108576883, 0.087524355] | none |
+| v1/INTP | novelPatchVisitShare | Si, Ne, Ti, Fe | 0.055 | -0.00319047619 [-0.0172256486, 0.0108446963] | 0.00492857143 [-0.0153180595, 0.0251752024] | -0.0113095238 [-0.0306844141, 0.00806536643] | none |
+| v1/INTP | bestKnownReturnRate | Si, Ne, Ti, Fe | 0.015 | 0.000833333333 [-0.00856556609, 0.0102322328] | -0.00416666667 [-0.0205153442, 0.0121820109] | 0.00583333333 [-0.0034054566, 0.0150721233] | none |
+| v1/INTP | foodGathered | Si, Ne, Ti, Fe | 0.055 | -0.055 [-0.147366167, 0.0373661669] | -0.03 [-0.141766473, 0.0817664732] | -0.08 [-0.227458333, 0.0674583329] | none |
+| v1/ISFJ | inspectBeforeGatherShare | Si, Ne, Ti, Fe | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISFJ | novelPatchVisitShare | Si, Ne, Ti, Fe | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISFJ | bestKnownReturnRate | Si, Ne, Ti, Fe | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISFJ | foodGathered | Si, Ne, Ti, Fe | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISFP | inspectBeforeGatherShare | Se, Ni, Te, Fi | 0.085 | -0.0075 [-0.049602961, 0.034602961] | -0.0216666667 [-0.0833124784, 0.039979145] | 0.00666666667 [-0.0508321493, 0.0641654826] | none |
+| v1/ISFP | novelPatchVisitShare | Se, Ni, Te, Fi | 0.11 | -0.0103214286 [-0.0365530662, 0.0159102091] | -0.00323809524 [-0.0422376826, 0.0357614921] | -0.0174047619 [-0.0526226021, 0.0178130783] | none |
+| v1/ISFP | bestKnownReturnRate | Se, Ni, Te, Fi | 0.035 | -0.002 [-0.0160080401, 0.0120080401] | 0.00166666667 [-0.0186013298, 0.0219346631] | -0.00566666667 [-0.0250760666, 0.0137427332] | none |
+| v1/ISFP | foodGathered | Se, Ni, Te, Fi | 0.105 | -0.07 [-0.18978086, 0.0497808597] | -0.06 [-0.254760304, 0.134760304] | -0.08 [-0.220492205, 0.0604922047] | none |
+| v1/ISTJ | inspectBeforeGatherShare | Si, Ne, Te, Fi | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISTJ | novelPatchVisitShare | Si, Ne, Te, Fi | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISTJ | bestKnownReturnRate | Si, Ne, Te, Fi | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISTJ | foodGathered | Si, Ne, Te, Fi | 0 | 0 [0, 0] | 0 [0, 0] | 0 [0, 0] | none |
+| v1/ISTP | inspectBeforeGatherShare | Se, Ni, Ti, Fe | 0.085 | -0.0075 [-0.049602961, 0.034602961] | -0.0216666667 [-0.0833124784, 0.039979145] | 0.00666666667 [-0.0508321493, 0.0641654826] | none |
+| v1/ISTP | novelPatchVisitShare | Se, Ni, Ti, Fe | 0.11 | -0.0103214286 [-0.0365530662, 0.0159102091] | -0.00323809524 [-0.0422376826, 0.0357614921] | -0.0174047619 [-0.0526226021, 0.0178130783] | none |
+| v1/ISTP | bestKnownReturnRate | Se, Ni, Ti, Fe | 0.035 | -0.002 [-0.0160080401, 0.0120080401] | 0.00166666667 [-0.0186013298, 0.0219346631] | -0.00566666667 [-0.0250760666, 0.0137427332] | none |
+| v1/ISTP | foodGathered | Se, Ni, Ti, Fe | 0.105 | -0.07 [-0.18978086, 0.0497808597] | -0.06 [-0.254760304, 0.134760304] | -0.08 [-0.220492205, 0.0604922047] | none |
+
+### Changed classes
+
+No behaviour row changed from the original rule.
+
+The original report did not assign mechanism classes. For comparison only, applying its three-class rule to the same ledger effects gives these changes:
+
+No mechanism row changes in that retrospective comparison.
+
+### Processing evidence and limits
+
+Each mechanism row rests on summary.eligibility and deltaUSum/deltaUCount from the saved ledgers; each behaviour row rests on paired metrics and byStack.changedHookCalls/eligibility. The underlying trace fields are hooks (parameters), attention.shares (cue shares), evaluation.expectedUtility (candidate EUs), and learning.updates[].kl (learning KL); reduced summaries retain interpretationMagnitude, attentionMoved and learningContribution. Full per-epoch traces were not retained, so context-specific attribution remains unavailable. See the original Function ledger and Aggregate hook trace tables above and [diagnostic attribution notes](../../diagnostics/README.md).
+
+The original negative findings and identical pairs remain: 8 distinct joint metric vectors, 8 identical unordered stack pairs. T-1 control support now exists (unit 5435), but these stored inputs contain no control runs; no attribution to function structure is established. Level-5 model evidence only.

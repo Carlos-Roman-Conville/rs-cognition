@@ -2,6 +2,8 @@
 
 ## Blocked
 
+- Unit 5436: DESIGN §10.2 expects judging groups to have no eligible input, but the saved 24-seed ledger gives each of Te/Ti/Fe/Fi 4608 active / 0 eligible-not-activated / 14976 no-input opportunities. The shared F1/F2/F3 fallback explicitly counts internal-state opportunities outside the nominal domain. The addendum applies §10.1 to the saved counts (o_f ≈ 0.2353); it does not invent domain-only eligibility or force “not exercised”. Keeper reconciliation of that expectation is pending. DESIGN and frozen formulas remain unchanged.
+
 - Frozen v1 reports aggregate hook outputs, not causal formula ids. Hook counts and changed cue shares are measured; `byFormula` and hook `formulaIds` remain null. No formula attribution is inferred from a parameter name.
 
 ## Interpretation limits
