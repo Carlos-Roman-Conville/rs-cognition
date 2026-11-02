@@ -66,13 +66,11 @@ describe("FUNCTION-DESIGN §4.6 saturating V2 habit", () => {
     }
   });
 
-  it("keeps equal experience allocation identical with different C and exposes no gain", () => {
+  it("keeps equal experience allocation identical and exposes no competence or gain", () => {
     const initial = state({ Se: 22, Ti: 66, Fe: 1, Ni: 220 });
     const a = createEightFunctionV2("ESTP", { state: initial }).allocation(ctx());
-    const b = createEightFunctionV2("ESTP", { state: initial,
-      competence: () => ({ C0: { Se: 3 }, k: { Se: 10, Ni: 0 } }),
-    }).allocation(ctx());
-    expect(a.map(r => r.C)).not.toEqual(b.map(r => r.C));
+    const b = createEightFunctionV2("ESTP", { state: initial }).allocation(ctx());
+    [...a, ...b].forEach(r => expect(r).not.toHaveProperty("C"));
     expect(a.map(r => r.A)).toEqual(b.map(r => r.A));
     expect(a.map(r => r.E)).toEqual(b.map(r => r.E));
     expect(a.map(r => r.H)).toEqual(b.map(r => r.H));

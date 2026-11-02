@@ -16,7 +16,6 @@ export interface AllocationRecord {
   readonly M: number;
   readonly A: { readonly att: number; readonly eval: number };
   readonly E: number;
-  readonly C: number;
 }
 /** Extends the existing subjective ctx; nothing is added to engine memory. */
 export interface V2Context extends MindView {
@@ -28,8 +27,6 @@ export interface V2Context extends MindView {
 export interface V2Options {
   /** Proposed initial experience is zero; supply a snapshot to resume replay. */
   readonly state?: V2State;
-  /** Experimental individual competence coefficients; these never enter allocation. */
-  readonly competence?: (ctx: V2Context) => { readonly C0?: Partial<FunctionValues>; readonly k?: Partial<FunctionValues> };
   /** Test-only counterfactual control for future operations (DESIGN §22.5). */
   readonly mask?: readonly { readonly function: CognitiveFunction; readonly operation: string }[];
 }
@@ -64,7 +61,7 @@ function relevance(stack: readonly CognitiveFunction[], items: V2Context["attend
 }
 
 /** DESIGN §22.3: softmax(log B + log R + log H + log M), max shifted.
- * R is omitted only if every stack relevance is zero. C is absent by design.
+ * R is omitted only if every stack relevance is zero.
  */
 function allocate(B: readonly number[], R: readonly number[], logH: readonly number[], logM: readonly number[]): number[] {
   const useR = R.some(r => r > 0);
@@ -100,18 +97,10 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
       sum + nonnegative(need.priority, "need priority") * rel(f, need.definition.category), 0), "log motivation"));
     const Aatt = allocate(B, att, logH, logM);
     const Aeval = allocate(B, evaluation, logH, logM);
-    const coefficients = options.competence?.(ctx);
     return stack.map((f, i) => {
-      const C0 = nonnegative(coefficients?.C0?.[f] ?? data.competence.C0[f], "C0");
-      if (C0 === 0) throw new RangeError("C0 must be positive");
-      const k = nonnegative(coefficients?.k?.[f] ?? data.competence.k[f], "k");
-      // DESIGN §22.3/§19: diminishing returns, separate from choice to use.
-      // FUNCTION-DESIGN §4.6: competence's effects on each function are open
-      // (Comp-Q1). Confidence is a belief, never a meter; no execution gain.
-      const C = nonnegative(C0 + k * Math.log1p(E[i]), "competence");
       const M = nonnegative(Math.exp(logM[i]), "motivation");
       return { mind: ctx.mind, function: f, B: B[i], R: { att: att[i], eval: evaluation[i] },
-        H: H[i], M, A: { att: Aatt[i], eval: Aeval[i] }, E: E[i], C };
+        H: H[i], M, A: { att: Aatt[i], eval: Aeval[i] }, E: E[i] };
     });
   }
 

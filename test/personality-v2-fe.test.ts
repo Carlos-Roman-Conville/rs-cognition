@@ -59,15 +59,15 @@ describe("FUNCTION-DESIGN §6.4 Fe audience map", () => {
     }
   });
 
-  it("leaves competence inert and changes no input or personality state", () => {
-    const run = (C0: number) => {
-      const model = createEightFunctionV2("ESTP", { competence: () => ({ C0: { Fe: C0 } }) });
+  it("replays identically and changes no input or personality state", () => {
+    const run = () => {
+      const model = createEightFunctionV2("ESTP");
       const before = JSON.stringify({ input, message, context, state: model.state });
       const result = comprehendV2(input, message, context, model, ctx());
       expect(JSON.stringify({ input, message, context, state: model.state })).toBe(before);
       return JSON.stringify(result);
     };
-    expect(run(1)).toBe(run(100));
+    expect(run()).toBe(run());
   });
 
   it("uses pool updates at each utterance, preserves same-bubble listeners, and represents unknown terms", () => {

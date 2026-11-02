@@ -31,7 +31,7 @@ describe("DESIGN §22.3 V2 allocation", () => {
       rows.forEach((r, i) => expect(r.A[phase]).toBeCloseTo(masses[i] / total, 14));
     }
     expect(rows[0].H).toBeCloseTo(1 + (1 - Math.exp(-3 / 22)), 14);
-    expect(rows[0].C).toBeCloseTo(1 + Math.log(4));
+    rows.forEach(r => expect(r).not.toHaveProperty("C"));
     rows.forEach(r => expect(r).not.toHaveProperty("g"));
     expect(c.trace.allocations).toEqual(rows);
   });
@@ -57,18 +57,16 @@ describe("DESIGN §22.3 V2 allocation", () => {
     expect(p.state.minds["mind.0002"]).toBeUndefined();
   });
 
-  it("equal experience with different competence changes C, never either allocation", () => {
+  it("equal experience gives identical habit and allocation across minds", () => {
     const E = { Se: 2, Ti: 3, Fe: 4, Ni: 5 };
     const p = createEightFunctionV2("ESTP", {
       state: { minds: { a: { E }, b: { E } } },
-      competence: c => ({ k: { Se: c.mind === "a" ? 1 : 2 } }),
     });
     const a = p.allocation(ctx("a"));
     const b = p.allocation(ctx("b"));
     expect(a.map(r => r.A)).toEqual(b.map(r => r.A));
     expect(a.map(r => r.H)).toEqual(b.map(r => r.H));
-    expect(b[0].C).toBeGreaterThan(a[0].C);
-    expect(b[0].C).toBeCloseTo(1 + 2 * Math.log(3));
+    expect(p.state.minds).toEqual({ a: { E }, b: { E } });
   });
 
   it("M reads host need priorities without writing needs and unknown tags contribute zero", () => {
@@ -107,13 +105,12 @@ describe("DESIGN §22.3 V2 allocation", () => {
     const rows = p.allocation(c);
     expect(rows[0].R.att).toBe(0.5);
     expect(rows.reduce((sum, r) => sum + r.A.att, 0)).toBeCloseTo(1);
-    expect(rows.every(r => Number.isFinite(r.C) && Number.isFinite(r.H))).toBe(true);
+    expect(rows.every(r => Number.isFinite(r.H))).toBe(true);
     const bytes = JSON.stringify({ state: p.state, trace: c.trace });
     for (const dt of [-1, NaN, Infinity]) expect(() => p.advance(c, dt)).toThrow();
     expect(() => p.advance({ ...c, attended: [{ category: "space", weight: -1 }] }, 1)).toThrow();
     expect(() => p.advance({ ...c, needs: { needs: [need("meta", 1000)], goals: [] } }, 1)).toThrow();
     expect(JSON.stringify({ state: p.state, trace: c.trace })).toBe(bytes);
-    expect(() => createEightFunctionV2("ESTP", { competence: () => ({ C0: { Se: 0 } }) }).allocation(ctx())).toThrow();
   });
 
   it("selects existing null/V1 factories and masks only the named operation without changing allocation", () => {

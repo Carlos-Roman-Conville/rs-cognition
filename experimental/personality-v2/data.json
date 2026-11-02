@@ -45,13 +45,5 @@
       "Te": { "meta": 1 }, "Ti": { "meta": 1 },
       "Fe": { "cohesion": 1, "people": 1 }, "Fi": { "cohesion": 1, "people": 1 }
     }
-  },
-  "competence": {
-    "status": "estimate",
-    "sourced": false,
-    "citations": ["DESIGN.md §22.3 and §19; C-Q20 ranges remain open"],
-    "note": "C0=1 is specified; k=1 is a proposed untuned unit slope, not a calibrated value.",
-    "C0": { "Se": 1, "Si": 1, "Ne": 1, "Ni": 1, "Te": 1, "Ti": 1, "Fe": 1, "Fi": 1 },
-    "k": { "Se": 1, "Si": 1, "Ne": 1, "Ni": 1, "Te": 1, "Ti": 1, "Fe": 1, "Fi": 1 }
   }
 }
