@@ -120,6 +120,33 @@ metadata. Restoration uses the public kernel snapshot API.
 
 ## Cost
 
+### Own opportunities (scenario DESIGN §10.5)
+
+New ledgers retain every legacy total and add `ownOpportunities`. Report JSON adds
+`ownByFunction` and `sharedAttitude`; old summaries without the input evidence yield
+null for these new report fields, not fabricated zero counts. Each count is
+`{ input, total }`: eligible function/hook/epoch tuples divided by all such tuples.
+This measures input, not activation, and does not replace the legacy eligibility
+categories. Frozen V1 F4–F13 determine ownership and input predicates; F1–F3 never
+contribute to a function's own count. Absent functions and null retain denominator
+opportunities but receive no input. Controls have no unpermuted attribution.
+
+`classifyMechanisms(rows, { opportunity: "own", shared })` requires these counts
+and a separate shared row. Default/group mode is unchanged. Own-mode function
+effects still use the existing overlapping group ablations. The shared effect
+reuses one present Ti/Fe/Fi group per configuration because these V1 groups have
+only F1–F3 enabled; it is never counted as a function. Missing counterfactual
+evidence remains unavailable. S1/S3 traces have no compound or other-mind adapter
+input; a future scenario supplying those must extend the diagnostic input trace
+and F9/F10 predicates before using own classification.
+
+S1 `analyze.ts --addendum2` reduces the 24-seed base traces only when old summaries
+lack own counts, verifies exact metric reproduction, and retains the saved
+counterfactual effects. Updated summaries and report JSON go into the ignored
+`s1-forage/out/addendum2-temporary/` folder. It appends/replaces only Addendum 2;
+all earlier report bytes and old report JSON values are preserved. No 200-seed
+simulation is needed.
+
 The reproducible benchmark measures three seeds, frozen v1/ESTP, 12 epochs, with a
 two-epoch warmup. `COST.json` contains raw milliseconds, output sizes and rerun counts.
 Measurements exclude JSON serialization and file I/O; base time includes S1's built-in

@@ -1,4 +1,6 @@
 import { canonical } from "@rex/kernel";
+import { ownOpportunities } from "./opportunities.ts";
+import type { OwnOpportunities } from "./opportunities.ts";
 import type { CognitiveFunction } from "../../src/index.ts";
 import type { EpochLog } from "../scenarios/s1-forage/world.ts";
 import { adapter, ablatedOutput, DOMAIN, FUNCTIONS, HOOKS, hookContexts, rerunAblation } from "./ablation.ts";
@@ -32,6 +34,7 @@ export interface Ledger {
   developmentalStage: null; upbringing: null;
   totals: Totals; summary: SummaryRow[]; domains: SummaryRow[];
   records?: LedgerRecord[];
+  ownOpportunities?: OwnOpportunities;
 }
 export const emptyTotals = (): Totals => ({ decisions: 0, activations: 0, opportunities: 0, frequency: 0,
   changedHookCalls: 0, attentionMoved: 0, interpretationMagnitude: 0, generationChanges: 0, generationParameterMagnitude: 0, learningContribution: 0,
@@ -183,6 +186,7 @@ export function buildLedger<T extends DiagnosticRun>(run: T, level: LedgerLevel 
     });
   }
   ledger.summary = [...summary.values()]; ledger.domains = [...domains.values()];
+  ledger.ownOpportunities = ownOpportunities(run);
   // Return details in host mint order, then function/hook order.
   ledger.records?.sort((a, b) => a.epoch - b.epoch || FUNCTIONS.indexOf(a.function) - FUNCTIONS.indexOf(b.function) || HOOKS.indexOf(a.hook) - HOOKS.indexOf(b.hook));
   return ledger;

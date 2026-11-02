@@ -1,8 +1,10 @@
-import { readFileSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import type { Ledger } from "../../diagnostics/ledger.ts";
 import { classifyBehaviour, classifyMechanisms, CLASSIFICATION_THRESHOLDS, opportunityRate } from "../classify.ts";
-import { seedInterval } from "../../diagnostics/report.ts";
+import { ownOpportunities } from "../../diagnostics/opportunities.ts";
+import { runRecord } from "./run.ts";
+import { buildReport, seedInterval } from "../../diagnostics/report.ts";
 import type { Report } from "../../diagnostics/report.ts";
 import { sourceHash } from "../../hungry-pair/report-integrity.ts";
 
@@ -187,11 +189,50 @@ export function renderAddendum(records: readonly MetricRecord[], analysis: Analy
     `The original negative findings and identical pairs remain: ${analysis.vectors.distinct} distinct joint metric vectors, ${analysis.vectors.identicalPairs} identical unordered stack pairs. T-1 control support now exists (unit 5435), but these stored inputs contain no control runs; no attribution to function structure is established. Level-5 model evidence only.`,
   ].join("\n\n") + "\n";
 }
+export const ADDENDUM2_HEADING = "## Addendum 2 (2026-11-02): own-opportunity count (§10.5)";
+export function replaceAddendum2(original: string, body: string): string {
+  if (!original.includes(ADDENDUM_HEADING)) throw new Error("First addendum required");
+  const index = original.indexOf(ADDENDUM2_HEADING);
+  const prefix = index < 0 ? original : original.slice(0, index);
+  return prefix + ADDENDUM2_HEADING + "\n\n" + body;
+}
+export function mechanismInputs(ledger: Report, runs: readonly Ledger[]) {
+  const seeds = [...new Set(runs.map((r) => r.seed))].sort((a, b) => a - b);
+  const effects = (select: (run: Ledger) => string | undefined) => seeds.map((seed) => {
+    const rows = runs.filter((r) => r.seed === seed).flatMap((r) => r.summary.filter((s) => s.function === select(r)));
+    const count = rows.reduce((n, r) => n + r.deltaUCount, 0);
+    return count ? rows.reduce((n, r) => n + r.deltaUSum, 0) / count : null;
+  });
+  return { rows: ledger.byFunction.map((r) => ({ key: r.key, eligibility: r.eligibility,
+    ownCounts: ledger.ownByFunction?.find((o) => o.key === r.key)?.counts, seedEffects: effects(() => r.key) })),
+    shared: ledger.sharedAttitude ? { counts: ledger.sharedAttitude.counts, seedEffects: effects((r) => r.ownOpportunities?.sharedGroup) } : undefined };
+}
+export function mechanismTable(rows: ReturnType<typeof classifyMechanisms>): string {
+  return table(["Group", "o_f", "s_f", "All seeds", "First half", "Second half", "Classification"],
+    rows.map((r) => [r.key, number(r.o_f), number(r.s_f), interval(r.all), interval(r.first), interval(r.second), r.classification]));
+}
+export function renderAddendum2(ledger: Report, runs: readonly Ledger[]): string {
+  const inputs = mechanismInputs(ledger, runs);
+  const own = classifyMechanisms(inputs.rows, { opportunity: "own", shared: inputs.shared });
+  const group = classifyMechanisms(inputs.rows, { opportunity: "group" });
+  return [
+    "Reproduce: `node --experimental-strip-types bench/scenarios/s1-forage/analyze.ts --addendum2`.",
+    "The old 24-seed summaries lack per-formula input. Only their 408 base trajectories (24 seeds, sixteen V1 stacks plus null) were replayed to reduce own opportunities into out/addendum2-temporary/. Regenerated metrics must exactly match the saved inputs; saved counterfactual effects are reused, and every existing ledger-report key is checked unchanged. No 200-seed study was rerun.",
+    "### Mechanisms (24 seeds; own input)",
+    "DESIGN §10.5 changes only the opportunity definition: α=0.05, θ_s=0.6, θ_ex=0.05; halves remain seeds 1–12 and 13–24. The denominator remains all function/hook/epoch tuples, including absent functions and null. Input is counted once per tuple when an owned formula receives relevant input, regardless of output activation. Numerators and denominators are stored in ownByFunction and sharedAttitude. Ownership follows frozen V1 formulas.json: F4 Se/Ne/Te, F5 Si/Ni, F6 Se, F7 the enabled domain owners, F8 Si, F9 Ne, F10 Ni, F11 Ne/Ni, F12 Ni, F13 Te; Ti/Fe/Fi cores remain off. F9/F10 have no host adapters in these traces; zero κ supplies no F11 input.",
+    mechanismTable(own),
+    "Function effects remain the original overlapping whole-group ΔU effects, not isolated own-operation effects. The shared row is never a function: its counterfactual reuses exactly one present Ti/Fe/Fi group per configuration (null uses Ti), whose only enabled formulas are F1–F3. Its opportunities are counted once per hook/epoch, without duplicating them across functions. Effects retain equal seed weighting, unavailable margins are excluded, and the shared row uses the same classification rule.",
+    "### Changes from the first addendum",
+    own.filter((r) => group.some((g) => g.key === r.key && g.classification !== r.classification)).map((r) =>
+      `- ${r.key}: ${group.find((g) => g.key === r.key)!.classification} → ${r.classification}.`).join("\n") || "No function class changed.",
+    "The shared row is new. The original behaviour tables and negative findings are retained: own opportunity classification does not establish behavioural attribution, and identical type pairs remain unchanged. Evidence rests on reconstructed subjective hooks/cue tags and saved summary deltaUSum/deltaUCount; no formulas, thresholds, or engine code changed. This remains level-5 model evidence.",
+  ].join("\n\n") + "\n";
+}
 if ((import.meta as ImportMeta & { main?: boolean }).main) {
   try {
-    const args = process.argv.slice(2), addendum = args[0] === "--addendum";
+    const args = process.argv.slice(2), addendum = args[0] === "--addendum", addendum2 = args[0] === "--addendum2";
     const defaults = ["s1-200.metrics.jsonl", "s1-24-ledger.metrics.jsonl", "ledger-report.json", "ledger-report.md"].map((p) => join(import.meta.dirname, "out", p));
-    const paths = addendum ? (args.length === 1 ? defaults : args.slice(1)) : args;
+    const paths = addendum || addendum2 ? (args.length === 1 ? defaults : args.slice(1)) : args;
     if (paths.length !== 4) throw new Error("Usage: analyze.ts METRICS_JSONL LEDGER_METRICS_JSONL LEDGER_REPORT_JSON LEDGER_REPORT_MD (Markdown to stdout)");
     const texts = paths.map((p) => readFileSync(p, "utf8"));
     const records = parseRecords(texts[0]), subset = parseRecords(texts[1]);
@@ -202,7 +243,7 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
     for (const r of subset) if (JSON.stringify(r) !== JSON.stringify(main.get(`${r.seed}/${key(r)}`))) throw new Error("Ledger metrics differ from main run");
     const ledger = JSON.parse(texts[2]) as Report;
     if (ledger.schema !== "function-ledger-report/v1" || ledger.seedCount !== 24) throw new Error("Unexpected ledger schema/seed count");
-    if (addendum) {
+    if (addendum || addendum2) {
       const runs = subset.map((r) => {
         const path = join(dirname(paths[2]), `ledger-${r.seed}-${r.configuration.version}-${r.configuration.stack ?? "null"}.json`);
         const run = JSON.parse(readFileSync(path, "utf8")) as Ledger;
@@ -211,8 +252,30 @@ if ((import.meta as ImportMeta & { main?: boolean }).main) {
         return run;
       });
       const reportPath = join(import.meta.dirname, "REPORT.md");
-      const body = renderAddendum(records, analysis, ledger, runs);
-      writeFileSync(reportPath, replaceAddendum(readFileSync(reportPath, "utf8"), body));
+      if (addendum2) {
+        // Old summaries lack per-formula context. Regenerate only the 24-seed
+        // base traces for opportunity reduction, retaining verified saved effects.
+        const temporary = join(dirname(paths[2]), "addendum2-temporary");
+        mkdirSync(temporary, { recursive: true });
+        for (let i = 0; i < runs.length; i++) {
+          const run = runs[i];
+          if (!run.ownOpportunities) {
+            const fresh = runRecord(run.seed, run.configuration, "off");
+            if (JSON.stringify(fresh.metrics) !== JSON.stringify(subset[i].metrics)) throw new Error(`Regenerated metrics differ: ${run.seed}/${run.configuration.stack}`);
+            run.ownOpportunities = ownOpportunities(fresh);
+          }
+          writeFileSync(join(temporary, `ledger-${run.seed}-${run.configuration.version}-${run.configuration.stack ?? "null"}.json`), JSON.stringify(run) + "\n");
+        }
+        const updated = buildReport(runs);
+        for (const field of Object.keys(ledger) as (keyof Report)[]) {
+          if (field !== "ownByFunction" && field !== "sharedAttitude" && JSON.stringify(updated[field]) !== JSON.stringify(ledger[field])) throw new Error(`Legacy report changed: ${field}`);
+        }
+        writeFileSync(join(temporary, "ledger-report.json"), JSON.stringify(updated, null, 2) + "\n");
+        writeFileSync(reportPath, replaceAddendum2(readFileSync(reportPath, "utf8"), renderAddendum2(updated, runs)));
+      } else {
+        const body = renderAddendum(records, analysis, ledger, runs);
+        writeFileSync(reportPath, replaceAddendum(readFileSync(reportPath, "utf8"), body));
+      }
       process.stdout.write(`Updated ${reportPath}\n`);
     } else process.stdout.write(renderReport(analysis, ledger, { source: sourceHash(), inputs: paths.map((path, i) => ({ path, bytes: (statSync(path) as { size: number; isDirectory(): boolean }).size, lines: texts[i].trimEnd().split(/\r?\n/).length })) }));
   } catch (error) { process.stderr.write(`${String(error)}\n`); process.exitCode = 1; }

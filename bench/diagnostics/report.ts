@@ -1,5 +1,7 @@
 import { addTotals, emptyTotals } from "./ledger.ts";
 import type { Ledger, SummaryRow, Totals } from "./ledger.ts";
+import { SHARED_ATTITUDE } from "./opportunities.ts";
+import type { InputCounts } from "./opportunities.ts";
 
 export interface ReportRow extends Totals {
   key: string; seeds: number; interval95: [number, number] | null;
@@ -39,6 +41,15 @@ function aggregate(runs: readonly Ledger[], source: "summary" | "domains", key: 
 /** Pure trace-derived report. No filesystem or hypothesis-map dependency. */
 export function buildReport(runs: readonly Ledger[]) {
   const stack = (run: Ledger) => `${run.configuration.version}/${run.configuration.stack ?? "null"}`;
+  const own = new Map<string, InputCounts>(), shared: InputCounts = { input: 0, total: 0 };
+  const complete = runs.length > 0 && runs.every((r) => r.ownOpportunities);
+  if (complete) for (const run of runs) {
+    for (const row of run.ownOpportunities!.byFunction) {
+      const counts = own.get(row.key) ?? { input: 0, total: 0 };
+      counts.input += row.counts.input; counts.total += row.counts.total; own.set(row.key, counts);
+    }
+    shared.input += run.ownOpportunities!.shared.input; shared.total += run.ownOpportunities!.shared.total;
+  }
   return { schema: "function-ledger-report/v1", seedCount: new Set(runs.map((run) => run.seed)).size,
     limitations: [...new Set(runs.flatMap((run) => run.limitations))],
     byFunction: aggregate(runs, "summary", (_run, row) => row.function),
@@ -46,9 +57,14 @@ export function buildReport(runs: readonly Ledger[]) {
     byScenario: aggregate(runs, "summary", (run, row) => `${run.scenario}/${row.function}`),
     byDomain: aggregate(runs, "domains", (_run, row) => row.domain!),
     observedRelevanceMap: aggregate(runs, "domains", (_run, row) => `${row.function}/${row.domain}`),
-    byDevelopmentalStage: [] as ReportRow[], byUpbringing: [] as ReportRow[] };
+    byDevelopmentalStage: [] as ReportRow[], byUpbringing: [] as ReportRow[],
+    ownByFunction: complete ? [...own].map(([key, counts]) => ({ key, counts })) : null,
+    sharedAttitude: complete ? { key: SHARED_ATTITUDE, counts: shared,
+      effect: aggregate(runs.map((run) => ({ ...run, summary: run.summary.filter((r) => r.function === run.ownOpportunities?.sharedGroup) })),
+        "summary", () => SHARED_ATTITUDE)[0] ?? null } : null };
 }
-export type Report = ReturnType<typeof buildReport>;
+type BuiltReport = ReturnType<typeof buildReport>;
+export type Report = Omit<BuiltReport, "ownByFunction" | "sharedAttitude"> & Partial<Pick<BuiltReport, "ownByFunction" | "sharedAttitude">>;
 export const reportJSON = (report: Report) => `${JSON.stringify(report, null, 2)}\n`;
 export function reportMarkdown(report: Report): string {
   const number = (x: number | null) => x === null ? "unavailable" : x.toFixed(6);

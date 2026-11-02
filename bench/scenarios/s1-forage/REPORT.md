@@ -374,3 +374,37 @@ No mechanism row changes in that retrospective comparison.
 Each mechanism row rests on summary.eligibility and deltaUSum/deltaUCount from the saved ledgers; each behaviour row rests on paired metrics and byStack.changedHookCalls/eligibility. The underlying trace fields are hooks (parameters), attention.shares (cue shares), evaluation.expectedUtility (candidate EUs), and learning.updates[].kl (learning KL); reduced summaries retain interpretationMagnitude, attentionMoved and learningContribution. Full per-epoch traces were not retained, so context-specific attribution remains unavailable. See the original Function ledger and Aggregate hook trace tables above and [diagnostic attribution notes](../../diagnostics/README.md).
 
 The original negative findings and identical pairs remain: 8 distinct joint metric vectors, 8 identical unordered stack pairs. T-1 control support now exists (unit 5435), but these stored inputs contain no control runs; no attribution to function structure is established. Level-5 model evidence only.
+## Addendum 2 (2026-11-02): own-opportunity count (§10.5)
+
+Reproduce: `node --experimental-strip-types bench/scenarios/s1-forage/analyze.ts --addendum2`.
+
+The old 24-seed summaries lack per-formula input. Only their 408 base trajectories (24 seeds, sixteen V1 stacks plus null) were replayed to reduce own opportunities into out/addendum2-temporary/. Regenerated metrics must exactly match the saved inputs; saved counterfactual effects are reused, and every existing ledger-report key is checked unchanged. No 200-seed study was rerun.
+
+### Mechanisms (24 seeds; own input)
+
+DESIGN §10.5 changes only the opportunity definition: α=0.05, θ_s=0.6, θ_ex=0.05; halves remain seeds 1–12 and 13–24. The denominator remains all function/hook/epoch tuples, including absent functions and null. Input is counted once per tuple when an owned formula receives relevant input, regardless of output activation. Numerators and denominators are stored in ownByFunction and sharedAttitude. Ownership follows frozen V1 formulas.json: F4 Se/Ne/Te, F5 Si/Ni, F6 Se, F7 the enabled domain owners, F8 Si, F9 Ne, F10 Ni, F11 Ne/Ni, F12 Ni, F13 Te; Ti/Fe/Fi cores remain off. F9/F10 have no host adapters in these traces; zero κ supplies no F11 input.
+
+| Group | o_f | s_f | All seeds | First half | Second half | Classification |
+| --- | --- | --- | --- | --- | --- | --- |
+| Se | 0.352941176 | 0.916666667 | 0.00281967669 [0.00177662247, 0.00386273091] | 0.00353981447 [0.00208859733, 0.00499103161] | 0.0020995389 [0.00069400947, 0.00350506833] | stable |
+| Si | 0.235294118 | 0.916666667 | 0.00282521394 [0.00202884846, 0.00362157942] | 0.00359115052 [0.00270633994, 0.0044759611] | 0.00205927736 [0.000901840434, 0.00321671429] | stable |
+| Ne | 0 | 0.625 | -6.37683824e-8 [-1.45778187e-7, 1.82414221e-8] | -7.21581056e-8 [-1.9018063e-7, 4.58644186e-8] | -5.53786592e-8 [-1.74258507e-7, 6.35011884e-8] | not exercised |
+| Ni | 0 | 0.541666667 | 1.11861975e-8 [-4.07116039e-8, 6.3083999e-8] | 6.87692515e-9 [-6.60692449e-8, 7.98230952e-8] | 1.54954699e-8 [-6.14806762e-8, 9.24716161e-8] | not exercised |
+| Te | 0 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | not exercised |
+| Ti | 0 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | not exercised |
+| Fe | 0 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | not exercised |
+| Fi | 0 | 0.625 | -2.62910924e-8 [-6.50604893e-8, 1.24783045e-8] | -3.26405902e-8 [-1.02098555e-7, 3.68173745e-8] | -1.99415946e-8 [-5.76874404e-8, 1.78042512e-8] | not exercised |
+| shared attitude (F1–F3) | 0.470588235 | 0.625 | -5.25821848e-8 [-1.30120979e-7, 2.49566089e-8] | -6.52811805e-8 [-2.0419711e-7, 7.3634749e-8] | -3.98831892e-8 [-1.15374881e-7, 3.56085023e-8] | none |
+
+Function effects remain the original overlapping whole-group ΔU effects, not isolated own-operation effects. The shared row is never a function: its counterfactual reuses exactly one present Ti/Fe/Fi group per configuration (null uses Ti), whose only enabled formulas are F1–F3. Its opportunities are counted once per hook/epoch, without duplicating them across functions. Effects retain equal seed weighting, unavailable margins are excluded, and the shared row uses the same classification rule.
+
+### Changes from the first addendum
+
+- Ne: none → not exercised.
+- Ni: none → not exercised.
+- Te: none → not exercised.
+- Ti: none → not exercised.
+- Fe: none → not exercised.
+- Fi: none → not exercised.
+
+The shared row is new. The original behaviour tables and negative findings are retained: own opportunity classification does not establish behavioural attribution, and identical type pairs remain unchanged. Evidence rests on reconstructed subjective hooks/cue tags and saved summary deltaUSum/deltaUCount; no formulas, thresholds, or engine code changed. This remains level-5 model evidence.

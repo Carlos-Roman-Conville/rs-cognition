@@ -1,4 +1,6 @@
 import { seedInterval } from "../diagnostics/report.ts";
+import { SHARED_ATTITUDE } from "../diagnostics/opportunities.ts";
+import type { InputCounts } from "../diagnostics/opportunities.ts";
 
 export type Classification = "stable" | "context-dependent" | "none" | "not exercised";
 export interface Thresholds { alpha: number; thetaS: number; thetaEx: number }
@@ -7,6 +9,7 @@ export const CLASSIFICATION_THRESHOLDS: Readonly<Thresholds> = Object.freeze({ a
 export interface EligibilityCounts { activated: number; "eligible-not-activated": number; "no-relevant-input": number }
 export interface MechanismInput {
   key: string; eligibility: EligibilityCounts;
+  ownCounts?: InputCounts;
   /** One equally weighted effect per seed, in ascending seed order; null means unavailable, never zero. */
   seedEffects: readonly (number | null)[];
 }
@@ -53,12 +56,28 @@ function effect(values: readonly (number | null)[], exercised: boolean, threshol
 }
 
 /** DESIGN §10.1: pure classification of ledger groups, separately for each personality version. */
-export function classifyMechanisms(ledgerRows: readonly MechanismInput[], thresholds = CLASSIFICATION_THRESHOLDS) {
+export interface MechanismOptions {
+  opportunity?: "group" | "own";
+  shared?: { counts: InputCounts; seedEffects: readonly (number | null)[] };
+}
+export function classifyMechanisms(ledgerRows: readonly MechanismInput[],
+  options: MechanismOptions | Readonly<Thresholds> = {}, thresholds = CLASSIFICATION_THRESHOLDS) {
+  if ("alpha" in options) { thresholds = options; options = {}; }
   validate(thresholds);
-  return ledgerRows.map((row) => {
-    const o_f = opportunityRate(row.eligibility);
+  const rate = (counts: InputCounts | undefined) => {
+    if (!counts) throw new Error("Own opportunity counts unavailable");
+    return opportunityRate({ activated: 0, "eligible-not-activated": counts.input, "no-relevant-input": counts.total - counts.input });
+  };
+  const rows = ledgerRows.map((row) => {
+    const o_f = options.opportunity === "own" ? rate(row.ownCounts) : opportunityRate(row.eligibility);
     return { key: row.key, o_f, ...effect(row.seedEffects, o_f >= thresholds.thetaEx, thresholds, false) };
   });
+  if (options.opportunity !== "own") return rows;
+  if (!options.shared) throw new Error("Shared attitude evidence unavailable");
+  const o_f = rate(options.shared.counts);
+  return [...rows.map((r) => ({ ...r, kind: "function" as const })),
+    { key: SHARED_ATTITUDE, kind: "shared" as const, o_f,
+      ...effect(options.shared.seedEffects, o_f >= thresholds.thetaEx, thresholds, false) }];
 }
 
 /** Pass ONLY groups by which this stack's hook outputs differ from null's, with their opportunity rates. */
