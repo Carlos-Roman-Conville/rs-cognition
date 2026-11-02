@@ -107,3 +107,21 @@ boundary still checks feasibility.
 When both Te and Ne are configured, Te runs first. Ne uses the original repertoire
 and skips identities already supplied by Te; neither builds on the other's additions.
 This explicit ordering preserves two-entry compositions and prevents duplicates.
+
+Se immediate response runs through `preconditionEvidence` when `options.se` is supplied.
+Its `context(mind)` returns a `SeContext` with the current epoch `t` and an `operations`
+trace array. Because core observations have no present tag and preconditions are host
+expressions, `isPresent(observation)` supplies the subjective tag, and
+`probability(candidate, precondition, observations)` supplies the host's subjective
+precondition probability (or undefined when no matching cue exists). It receives only
+present-tagged observations with `observation.t === context.t`, in input order. The
+host owns matching and combination semantics; no objective `Stimulus.present` is read.
+
+Se applies `p' = (1 - A.att_Se) * p_belief + A.att_Se * p_present` (DESIGN §22.7 /
+Num-Q1), without gain or clipping. Invalid present probabilities fail. Missing cues,
+absent Se, zero attention allocation and mask `{ function: "Se", operation:
+"preconditionEvidence" }` leave the probability unchanged. Execution snapshots include
+the filtered cues, epoch, action/precondition, input probabilities, share and output.
+Beliefs, needs, experience and shared parameters remain unchanged; the existing core
+generation boundary still checks every precondition and capacity. Hosts must supply
+the current epoch on every call; Se keeps no observation cache or competence effect.

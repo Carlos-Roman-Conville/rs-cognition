@@ -1,10 +1,12 @@
 import { createEightFunctionV1, nullPersonality } from "../../src/index.ts";
-import type { Candidate, GenerateParams, CategoricalBelief, CognitiveFunction, MindView, PersonalityModel, PersonalityType } from "../../src/index.ts";
+import type { Candidate, GenerateParams, CategoricalBelief, CognitiveFunction, MindView, Observation, PersonalityModel, PersonalityType } from "../../src/index.ts";
 import data from "./data.json" with { type: "json" };
 import { generateTe } from "./te.ts";
 import type { TeOptions } from "./te.ts";
 import { generateNe } from "./ne.ts";
 import type { NeOptions } from "./ne.ts";
+import { seEvidence } from "./se.ts";
+import type { SeOptions } from "./se.ts";
 
 export type FunctionValues = Record<CognitiveFunction, number>;
 export interface V2State {
@@ -29,6 +31,7 @@ export interface V2Context extends MindView {
   readonly trace: { allocations: AllocationRecord[] };
 }
 export interface V2Options {
+  readonly se?: SeOptions;
   readonly te?: TeOptions;
   readonly ne?: NeOptions;
   /** Proposed initial experience is zero; supply a snapshot to resume replay. */
@@ -114,6 +117,10 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
     ...nullPersonality, id: "eight-function", version: "v2", stack, state,
     // FUNCTION-DESIGN §6.4 (corrected): Fe never adopts the audience's reading.
     meaningSelection: (distribution: CategoricalBelief) => distribution,
+    preconditionEvidence(candidate: Candidate, precondition: Candidate["preconditions"][number],
+      beliefP: number, observations: readonly Observation[], mind: MindView) {
+      return options.se ? seEvidence(candidate, precondition, beliefP, observations, mind, this, options.se) : beliefP;
+    },
     generate(candidates: readonly Candidate[], base: GenerateParams, mind: MindView) {
       const result = options.te ? generateTe(candidates, base, mind, this, options.te) : { candidates, params: base };
       // Both operations compose original repertoire entries, never each other's additions.
