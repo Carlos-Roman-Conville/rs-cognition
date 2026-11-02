@@ -4,8 +4,11 @@
   "description": "The cognition engine: perception, needs, beliefs and memory, action selection and learning. Generates an organism's intentions; never decides whether an attempt succeeds. A pure function of its inputs plus kernel streams; no game imports.",
   "private": true,
   "type": "module",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist", "src", "personality", "data", "kernel.json", "README.md"],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "bench": "node --experimental-strip-types bench/hungry-pair/report.ts",
     "codex-check": "node --experimental-strip-types scripts/codex-fingerprint.ts --check",
@@ -19,6 +22,9 @@
     "vitest": "^5.0.5"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   }
 }
