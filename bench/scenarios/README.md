@@ -1,5 +1,30 @@
 # Domain scenario fixtures
 
+T-1 controls (DESIGN §10.3): pass `--control none|random-theta|shuffled`.
+Omitting the option or selecting `none` preserves the original output bytes.
+Control records add a configuration `id` ending in `+random-theta` or `+shuffled`;
+individual ledger filenames also carry the suffix.
+
+`random-theta` first runs all sixteen V1 stacks on the same seed and reduces their
+existing hook traces to per-parameter extrema across all epochs and domains.
+Pertinence calibration uses output/input multipliers per cue (identity for zero
+input). The null model receives fixed independent draws for eta, alpha0, lambda,
+confidence, kappa, learning rate and each cue multiplier. Other parameters retain
+their null values. Draws use `bench.control.theta` scoped to the qualified mind;
+the record includes `controlTheta`. Calibration is reused across configurations
+within a seed. Stack labels identify paired comparisons; random-theta uses no
+stack structure, so those comparisons share draws. Use `--stacks null` to emit
+only one random-theta control per seed (calibration still uses all sixteen stacks).
+
+`shuffled` uses one Fisher-Yates domain permutation per seed from
+`bench.control.shuffle`, shared across stacks. The shared wrapper maps domain
+arguments and candidate domains, and remaps cue metadata through the host context
+bridge so even absent or unequal domain cue groups work. Physical/present tags
+remain attached to their cues. V1 itself is unchanged; V2 has an explicit throwing
+stub. All control runs retain the existing replayable processing trace. The FL-1
+ledger returns empty attribution tables with an explicit limitation for controls:
+its unpermuted formula-group ablations are not valid control counterfactuals.
+
 Run S1 with Node's TypeScript stripping:
 
 ```sh

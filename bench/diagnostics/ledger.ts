@@ -139,6 +139,12 @@ export function buildLedger(run: Run, level: LedgerLevel = "summary", execute = 
       "Observation deltas describe the base trajectory, not independent causal shares; learning contribution is domain KL, not developmental E_f.",
       "DeltaU is a full-trajectory ablation effect; absent comparable chosen actions are excluded, not zero."],
     developmentalStage: null, upbringing: null, totals: emptyTotals(), summary: [], domains: [], ...(level === "detailed" ? { records: [] } : {}) };
+  // Controls have no valid unpermuted V1 formula-group counterfactual. Keep the
+  // existing processing trace, but do not mislabel randomized effects as functions.
+  if (run.configuration.control && run.configuration.control !== "none") {
+    ledger.limitations.push("Function attribution unavailable for T-1 controls; inspect the recorded hook traces and behavior metrics.");
+    return ledger;
+  }
   const summary = new Map<string, SummaryRow>(), domains = new Map<string, SummaryRow>();
   const reruns = new Map<string, (number | null)[]>();
   for (const f of FUNCTIONS) for (const hook of HOOKS) {

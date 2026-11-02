@@ -1,5 +1,5 @@
 // Subjective adapter: public engine state and hooks only; never receives a field, patch kind or true yield.
-import { canonical, qualify, Runner } from "@rex/kernel";
+import { canonical, qualify, Runner, streams } from "@rex/kernel";
 import {
   createEightFunctionV1, createMindsState, driftBeliefs, getBelief, nullPersonality, reduceMinds,
 } from "../../../src/index.ts";
@@ -12,7 +12,9 @@ import { data, FIXTURE } from "./field.ts";
 import { forecast, initialMemory, initialNeeds, makeConfig, PARAMS } from "./models.ts";
 import type { Sensor, Sensed } from "./perception.ts";
 
-export interface Configuration { version: string; stack?: PersonalityType }
+import { shuffledV1 } from "../controls.ts";
+import type { Control } from "../controls.ts";
+export interface Configuration { version: string; stack?: PersonalityType; control?: Control; id?: string }
 export interface HookCall {
   hook: "pertinence" | "interpret" | "generate" | "learning";
   domain?: string; changed: string[]; before: unknown; after: unknown;
@@ -42,13 +44,17 @@ export class Forager {
   private selection?: SelectionTrace;
   private observationTrace?: ObservationTrace;
 
-  constructor(seed: number, patches: readonly string[], configuration: Configuration = { version: "null" }) {
+  constructor(seed: number, patches: readonly string[], configuration: Configuration = { version: "null" }, override?: PersonalityModel) {
     let model: PersonalityModel = nullPersonality;
     if (configuration.version !== "null") {
       if (configuration.version !== "v1" || !configuration.stack) throw new Error(`S1 requires an explicit context adapter for ${configuration.version}`);
       // fixture rule (DESIGN bench/scenarios §2): same frozen factory/etaMin as personality-versions, plus S1 cue metadata.
       model = createEightFunctionV1(configuration.stack, { etaMin: ETA_MIN, context: () => this.context });
     }
+    if (configuration.control === "shuffled") model = shuffledV1(model,
+      streams(seed).get("bench.control.shuffle", "scenario"),
+      { get: () => this.context, set: (context) => { this.context = context; } });
+    if (override) model = override;
     const record = (hook: HookCall["hook"], before: object, after: object, domain?: string) => {
       const b = jsonValue(before) as Record<string, unknown>, a = jsonValue(after) as Record<string, unknown>;
       this.hooks.push({ hook, domain, before: b, after: a, formulaIds: null,
