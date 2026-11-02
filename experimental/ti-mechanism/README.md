@@ -1,6 +1,6 @@
-# Ti operation (unit 5466)
+# Ti mechanism (units 5466–5467)
 
-Implements DESIGN §§1–2 only. No learning, runner, or engine changes.
+Implements DESIGN §§1–5 in isolation. No shared engine changes.
 
 ```ts
 import { streams } from "@rex/kernel";
@@ -65,3 +65,46 @@ assignment and closed leaves so far. Assignment slot zero is unused/null.
 
 Validation: `npx vitest run test/ti-mechanism-run.test.ts`, `npx tsc --noEmit`,
 and `npm run codex-check`. The experiment itself is reserved for the keeper.
+
+## Learning and experiment runner
+
+`learn.ts` consumes only a trace and received feedback. The running reward mean
+is updated after using its previous value. Both atom softmax and sampled polarity
+contribute gradients; forced reverse branches do not. Confidence snapshots precede
+feedback. Proposed method-belief updates count the mind's own resolved/unresolved
+outcomes; they never affect allocation. Evaluation freezes all beliefs and weights.
+
+Keeper commands (the full experiment has not been run by unit 5467):
+
+```powershell
+node --experimental-strip-types experimental/ti-mechanism/experiment.ts --seeds 40 --factors all --out experimental/ti-mechanism/results
+node --experimental-strip-types experimental/ti-mechanism/report.ts experimental/ti-mechanism/results
+```
+
+`--seeds N` uses seeds 1 through N. `--factors` is `all`, `none`, or a comma-separated
+subset of `knowledge,history,feedback,cost`. Selected dimensions use the full
+Cartesian product; omitted dimensions use none/400/accurate/1. Every combination
+runs trained, no-family-tags, shuffled and memorise arms, and every arm sweeps the
+five design budgets. These commands are intentionally not tiny unit checks.
+Use `runExperiment` with explicit settings for tiny verification.
+
+Proposed choices: train on singleton families, transfer to all unseen pairs,
+and hold training budget at 400 while sweeping evaluation budgets. Counts are
+distributed as balanced pairs among mixes. All sets are disjoint by exact X/L
+serialization except the explicitly shared training-repeat evaluation. Sets and
+branch seeds are paired across arms; attribution compares zero and trained theta
+on identical fresh/transfer problems. Shuffling permutes atom and polarity weights
+using `ti.shuffle`. Memorise recalls labels inferred from definite received feedback
+at zero search cost, with empty evidence; unresolved items cannot populate its
+cache. Fresh unseen items use zero-theta search. This is an optimistic lookup
+control, not a solver proof, and should be interpreted accordingly.
+
+Each arm/factor combination writes JSONL records and a summary JSON. Only the
+`evaluator` envelope contains labels or correctness. The `mind` envelope holds
+search results, pre-feedback confidence and received feedback. The scorer uses
+the label of X to expose false knowledge. Reports contain seed means and observed
+seed ranges (not inferential confidence intervals), paired quality differences,
+and the minimum tested budget reaching the proposed quality target 0.8, with
+unreached seeds explicitly censored. Brier calibration covers definite answers;
+unresolved answers have no answer-confidence estimate. No generated results are
+committed. Mechanics validation: `npx vitest run test/ti-mechanism-learn.test.ts`.
