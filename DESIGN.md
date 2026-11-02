@@ -1843,6 +1843,97 @@ All are measured and never asserted. They use the S1 classification rule and the
 - **SR-Q4:** which audience features the utterance's naive model reads. The host offers them as beliefs; the list is
   open.
 
+## 22. Personality V2 (Rex, 2026-11-01; experimental, built beside V1)
+
+**Rex's strategy (2026-11-01):** keep F1–F13 as the immutable Personality V1 for historical comparison and continue
+S1–S6 on it unchanged. Build V2 now, in isolation, from the mechanisms already recorded in this design, without
+waiting for V1's scenarios. Priorities, in Rex's order:
+1. the Ti/Fi coherence primitive (§18.4);
+2. Si reference matching (§18.5);
+3. Fe contextual semantic interpretation (§5.1, §18);
+4. function-specific attention and encoding (§16.4);
+5. developmental allocation (§9 "Dynamic function allocation", §19).
+Reuse existing state, memory, meaning pools and hooks. Duplicate no state and add no arbitrary behavioural trait.
+Where a definition is incomplete, build only the defined part and keep the gap explicit. V1 and V2 are selectable by
+versioned configuration. Run identical scenarios and seeds on both, and compare function activation, internal
+processing, decisions, learning and outcomes. V2 stays experimental, outside the baseline, until its integration
+contracts and deterministic replay checks pass.
+
+### 22.1 Versioning and isolation
+
+- **Selection.** A mind's personality is chosen by configuration: `{ model: "null" | "eight-function", version:
+  "v1" | "v2", type }`. The default stays the null model.
+- **V1.** Its code, `formulas.json`, `stacks.json` and its codex fingerprint are never edited. V1 traces must stay
+  byte-identical.
+- **V2 files.** V2 lives in `personality/eight-function/v2/` (data: constants and citations) and
+  `src/personality/eight-function/v2.ts`. It reads the same `stacks.json`, read-only.
+- **V2 citations.** V2 cites this design's sections, which are Rex's recorded words, and the matrix headings v1
+  already cites. Every constant is marked `crude` with `sourced: false` unless sourced.
+- **New hook parameters.** Every engine-side parameter V2 sets already exists (`poolConcentration`,
+  `equivocationPertinence`, `articulability`) or is added with a neutral default. A neutral default leaves the null
+  model and V1 unchanged.
+- **Replay.** A V2 run replays byte-identically from its seed, the same check as CB-1.
+
+### 22.2 The architecture: per-function contributions weighted by allocation
+
+V1 sums whole formulas, so no single function's effect can be isolated (COG-48). V2 is built per function from the
+start. Each function `f` declares a contribution `Δ_{f,p}` to each hook parameter `p`, and the hook applies
+`p = p_base + Σ_f A_f · Δ_{f,p}`. Pertinence is multiplicative: `π_j ← π_j · (1 + Σ_f A^att_f · δ_{f,j})`. A function
+whose `A_f` is zero contributes nothing. The ledger can therefore mask one function exactly, which V1 cannot do.
+
+**Allocation (§9, Rex: "a softmax over function scores is preferred"):**
+`A_f = softmax_f( ln B_f + ln R_f + ln L_f + ln M_f )`. This equals §9's normalised product. It is computed twice:
+**attention** `A^att` weights pertinence, and **evaluation** `A^eval` weights interpret, generate and learning
+(Rex: attention allocation is not evaluation influence).
+- `B_f`, **the light**, is V1's stack-position weight `W` read from V1's data (no new constant). It never changes
+  (§19).
+- `R_f`, **relevance**, is the share of the attended cue weight in the categories function `f` declares relevant (for
+  attention), or the share of candidate domains it declares (for evaluation). The category lists are V2 data from
+  §16.2 and §18.2. If every `R_f` is 0, there is no situational information, so `A_f ∝ B_f L_f M_f` (keeper).
+- `L_f`, **learned competence**, is held at 1. How competence enters is open (C-Q21), so this gap is explicit.
+- `M_f`, **motivational modulation**, is held at 1. Its form is open (this design gives none), an explicit gap.
+- **Development (§19):** `E_f ← E_f + A^eval_f · R_f · Δt` (Δt in epochs) and `C_f = C_f,0 + k_f · ln(1 + E_f)`. Both
+  are written to the trace and mind state (`mind.function_experience`, `mind.function_competence`, registered
+  planned). `C_f,0` and `k_f` are crude (C-Q20). Because `L_f = 1`, they **do not feed back yet**; they are measured,
+  not used.
+
+### 22.3 The five priorities: what is built and what stays a gap
+
+| Priority | Built in V2 | Explicit gap |
+|---|---|---|
+| Fe contextual semantics (§5.1, §18.2) | each function's `Δ` on `poolConcentration` and `equivocationPertinence`: Fe lowers `α` (context dominates), Fi raises it (fixed internal referent), Ti raises equivocation pertinence (one meaning per chain), Te raises the weight of declared definitions | Ne and Ni meaning roles (C-Q19); Fi's "what it notices" (open) |
+| Function-specific attention (§16.4 stage 1) | each extraverted function's `δ_{f,j}` on its cue categories (Se present physical, Ne novel and possible, Te procedural and measurable, Fe social and interpersonal), weighted by `A^att` | Se, Ne and Te memory profiles (C-Q16) |
+| Function-specific encoding (§16.4 stage 2) | episodes gain an optional detail vector `(physical, valence, structural, pattern, social)`; each introverted function's encoding weights from §16.2 (Si physical, Fi valence, Ti structural, Ni pattern; Fe social as the one given extraverted profile), weighted by `A^eval`; articulability per §16.4 (Si and Ti high, Fi and Ni low) | retrieval cue-type weights (C-Q17): retrieval is unchanged; the body state at encoding (Life, REAL-29) |
+| Ti/Fi coherence primitive (§18.4) | one operation `coherence(X, criterion) = Σ_i w_i · fit(x_i) + Σ_{i<j} v_ij · compat(x_i, x_j) [+ λ_t · identityFit(X, I_t)]`, with the criterion supplied per function (Ti conceptual, Fi evaluative, Te procedural, Fe contextual via the meaning pool); computed for each candidate set the host offers and written to the trace | the forms of `fit` and `compat` are host-supplied per experiment (§18.4 calls them "proposed abstractions"); **how coherence enters EU is open** (new C-Q27), so it is a diagnostic until Rex rules; `I_t` waits on C-Q23 |
+| Si reference matching (§18.5) | `match(a, R_i)` against a host-declared reference (a role or precedent as beliefs); `F_i` = that belief's probability; `A_i` = the weight of a host goal "conform to R" (§2.2), never set by personality; the match is written to the trace, and when such a goal exists it is that goal's progress | the update rule `R_i(t+1) = update(R_i, O_t, I_t)` beyond ordinary belief update (open); the auxiliary's shaping of `I_t` acts only through the existing interpret contributions |
+
+**Constants.** Each `Δ` and `δ` copies V1's crude magnitude for the formula that already expresses the same lean
+(the V2 data names the V1 formula id it copied). A function V1 switched off (Fe, Fi, Ti; COG-2) uses V1's `DELTA`
+magnitude. All are `crude` and `sourced: false`. None may be tuned to force a separation between stacks.
+
+### 22.4 Comparison protocol (V1 against V2)
+
+The same scenarios and seeds run on null, all sixteen V1 stacks and all sixteen V2 stacks. The S1 runner gains
+`--personality v1|v2|both`. Reported side by side:
+- function activation (V2: `A^att`, `A^eval`, `E_f`, `C_f` per function; V1: the whole-formula ledger);
+- internal processing (hook parameters, cue shares, meaning selections, coherence and match diagnostics);
+- decisions and learning (KL);
+- the S1 metrics, with the S1 classification (stable, context-dependent, none) for each version against null.
+V2's per-function masking makes per-function attribution possible for V2 alone. V1's report keeps its overlap
+caveat. **Promotion out of experimental** needs:
+1. V2 replay byte-identical;
+2. V1 and null traces unchanged;
+3. full suite and CB-1..CB-7 green;
+4. the integration contracts it reads (meaning pools, episodes, goals) covered by tests.
+Rex decides any promotion beyond that.
+
+### 22.5 Open (new)
+
+- **C-Q27:** how a coherence score (Ti, Fi, Te, Fe) or an Si match enters a decision. Options are a goal's progress,
+  an evaluation term, or a filter in generate. Until then, both are diagnostics only.
+- **C-Q28:** the form of `M_f` (motivational and emotional modulation of allocation).
+- Also still open: C-Q11, C-Q16, C-Q17, C-Q19, C-Q20, C-Q21, C-Q23 and C-Q24.
+
 ## Sources (to be confirmed and expanded by each unit)
 
 Anderson & Lebiere 1998, *The Atomic Components of Thought*; Anderson & Schooler 1991, *Psychological Science* 2;
@@ -1889,3 +1980,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-11-01 | §2.4 payment acceptance recorded (multi-economy v2, Cognition amendments 1–5; asset value = direct usefulness + one-step expected exchangeability inside r(o); exchange candidates; derived ratioMin by bisection; fence; tests a–d); PA-Q1, PA-Q2 open (unit 5294). |
 | 2026-11-01 | §21 contextual meaning, private judgement and public expression recorded (Rex's brief; keeper's design review: three stages mapped to §18, §2.3, §5; context-indexed self as ordinary beliefs; D and V as trace-only diagnostics with JS and expected-fit distances; overlap split per episode; experiments A–D after the communication build); SR-Q1 to SR-Q4 open (unit 5321). |
 | 2026-11-01 | §5.1 communication build recorded (released by the controller; message format, comprehend with two-level Dirichlet meaning selection, testimony mixture, fit and reconstruction, equivocation cue, bubble exposure split, credibility settlement, persuasion read-out, encode, conversation state, tolerance as the stay-versus-leave selection probability; no new row) (unit 5324). |
+| 2026-11-01 | §22 Personality V2 recorded (Rex: V1 immutable, V2 built now in isolation; per-function contributions weighted by two softmax allocations; development measured, not fed back; five priorities with explicit gaps; comparison protocol; C-Q27, C-Q28 open) (unit 5426). |
