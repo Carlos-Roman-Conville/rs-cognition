@@ -1,0 +1,44 @@
+{
+  "version": "v2",
+  "status": "estimate",
+  "sourced": false,
+  "citations": ["DESIGN.md §22.2–§22.5", "DESIGN.md §9 and §19"],
+  "habit": {
+    "form": "(1 + E_f) / (1 + mean(E))",
+    "status": "estimate",
+    "sourced": false,
+    "citations": ["DESIGN.md §22.3", "Lally et al. 2010; Wood & Neal 2007 (repetition and habit, not this equation)"]
+  },
+  "motivation": {
+    "form": "exp(sum_k priority_k * rel(f, category_k)))",
+    "status": "estimate",
+    "sourced": false,
+    "citations": ["DESIGN.md §22.3; need definition.category is the host domain tag"]
+  },
+  "relevance": {
+    "status": "estimate",
+    "sourced": false,
+    "citations": ["DESIGN.md §9 systems/refinement domain pairs, §16.2, §18.4–§18.5, §22.3"],
+    "note": "Proposed category mapping, shared across types; unknown categories have zero relevance. Ni allocation does not implement a Ni operation.",
+    "categories": {
+      "Se": ["space", "body"], "Si": ["space", "body"],
+      "Ne": ["adaptation", "strategy"], "Ni": ["adaptation", "strategy"],
+      "Te": ["meta"], "Ti": ["meta"],
+      "Fe": ["cohesion", "people"], "Fi": ["cohesion", "people"]
+    },
+    "rel": {
+      "Se": { "space": 1, "body": 1 }, "Si": { "space": 1, "body": 1 },
+      "Ne": { "adaptation": 1, "strategy": 1 }, "Ni": { "adaptation": 1, "strategy": 1 },
+      "Te": { "meta": 1 }, "Ti": { "meta": 1 },
+      "Fe": { "cohesion": 1, "people": 1 }, "Fi": { "cohesion": 1, "people": 1 }
+    }
+  },
+  "competence": {
+    "status": "estimate",
+    "sourced": false,
+    "citations": ["DESIGN.md §22.3 and §19; C-Q20 ranges remain open"],
+    "note": "C0=1 is specified; k=1 is a proposed untuned unit slope, not a calibrated value.",
+    "C0": { "Se": 1, "Si": 1, "Ne": 1, "Ni": 1, "Te": 1, "Ti": 1, "Fe": 1, "Fi": 1 },
+    "k": { "Se": 1, "Si": 1, "Ne": 1, "Ni": 1, "Te": 1, "Ti": 1, "Fe": 1, "Fi": 1 }
+  }
+}
