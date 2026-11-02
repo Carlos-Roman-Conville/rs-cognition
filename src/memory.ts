@@ -1,3 +1,7 @@
+import { operation, withOperations } from "./personality-operations.ts";
+import type { PersonalityOperation } from "./personality-operations.ts";
+import type { PersonalityModel } from "./personality.ts";
+import type { MindView } from "./types.ts";
 import { mint, SECOND, simTime } from "@rex/kernel";
 import type { Counters, RandomStream, SimTime } from "@rex/kernel";
 import { categorical } from "./beliefs.ts";
@@ -29,20 +33,38 @@ function validateContext(context: Episode["context"]): void {
 }
 
 /** DESIGN §2.3, §4: encode subjective experience; kernel mint adds the dot to prefix ep. */
-export function encodeEpisode(input: EpisodeInput, counters: Counters): { episode: Episode; counters: Counters } {
+export function encodeEpisode(input: EpisodeInput, counters: Counters, hooks?: { personality: PersonalityModel; ctx: MindView }): { episode: Episode; counters: Counters; operations?: readonly PersonalityOperation[] } {
   simTime(input.t);
   finite(input.reward, "reward");
   finite(input.predictionError, "predictionError");
   validateContext(input.context);
+  const operations: PersonalityOperation[] = [];
+  let context = { ...input.context };
+  let strengths = input.strengths;
+  if (hooks?.personality.encoding) {
+    const result = hooks.personality.encoding(input.context, hooks.ctx);
+    finite(result.tauEnc, "encoding threshold");
+    if (result.tauEnc < 0) throw new RangeError("Encoding threshold must be nonnegative");
+    context = {};
+    const stored: Record<string, number> = {};
+    for (const [cue, value] of Object.entries(input.context)) {
+      const strength = result.strengths[cue];
+      finite(strength, "cue strength");
+      if (strength < 0) throw new RangeError("Cue strength must be nonnegative");
+      if (strength >= result.tauEnc) { context[cue] = value; stored[cue] = strength; }
+    }
+    strengths = stored;
+    operations.push(operation(hooks.personality, "encoding", { ...result, context, stored }));
+  }
   const minted = mint(counters, "ep");
-  return {
+  return withOperations({
     counters: minted.counters,
     episode: {
-      id: minted.id, t: input.t, retrievals: [], context: { ...input.context },
+      id: minted.id, t: input.t, retrievals: [], context, ...(strengths === undefined ? {} : { strengths }),
       action: input.action, outcome: input.outcome, reward: input.reward,
       predictionError: input.predictionError, attributedCause: input.attributedCause, domain: input.domain,
     },
-  };
+  }, operations);
 }
 
 /**
@@ -150,7 +172,10 @@ export function outcomeExpectations(
   const counts = prior.probabilities.map((p) => params.alpha0 * p);
   const indexes = new Map(prior.values.map((value, index) => [value, index]));
   for (const episode of episodes) {
-    if (episode.action !== action || !contextMatches(episode.context, context)) continue;
+    // DESIGN §22.4: encoded features alone condition experience; legacy contexts remain exact.
+    const matches = episode.strengths === undefined ? contextMatches(episode.context, context)
+      : Object.keys(episode.context).every(key => Object.hasOwn(context, key) && context[key] === episode.context[key]);
+    if (episode.action !== action || !matches) continue;
     const index = indexes.get(episode.outcome);
     if (index === undefined) throw new RangeError("Matching episode outcome is outside the declared outcome space");
     counts[index] += retrievalProbability(episode, t, params);

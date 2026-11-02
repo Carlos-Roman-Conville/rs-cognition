@@ -65,7 +65,10 @@ describe("DESIGN §10.2 append-only S1 addendum", () => {
     expect(original.length).toBeGreaterThan(0);
     const index = report.indexOf(ADDENDUM_HEADING);
     expect(index).toBeGreaterThan(0);
-    expect(new TextEncoder().encode(report.slice(0, index))).toEqual(new TextEncoder().encode(original));
+    // Later commits already contain the addendum; compare the immutable prefix on both sides.
+    const originalIndex = original.indexOf(ADDENDUM_HEADING);
+    const originalPrefix = originalIndex < 0 ? original : original.slice(0, originalIndex);
+    expect(new TextEncoder().encode(report.slice(0, index))).toEqual(new TextEncoder().encode(originalPrefix));
   });
   it("replaces only below an existing heading and is idempotent", () => {
     const prefix = "Original UTF-8 § report\r\n\r\n";

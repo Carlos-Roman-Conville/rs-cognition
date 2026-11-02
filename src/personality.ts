@@ -1,4 +1,6 @@
-import type { Candidate, Domain, MindView } from "./types.ts";
+import type { Evaluation } from "./evaluate.ts";
+import type { CommunicationContext } from "./communication/types.ts";
+import type { Candidate, CategoricalBelief, Domain, Episode, MindView, Observation } from "./types.ts";
 export type { Domain } from "./types.ts";
 
 /** DESIGN §9: interpretation controls only; motivations are not parameters of a hook. */
@@ -26,6 +28,12 @@ export interface LearningParams {
 
 /** DESIGN §9 "The hooks", refining §3. No concrete personality theory is enabled. */
 export interface PersonalityModel {
+  /** DESIGN §22.4: aligned with evaluated candidates; terms are added after base EU. */
+  evaluationTerms?(candidates: readonly Evaluation[], ctx: MindView): readonly (readonly EvaluationTerm[])[];
+  meaningSelection?(dist: CategoricalBelief, context: CommunicationContext, ctx: MindView): CategoricalBelief;
+  preconditionEvidence?(candidate: Candidate, precondition: Candidate["preconditions"][number],
+    beliefP: number, presentObs: readonly Observation[], ctx: MindView): number;
+  encoding?(cues: Episode["context"], ctx: MindView): EncodingResult;
   id: string;
   version: string;
   pertinence(base: Record<string, number>, ctx: MindView): Record<string, number>;
@@ -34,6 +42,17 @@ export interface PersonalityModel {
     candidates: readonly Candidate[]; params: GenerateParams;
   };
   learning(base: LearningParams, domain: Domain, ctx: MindView): LearningParams;
+}
+
+export interface EvaluationTerm {
+  readonly label: string;
+  readonly function?: string;
+  readonly value: number;
+}
+export interface EncodingResult {
+  readonly strengths: Readonly<Record<string, number>>;
+  /** DESIGN §22.4: supplied by the model; no engine estimate/default. */
+  readonly tauEnc: number;
 }
 
 export const nullPersonality: PersonalityModel = Object.freeze({

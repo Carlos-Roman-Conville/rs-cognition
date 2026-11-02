@@ -38,6 +38,8 @@ export interface PendingIntention {
 }
 
 export interface Mind extends MindInput {
+  /** Current observation-phase execution evidence for the epoch ledger. */
+  readonly observationOperations?: { readonly t: SimTime; readonly operations: readonly import("./personality-operations.ts").PersonalityOperation[] };
   readonly id: string;
   readonly params: CognitiveParams;
   readonly context: Episode["context"];
@@ -161,7 +163,8 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
         random.restore(streamState); // Kernel validates the recorded 32-bit state before publication.
       }
       observationTrace = memory.trace;
-      mind = { ...mind, observations, memory: { ...mind.memory,
+      mind = { ...mind, observations,
+        ...(memory.trace.operations?.length || mind.observationOperations ? { observationOperations: { t: command.t, operations: memory.trace.operations ?? [] } } : {}), memory: { ...mind.memory,
         ...(memory.conversations === undefined ? {} : { conversations: memory.conversations }),
         ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),
         ...(memory.termReadings === undefined ? {} : { termReadings: memory.termReadings }),
@@ -193,6 +196,8 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       const context = structuredClone(command.context ?? mind.context);
       const selected = policy([], { ...mind.memory, decision: {
         mind: qualify("cognition", mind.id), counters, context, current: mind.current,
+        presentObservations: mind.observations.filter(observation => observation.t === command.t),
+        priorOperations: mind.observationOperations?.t === command.t ? mind.observationOperations.operations : [],
         ...(config.communication ? { communication: config.communication } : {}),
         generation: { ...config.generation, body: { capacity_functional: capacityFunctional } },
       } }, mind.needs, personality, mind.params,

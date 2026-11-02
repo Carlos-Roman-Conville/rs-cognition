@@ -10,6 +10,7 @@ export * from "./actions.ts";
 export * from "./evaluate.ts";
 export * from "./select.ts";
 export * from "./personality.ts";
+export type { PersonalityOperation } from "./personality-operations.ts";
 export * from "./personality/eight-function/v1.ts";
 export * from "./learning.ts";
 export * from "./policy.ts";

@@ -1,3 +1,6 @@
+import { operation, withOperations } from "./personality-operations.ts";
+import type { PersonalityOperation } from "./personality-operations.ts";
+import type { Observation } from "./types.ts";
 import { categorical } from "./beliefs.ts";
 import { nullPersonality } from "./personality.ts";
 import type { GenerateParams, PersonalityModel } from "./personality.ts";
@@ -30,6 +33,7 @@ export interface GenerationInputs {
 }
 
 export interface GenerationResult {
+  readonly operations?: readonly PersonalityOperation[];
   readonly assets?: readonly AssetDefinition[];
   readonly candidates: readonly Candidate[];
   readonly params: GenerateParams;
@@ -105,6 +109,7 @@ function sameAction(left: Candidate, right: Candidate): boolean {
 /** DESIGN §2.4: θ_pre=0.5 proposed; capacity is a declared body input, never computed here. */
 export function generateActions(
   inputs: GenerationInputs, ctx: MindView, personality: PersonalityModel = nullPersonality,
+  presentObs: readonly Observation[] = [],
 ): GenerationResult {
   const thetaPre = inputs.thetaPre ?? 0.5; // DESIGN §2.4 proposed default.
   nonnegative(thetaPre, "thetaPre");
@@ -116,6 +121,7 @@ export function generateActions(
   if (wait.preconditions.length !== 0 || wait.capacityRequired !== 0 || wait.cost !== 0 || wait.duration !== 1) {
     throw new RangeError("The host's fallback must be unconditional, zero-cost, zero-capacity and one epoch");
   }
+  const operations: PersonalityOperation[] = [];
   const checks: GenerationResult["checks"][number][] = [];
   const candidates: Candidate[] = [];
   const definitions = [...inputs.repertoire, wait];
@@ -133,6 +139,15 @@ export function generateActions(
       preconditions: definition.preconditions.map((condition) => ({ id: condition.id, probability: condition.probability(ctx.beliefs) })),
     };
     validateFeasibility(metadata);
+    if (personality.preconditionEvidence && metadata.preconditions.length) {
+      const candidate = freezeCandidate({ ...metadata, effects: definition.outcomeSpace, outcomes: definition.naiveModel(ctx.beliefs) });
+      metadata.preconditions = metadata.preconditions.map(condition => {
+        const probability = personality.preconditionEvidence!(candidate, condition, condition.probability, presentObs, ctx);
+        operations.push(operation(personality, "preconditionEvidence", { action: candidate.action, target: candidate.target, precondition: condition.id, probability }));
+        return { ...condition, probability };
+      });
+      validateFeasibility(metadata);
+    }
     // DESIGN §2.4: each believed prerequisite must meet θ_pre; no independence assumption.
     const eligible = metadata.preconditions.every((condition) => condition.probability >= thetaPre) &&
       metadata.capacityRequired <= inputs.body.capacity_functional;
@@ -158,6 +173,6 @@ export function generateActions(
   if (result.some((candidate, i) => result.slice(0, i).some((other) => sameAction(candidate, other)))) {
     throw new RangeError("Generated action/target pairs must be unique");
   }
-  return { ...(inputs.assets === undefined ? {} : { assets: structuredClone(inputs.assets) }), candidates: result.map(freezeCandidate), params: generated.params, thetaPre,
-    capacityFunctional: inputs.body.capacity_functional, checks };
+  return withOperations({ ...(inputs.assets === undefined ? {} : { assets: structuredClone(inputs.assets) }), candidates: result.map(freezeCandidate), params: generated.params, thetaPre,
+    capacityFunctional: inputs.body.capacity_functional, checks }, operations);
 }

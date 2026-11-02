@@ -1,3 +1,5 @@
+import { withOperations } from "./personality-operations.ts";
+import type { PersonalityOperation } from "./personality-operations.ts";
 import { encode } from "./communication/encode.ts";
 import { conversation, conversationTurn, keepConversation, assessConversation } from "./communication/conversation.ts";
 import type { CommunicationDecision, Message } from "./communication/types.ts";
@@ -21,6 +23,9 @@ import type { Belief, CognitiveParams, Episode, Intention, MemoryState, MindView
  */
 export interface PolicyMemoryState extends MemoryState {
   readonly decision: {
+    /** Already observed this epoch; evidence only, never applied twice. */
+    readonly presentObservations?: readonly Observation[];
+    readonly priorOperations?: readonly PersonalityOperation[];
     readonly communication?: CommunicationDecision;
     readonly mind: string;
     readonly counters: Counters;
@@ -42,6 +47,7 @@ export interface ObservationUpdate {
   readonly kl: number | "Infinity";
 }
 export interface ObservationTrace {
+  readonly operations?: readonly PersonalityOperation[];
   readonly conversations?: MemoryState["conversations"];
   readonly credibility?: readonly CredibilitySettlement[];
   readonly comprehension?: readonly ComprehendedUtterance[];
@@ -70,6 +76,7 @@ export function observeMemory(
   const credibility: CredibilitySettlement[] = [];
   const updates: ObservationUpdate[] = [];
   let meaningPool = memory.meaningPool;
+  const operations: PersonalityOperation[] = [];
   const comprehension: ComprehendedUtterance[] = [];
   let confusionCues = memory.confusionCues;
   for (const [observationIndex, observation] of observations.entries()) {
@@ -92,7 +99,8 @@ export function observeMemory(
     };
     if (observation.kind === "message") {
       const understood = comprehend({ beliefs, reliability, meaningPool, termReadings }, observation.message,
-        { ...observation.context, ...communication, poolConcentration: interpreted.poolConcentration ?? 1 });
+        { ...observation.context, ...communication, poolConcentration: interpreted.poolConcentration ?? 1 }, { personality, ctx: view });
+      operations.push(...(understood.operations ?? []));
       meaningPool = understood.pool;
       termReadings = understood.readings;
       testimony = [...(testimony ?? []), ...understood.utterances.flatMap(u => u.pending ? [u.pending] : [])];
@@ -132,7 +140,7 @@ export function observeMemory(
     ...(equivocationCues === undefined ? {} : { equivocationCues }),
     ...(meaningPool === undefined ? {} : { meaningPool }),
     ...(confusionCues === undefined ? {} : { confusionCues }),
-    trace: { updates, ...(comprehension.length && conversations ? { conversations } : {}), ...(credibility.length ? { credibility } : {}), ...(comprehension.length ? { comprehension } : {}) } };
+    trace: withOperations({ updates, ...(comprehension.length && conversations ? { conversations } : {}), ...(credibility.length ? { credibility } : {}), ...(comprehension.length ? { comprehension } : {}) }, operations) };
 }
 
 /** DESIGN §3: π(o,m,n,p,θ,rng,t), pure apart from the explicitly supplied stream.
@@ -146,7 +154,7 @@ export function policy(
   const memory = observeMemory(o, m, n, p, theta, t, { thetaPre: m.decision.generation.thetaPre ?? 0.5 });
   const view: MindView = { beliefs: memory.beliefs, needs: n, params: theta,
     ...(memory.confusionCues === undefined ? {} : { confusionCues: memory.confusionCues }) };
-  const generation = generateActions(m.decision.generation, view, p);
+  const generation = generateActions(m.decision.generation, view, p, (m.decision.presentObservations ?? o).filter(obs => obs.t === t));
   const evaluation = evaluateActions(generation, view, memory.episodes, m.decision.context, t, p);
   const selected = selectAction(evaluation, m.decision, rng);
   let conversations = memory.conversations;
@@ -168,8 +176,8 @@ export function policy(
       conversations = keepConversation(conversations ?? [], updated.record);
     }
   }
-  return { intention: selected.intention, trace: { ...selected.trace,
-      ...(assessments.length ? { conversations: assessments } : {}), ...(message ? { message } : {}) }, counters: selected.counters,
+  return { intention: selected.intention, trace: withOperations({ ...selected.trace,
+      ...(assessments.length ? { conversations: assessments } : {}), ...(message ? { message } : {}) }, [...(m.decision.priorOperations ?? []), ...(memory.trace.operations ?? []), ...(selected.trace.operations ?? [])]), counters: selected.counters,
     ...(message ? { message } : {}),
     next: { ...(conversations === undefined ? {} : { conversations }),
       ...(memory.testimony === undefined ? {} : { testimony: memory.testimony }),

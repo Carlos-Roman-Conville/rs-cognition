@@ -169,6 +169,7 @@ export interface NeedState {
 }
 
 export interface Episode {
+  readonly strengths?: Readonly<Record<string, number>>;
   readonly id: string;
   readonly t: SimTime;
   readonly retrievals: readonly SimTime[];
@@ -241,6 +242,7 @@ export interface CandidateTrace {
 }
 
 export interface DecisionTrace {
+  readonly operations?: readonly import("./personality-operations.ts").PersonalityOperation[];
   readonly ineligible?: readonly { readonly candidate: Candidate; readonly eligible: false; readonly reason: string }[];
   readonly mind: EntityHandle;
   readonly t: SimTime;

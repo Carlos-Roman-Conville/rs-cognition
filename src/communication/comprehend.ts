@@ -1,3 +1,7 @@
+import { operation, withOperations } from "../personality-operations.ts";
+import type { PersonalityOperation } from "../personality-operations.ts";
+import type { PersonalityModel } from "../personality.ts";
+import { categorical } from "../beliefs.ts";
 import { getBelief, reliabilityMean } from "../beliefs.ts";
 import type { CategoricalBelief, MemoryState, MindView } from "../types.ts";
 import type { CommunicationContext, ComprehendedUtterance, MeaningCandidate, MeaningPool, Message, TermReading } from "./types.ts";
@@ -49,10 +53,12 @@ export type ComprehensionView = Pick<MindView, "beliefs"> & Pick<MemoryState, "r
 /** DESIGN §5.1: meaning selection, prior fit and credibility mixture; no belief mutation.
  * Unknown speakers use proposed Beta(1,1) ignorance. Speaker intent is not a definition.
  */
-export function comprehend(view: ComprehensionView, message: Message, context: CommunicationContext): {
+export function comprehend(view: ComprehensionView, message: Message, context: CommunicationContext, hooks?: { personality: PersonalityModel; ctx: MindView }): {
+  readonly operations?: readonly PersonalityOperation[];
   readonly readings: readonly TermReading[]; readonly pool: MeaningPool; readonly utterances: readonly ComprehendedUtterance[];
 } {
   if (!Number.isFinite(context.thetaPre) || context.thetaPre < 0 || context.thetaPre > 1) throw new RangeError("Invalid fit threshold");
+  const operations: PersonalityOperation[] = [];
   let pool = view.meaningPool ?? {};
   let readings = view.termReadings ?? [];
   for (const usage of context.usage ?? []) pool = reconstruct(pool, usage.term, usage.meaning, usage.bubble);
@@ -60,7 +66,15 @@ export function comprehend(view: ComprehensionView, message: Message, context: C
   const r = reliabilityMean(view.reliability.find(entry => entry.speaker === message.sender)?.belief ?? { alpha: 1, beta: 1 });
   const utterances = message.utterances.map((utterance): ComprehendedUtterance => {
     if (utterance.declared) pool = reconstruct(pool, utterance.term, utterance.declared, context.bubble);
-    const distribution = selectMeaning(pool, utterance.term, context.bubble, context.poolConcentration);
+    let distribution = selectMeaning(pool, utterance.term, context.bubble, context.poolConcentration);
+    if (distribution && hooks?.personality.meaningSelection) {
+      const modified = hooks.personality.meaningSelection(distribution, context, hooks.ctx);
+      categorical(modified.values, modified.probabilities);
+      if (modified.values.length !== distribution.values.length || modified.values.some((v, i) => v !== distribution!.values[i]) ||
+          Math.abs(modified.probabilities.reduce((a, b) => a + b, 0) - 1) > 1e-12) throw new RangeError("Meaning hook must preserve support and normalized probabilities");
+      distribution = modified;
+      operations.push(operation(hooks.personality, "meaningSelection", { term: utterance.term, distribution }));
+    }
     const meanings = candidates(pool, utterance.term);
     const probabilities = distribution?.probabilities ?? meanings.map(() => 0);
     // DESIGN §5.1: F = sum P(m) P_prior(claim_m); absent categorical priors supply no fit evidence.
@@ -97,5 +111,5 @@ export function comprehend(view: ComprehensionView, message: Message, context: C
       confusion: { speaker: message.sender, term: utterance.term, F },
     } : {}), testimony };
   });
-  return { pool, utterances, readings };
+  return withOperations({ pool, utterances, readings }, operations);
 }

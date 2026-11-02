@@ -7,6 +7,8 @@ import {
   updateCategorical, updateGaussian, updateReliability,
 } from "./beliefs.ts";
 import type { Evaluation } from "./evaluate.ts";
+import { withOperations } from "./personality-operations.ts";
+import type { PersonalityOperation } from "./personality-operations.ts";
 import { encodeEpisode } from "./memory.ts";
 import { nullPersonality } from "./personality.ts";
 import type { LearningParams, PersonalityModel } from "./personality.ts";
@@ -73,6 +75,7 @@ export interface LatentUpdate {
 }
 
 export interface LearningTrace {
+  readonly operations?: readonly PersonalityOperation[];
   readonly credibility?: readonly CredibilitySettlement[];
   readonly mind: string;
   readonly intention: string;
@@ -267,13 +270,13 @@ export function learnOutcome(
   // DESIGN §2.5: encode by default; complete one episode with the read-out, never update latents again.
   const encoded = (inputs.encode ?? true) ? encodeEpisode({ t: outcome.t, context: inputs.context,
     action: intention.action, outcome: perceived.outcome, reward, predictionError,
-    attributedCause, domain: inputs.domain }, counters) : undefined;
+    attributedCause, domain: inputs.domain }, counters, { personality, ctx }) : undefined;
   const next = beliefs === memory.beliefs && reliability === memory.reliability && testimony === memory.testimony && !encoded ? memory : {
     ...memory, beliefs, reliability, ...(testimony === undefined ? {} : { testimony }), episodes: encoded ? [...memory.episodes, encoded.episode] : memory.episodes,
   };
   return { next, counters: encoded?.counters ?? counters, episode: encoded?.episode,
-    trace: { ...(credibility.length ? { credibility } : {}), mind: inputs.mind, intention: intention.id, t: outcome.t, observations: outcome.observations,
+    trace: withOperations({ ...(credibility.length ? { credibility } : {}), mind: inputs.mind, intention: intention.id, t: outcome.t, observations: outcome.observations,
       outcome: perceived.outcome, reward, expectedUtility, predictionError,
       updates, attributedCause, epsilonAttribution: epsilon, likelihoodFloor: LEARNING_LIKELIHOOD_FLOOR,
-      episode: encoded?.episode.id } };
+      episode: encoded?.episode.id }, encoded?.operations ?? []) };
 }

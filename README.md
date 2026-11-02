@@ -110,3 +110,22 @@ The decision trace records tolerance from their already-computed utilities, with
 engagement willingness retained after the first turn. Leave is the comparison alternative,
 excluded from the staying acts. These diagnostics do not choose actions or consume randomness.
 Without communication inputs, existing decision traces retain their byte representation.
+
+### Optional personality operations (DESIGN §22.4)
+
+`PersonalityModel` optionally supplies `evaluationTerms`, `meaningSelection`,
+`preconditionEvidence`, and `encoding`. Null and V1 models omit all four.
+Evaluation receives base `Evaluation` records (including EU), and returns an aligned
+array of labeled additive terms for each candidate. Meaning selection preserves the
+ordered support and normalized probabilities. Precondition evidence receives the
+candidate, prerequisite, believed probability, and this epoch's observations before
+eligibility is tested; the model identifies relevant present evidence.
+Encoding returns `strengths` keyed by cue and `tauEnc`; strengths below the threshold
+are discarded. Such episodes match later contexts on their stored features alone.
+
+Decision, observation, and learning traces expose `operations` with the model id as
+`function`, hook name as `operation`, `executed`, and raw `output`. Evaluation terms
+can additionally identify their contributing function. Empty operation arrays are
+non-enumerable to keep legacy JSON traces byte-identical; serialized legacy traces
+therefore omit the field (read an absent field as `[]`). Nonempty operations serialize.
+The ten golden files were captured before these hooks were implemented.

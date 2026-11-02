@@ -1,3 +1,4 @@
+import { withOperations } from "./personality-operations.ts";
 import { mint } from "@rex/kernel";
 import type { Counters, RandomStream } from "@rex/kernel";
 import type { Evaluation, EvaluationResult } from "./evaluate.ts";
@@ -99,5 +100,5 @@ export function selectAction(
     inputs: { generation, episodes: evaluation.episodes, context: evaluation.context, previousIntention: current },
     commitment: { kappa, kept, advantage }, draw,
   };
-  return { intention, trace, counters };
+  return { intention, trace: withOperations(trace, evaluation.operations ?? []), counters };
 }

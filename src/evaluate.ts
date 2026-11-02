@@ -1,3 +1,6 @@
+import { operation, withOperations } from "./personality-operations.ts";
+import type { PersonalityOperation } from "./personality-operations.ts";
+import type { EvaluationTerm } from "./personality.ts";
 import { simTime } from "@rex/kernel";
 import type { SimTime } from "@rex/kernel";
 import { validateCandidate } from "./actions.ts";
@@ -23,6 +26,7 @@ export interface OutcomeUtility {
 export const R_MAX = 1e6;
 
 export interface Evaluation {
+  readonly terms?: readonly EvaluationTerm[];
   readonly ratioMin?: number;
   readonly candidate: Candidate;
   readonly interpret: InterpretParams;
@@ -36,6 +40,7 @@ export interface Evaluation {
 }
 
 export interface EvaluationResult {
+  readonly operations?: readonly PersonalityOperation[];
   readonly ineligible?: DecisionTrace["ineligible"];
   readonly generation: GenerationResult;
   readonly candidates: readonly Evaluation[];
@@ -104,7 +109,7 @@ export function evaluateActions(
   const assets = generation.assets ?? [];
   const ineligible: NonNullable<DecisionTrace["ineligible"]>[number][] = [];
   const reject = (candidate: Candidate, reason: string) => ineligible.push({ candidate, eligible: false, reason });
-  const rated = generation.candidates.flatMap((candidate): Evaluation[] => {
+  let rated = generation.candidates.flatMap((candidate): Evaluation[] => {
     validateCandidate(candidate);
     const base: InterpretParams = {
       eta: ctx.params.eta, alpha0: ctx.params.alpha0, lambda: ctx.params.lambda,
@@ -129,6 +134,14 @@ export function evaluateActions(
     return [{ candidate, interpret: interpreted, counts: expectation.counts, memoryDistribution: expectation.distribution,
       expectedOutcomes, outcomes, discount, expectedUtility }];
   });
+  const operations = [...(generation.operations ?? [])];
+  if (personality.evaluationTerms) {
+    const terms = personality.evaluationTerms(rated, ctx);
+    if (terms.length !== rated.length) throw new RangeError("Evaluation terms must align with candidates");
+    rated = rated.map((evaluation, i) => ({ ...evaluation, terms: terms[i],
+      expectedUtility: terms[i].reduce((eu, term) => finite(eu + finite(term.value, "evaluation term"), "expected utility"), evaluation.expectedUtility) }));
+    operations.push(operation(personality, "evaluationTerms", terms));
+  }
   const candidates = rated.flatMap((evaluation): Evaluation[] => {
     const { candidate } = evaluation;
     const exchange = candidate.exchange;
@@ -143,7 +156,7 @@ export function evaluateActions(
       const outcome = outcomeUtility(effect, evaluation.expectedOutcomes.probabilities[i], candidate, ctx,
         evaluation.interpret.lambda, assets, ratio * exchange.give.units);
       return sum + outcome.probability * outcome.value;
-    }, 0);
+    }, 0) + (evaluation.terms?.reduce((sum, term) => sum + term.value, 0) ?? 0);
     if (eu(R_MAX) < alternative) { reject(candidate, "No reservation ratio within R_MAX"); return []; }
     if (evaluation.expectedUtility < 0) { reject(candidate, "Offer expects a loss at believed rate"); return []; }
     let low = 0;
@@ -158,6 +171,6 @@ export function evaluateActions(
     }
     return [{ ...evaluation, ratioMin: high }];
   });
-  return { generation, candidates, view: ctx, episodes, context, t,
-    ...(ineligible.length === 0 ? {} : { ineligible }) };
+  return withOperations({ generation, candidates, view: ctx, episodes, context, t,
+    ...(ineligible.length === 0 ? {} : { ineligible }) }, operations);
 }
