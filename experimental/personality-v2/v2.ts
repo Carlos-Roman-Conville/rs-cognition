@@ -3,6 +3,8 @@ import type { Candidate, GenerateParams, CategoricalBelief, CognitiveFunction, M
 import data from "./data.json" with { type: "json" };
 import { generateTe } from "./te.ts";
 import type { TeOptions } from "./te.ts";
+import { generateNe } from "./ne.ts";
+import type { NeOptions } from "./ne.ts";
 
 export type FunctionValues = Record<CognitiveFunction, number>;
 export interface V2State {
@@ -28,6 +30,7 @@ export interface V2Context extends MindView {
 }
 export interface V2Options {
   readonly te?: TeOptions;
+  readonly ne?: NeOptions;
   /** Proposed initial experience is zero; supply a snapshot to resume replay. */
   readonly state?: V2State;
   /** Test-only counterfactual control for future operations (DESIGN §22.5). */
@@ -112,7 +115,9 @@ export function createEightFunctionV2(type: PersonalityType, options: V2Options 
     // FUNCTION-DESIGN §6.4 (corrected): Fe never adopts the audience's reading.
     meaningSelection: (distribution: CategoricalBelief) => distribution,
     generate(candidates: readonly Candidate[], base: GenerateParams, mind: MindView) {
-      return options.te ? generateTe(candidates, base, mind, this, options.te) : { candidates, params: base };
+      const result = options.te ? generateTe(candidates, base, mind, this, options.te) : { candidates, params: base };
+      // Both operations compose original repertoire entries, never each other's additions.
+      return options.ne ? generateNe(candidates, base, mind, this, options.ne, result.candidates) : result;
     },
     allocation(ctx: V2Context) {
       const records = compute(ctx);

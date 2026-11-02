@@ -82,3 +82,28 @@ compositions cap the realised additions. Execution records snapshot goal, expect
 rounded count and added candidates. Mask `{ function: "Te", operation: "generate" }`
 disables execution; absent goals, absent Te and zero allocation are inert. No competence
 gain, learning strategy, new memory store or Ni operation is introduced.
+
+Ne branching runs through `model.generate` when `options.ne` is supplied. Its
+`context(mind)` returns a `NeContext` with the existing subjective `episodes`, current
+episode `context`, kernel `random` streams and an `operations` trace array. Its
+`compound(a, b, mind)` follows Te's host-owned composition contract. The host must
+assign a stable action ID to each ordered pair, distinguishing targets when needed:
+existing episodes identify actions by that ID, not by a separate pair-memory store.
+
+Ne ranks supported ordered pairs by `1 / (1 + matching episode count)`, with ties in
+repertoire order. Counts are raw episodes, independent of outcomes and retrievals.
+Legacy contexts use the public exact `contextMatches` convention; episodes with
+encoding strengths condition only on their stored features, as in core expectations.
+No episodes or needs are changed. Repeated steps are allowed when the host supports them.
+
+The expected count is `2*A.eval`, stochastically rounded with the mind-scoped stream
+`cognition.personality.v2.Ne.generate`; only fractional counts consume a draw. Save
+the host's streams for replay. Mask `{ function: "Ne", operation: "generate" }`
+disables execution; absent Ne and zero allocation are inert. Execution snapshots
+record context, expected/rounded counts, novelty ranking and additions. Competence
+has no effect. Available distinct compositions cap additions, and the core generation
+boundary still checks feasibility.
+
+When both Te and Ne are configured, Te runs first. Ne uses the original repertoire
+and skips identities already supplied by Te; neither builds on the other's additions.
+This explicit ordering preserves two-entry compositions and prevents duplicates.
