@@ -589,6 +589,10 @@ E_f(t + Δt) = E_f(t) + A_f(t)·R_f(t)·Δt          accumulated function-releva
 C_f(t) = C_f,0 + k_f·log(1 + E_f(t))             developed competence, diminishing returns
 ```
 
+**Superseded as a definition (Rex, 2026-11-01, §4.7).** This form makes competence rise with exposure whether or not
+the operation improves. Experience is an input that may produce competence, not competence itself. `E_f` stays as
+practice history; the logarithmic curve stays as a hypothesis about development, to be tested (§12.7).
+
 - **Feedback (Rex).** Competence feeds back into future allocation, so two people with one hierarchy diverge by
   environment: an ESTP raised on abstract planning develops more Ni facility than one rewarded for immediate action.
   **Read with §4.5 (2026-11-02):** in V2 the feedback is indirect, never a competence multiplier in allocation. A
@@ -646,25 +650,34 @@ H_f = 1 + h · (1 − exp(−E_f / E_0))
   read as if one unit of `E_f` were one daily repetition (that reading is H-Q1). Both stay Rex's to set.
 - **Saturation is not decay.** A deep habit still does not weaken with disuse under this form; that stays C-Q21, a
   separate learning-and-forgetting rule. Lifetime experience `E_f` still feeds competence even when habit changes.
+- **Provisional, held fixed (Rex's paste, 2026-11-01).** `h = 1` and `E_0 = 22` are transparent simulation settings, not
+  psychological findings; `E_0` means nothing until an experience unit is defined (H-Q1). They stay unchanged during the
+  Ti experiment (§12.7). No decay is built yet.
+- **A cap is not a guarantee.** Capping habit does not by itself let an inferior function lead: allocation still
+  depends on `B_f`, relevance, motivation and eligibility. Principle 9 needs a direct test of the whole allocation rule
+  (P9-T, §15).
+- **Disuse, four quantities kept apart (proposed, for C-Q21).** Practice history `E_f` never disappears. Habit, how
+  readily a context recruits an operation, may weaken when that context recurs **and another function is chosen**; that
+  history is recorded separately from time that simply passes with no opportunity. Learned capability (`θ_f`, §4.7)
+  needs its own loss mechanism, if any. Confidence changes only through evidence.
 
-**Competence improves the operation, never its loudness (agreed direction):**
+**Competence improves the operation, never its loudness (agreed direction; made precise in §4.7):**
 
-| Function | What greater competence could improve (proposed; equations open) |
+| Function | What greater competence could improve (candidate operational tests; equations open) |
 |---|---|
-| Se | sensory discrimination; detecting an opportunity that exists now |
+| Se | telling actionable present changes from noise under equal observation conditions |
 | Si | telling relevant precedents from misleading similarities |
-| Ne | more useful and more varied alternatives |
-| Ni | better-supported relational structures |
-| Te | more effective arrangements within the available resources |
-| Ti | detecting contradictions, including ones spread across several claims (§7.4) |
-| Fe | distinguishing what each audience will hear more accurately (§6.4) |
-| Fi | finer compatibility judgements within its evaluative structure |
+| Ne | more distinct, admissible possibilities within the same search budget, not merely more candidates |
+| Ni | representations that predict or transfer better to new cases without needless complexity |
+| Te | arrangements that better satisfy the declared objective under the same constraints |
+| Ti | detecting contradictions, including larger combinations, while avoiding false contradiction reports (§7.4) |
+| Fe | predicting different listeners' readings more accurately, including their disagreement (§6.4) |
+| Fi | identifying compatibility and conflict within the mind's own evaluative structure, including unfamiliar combinations; the evaluator never decides which values are correct |
 
 - Each effect must improve a **measurable property of that function's own operation** (accuracy, discrimination,
   search depth, representation), per the revision standard.
-- **Confidence is separate from competence.** A mind's confidence in a function's output is a belief in the one belief
-  store (how reliable its judgements of that kind have proven, learned from outcomes, as V1's F7 already treats believed
-  own success), never a meter. So a practised mind can be confidently wrong when its experience misled it.
+- **Confidence is separate from competence** (refined in §4.7): beliefs in the one belief store, never a meter, so a
+  practised mind can be confidently wrong when its experience misled it.
 - **Boundary.** This is the function's processing quality across domains, not a task skill (`cognition.skill.practice`,
   reserved) and not intelligence (§4.4 invariant).
 
@@ -672,6 +685,90 @@ H_f = 1 + h · (1 − exp(−E_f / E_0))
 → outcomes and learning → future allocation. **Not guaranteed upward:** competence does not force more use. The mind's
 own beliefs, preferences and needs mediate the return path, so a mind can become excellent at something and then avoid
 it because what came with it was unpleasant (§4.4's indirect route).
+
+### 4.7 The competence architecture (Rex, 2026-11-01; adopted direction for V2, Comp-Q1; per-function algorithms open)
+
+Brought in through Rex's paste of a review conversation (ChatGPT and a second reviewer). It settles what the
+quantities are; it does not yet give any function's learning algorithm.
+
+**Three quantities, each answering a different observable question:**
+
+| Quantity | Definition | How it is measured | Can be high while the others are low |
+|---|---|---|---|
+| Allocation | the processing resource the mind assigns to an operation on this occasion | time, comparisons, retrieval attempts or search steps assigned, and the work actually done | great effort, poor result |
+| Competence | how well the operation performs with given information and resources | error, discrimination or solution quality at a fixed budget | good result with little effort |
+| Confidence | how reliable the mind believes a particular result is | its probability for a defined claim, compared later with the feedback it received | certainty while wrong |
+
+**The processing cycle:**
+
+```
+b_f = A_f · B                                   allocation as a budget: share A_f of the total B
+y_f = Run_f(x, R, θ_f, b_f)                     the operation: input x, reference R, learned parameters θ_f, budget b_f
+θ_f(t + 1) = Learn_f(θ_f(t), e_t, r̂_t)          learning from experience e_t and the feedback r̂_t the mind actually receives
+C_f(T, b) = Evaluate_f(θ_f, T, b)               competence: measured outside the mind on a task set T at budget b
+```
+
+- **The mind's state is `θ_f`, not a competence number.** `θ_f` must name something concrete the operation does
+  differently (which constraints Ti checks first, which combinations it examines, how it ranks contradicting evidence);
+  otherwise it is a competence multiplier renamed. Competence is a measurement of `θ_f`'s performance, a profile over
+  tasks and budgets, never a universal personality score and never known to the mind.
+- **Quality and efficiency stay separate:** quality at a fixed budget, and the budget needed to reach a fixed quality.
+- **Knowledge is not capability.** Knowing more facts can improve results without improving the operation. Tests
+  sometimes hold knowledge fixed and sometimes let it vary; the two effects can interact (a better retrieval strategy may
+  help only once enough is known).
+- **A changed `θ_f` is not proof of improvement.** Only performance on fresh problems shows whether a change helped;
+  parameters can change and help nothing, or help familiar tasks and hurt transfer. Attribution compares old and new
+  `θ_f` with the same knowledge, problems and budget.
+- **Feedback stays subjective.** The evaluator may know the true outcome; it never gives it to the mind (principle 11).
+  That leaves room for misplaced confidence, ambiguous feedback and unnoticed mistakes.
+- **Two confidences, both beliefs, both context-dependent:** confidence in an **answer** ("this negotiation probably
+  breaks down tomorrow", `q = P_mind(this prediction is correct | evidence)`) and confidence in a **method** ("this
+  approach usually helps with this kind of problem"). Method confidence can encourage recruiting an operation; answer
+  confidence can end checking early. Neither raises allocation automatically.
+- **Insufficient processing gives no definite conclusion.** Ti's output distinguishes **contradiction found**,
+  **consistency established within a stated scope**, and **unresolved** (the budget ran out). Without the third, a
+  shallow search would treat "I didn't find it" as "it isn't there", and deeper search would look like competence. The
+  same rule applies to every function.
+- **Costs are assumptions.** One Ti check and one Se comparison need not cost the same. A shared abstract budget with
+  operation-specific costs is a simulation convention: every cost is labelled estimate, and comparisons are repeated
+  under different plausible costs so the accounting never manufactures a function's advantage (Bud-Q1).
+- **V1 is unchanged; no generic competence multiplier is built.**
+
+**The developmental chains (replacing §4.6's cycle as a statement of mechanism):**
+`allocation → practice → learning (Δθ_f) → processing capability`, and separately
+`feedback → confidence → believed value of processing → future allocation`. Misleading positive feedback can make a
+mind confident in a poorly developed operation and recruit it more; discouraging feedback can make a capable mind avoid
+one. Both emerge from the same mechanisms.
+
+**A stopping rule (proposed; Stop-Q1):**
+
+```
+E_mind[ ΔU of the next available computation ] ≤ C_processing        stop processing
+```
+
+"The next computation" is one defined step (retrieve another precedent, examine another constraint, generate another
+arrangement); the estimate is bounded and approximate so that valuing thought does not become an unbounded problem of
+its own, and the cost includes time and opportunity (a useful thought can be too slow for the situation). It uses the
+mind's believed gain and cost, never the simulator's knowledge. The form is rational metareasoning's value of
+computation (Russell & Wefald 1991; Lieder & Griffiths 2017, keeper-added sources).
+
+**Keeper check (2026-11-01).**
+1. *Allocation becomes a budget: a real architectural change.* Today allocation weights the hooks; the baseline decides
+   in one pass with one-action lookahead (DESIGN §2.4, C-Q8) and has no processing budget anywhere. Inside V2 the budget
+   can live within each operation's hook call (Ti examines at most `b_Ti` constraint combinations), which keeps V2 to
+   existing hooks (§11.1). `B` itself has no source: **estimate** or **fiction**, with sensitivity runs; whether it later
+   reads fatigue or arousal (Reality's) is open (Bud-Q1).
+2. *The stopping rule is not a personality mechanism.* Deciding when to stop thinking is general cognition, so it needs
+   a core owner (the reserved `cognition.planning.lookahead` or a new decision row), with personality only reading it.
+   It is not part of the Ti experiment (Stop-Q1).
+3. *How confidence reaches allocation* needs a term the softmax does not yet have (the believed benefit of processing
+   with `f`, beside habit and motivation): Alloc-Q1.
+4. *Registry.* `cognition.personality.function_development` still writes `mind.function_competence` with the log form
+   and "competence feeds back into allocation"; under this architecture the mind's state is `θ_f` and competence is a
+   diagnostic, like the ledger. `cognition.personality.function_allocation` still shows `L_f`. Both are the Cognition
+   keeper's rows to update.
+5. *Boundary.* `θ_f` is a function's processing strategy across domains: not a belief (knowledge stays in the belief
+   store, so no duplicate memory), not a task skill (`cognition.skill.practice`), not intelligence (§4.4).
 
 ---
 
@@ -932,6 +1029,7 @@ execution records only and adds nothing to EU until Rex decides.
    by pair and inconsistent together. **Required:** Ti checks consistency of the whole set. Proposal: `C_Ti` counts the
    inconsistent subsets the mind finds up to a search depth; joint consistency is hard in general (satisfiability is
    NP-complete, Cook 1971), so the depth is bounded, and that depth is a natural Ti competence effect (§4.6) (Ti-Q1).
+   Its output has three values: contradiction found, consistency established within scope, unresolved (§4.7).
 3. **Fi's pair score is association, not evaluative compatibility.** `(pos − neg)/(n + 1)` over episodes containing both
    items measures learned co-occurrence. Two things can each be pleasant and still clash together, and a pair never
    experienced together scores zero. **Required:** association stays as evidence; the operation also needs compatibility
@@ -1404,6 +1502,27 @@ caused it. The ledger's masking (§11.5) attributes influence inside one run; ea
 one condition where the candidate mechanisms predict **different** outcomes (as §12.5's second arm does), or its result
 is reported as unattributed.
 
+### 12.7 The Ti proof-of-mechanism experiment (Rex, 2026-11-01; first, before the other seven functions)
+
+Does a simulated mind improve its contradiction detection through experience, rather than by getting more processing
+or memorising answers? Run in isolation; it does not replace the V2 Ti operation (versioning discipline).
+
+- **Operation:** `y_Ti = Run_Ti(X, L, θ_Ti, b_Ti)` returns a conclusion (contradiction found / consistency established
+  within scope / unresolved), the resources used and the evidence for the conclusion. `θ_Ti` is concrete: constraint
+  search order, which combinations are examined, how contradicting evidence is prioritised.
+- **Sequence:** baseline on unseen problems with fixed knowledge and budget; training with feedback that is accurate,
+  incomplete or misleading; transfer to new problems, including unfamiliar combinations of constraints; old against new
+  `θ_Ti` on identical problems, knowledge and budgets; the whole at several budgets, to separate better quality from more
+  computation.
+- **Varied separately:** knowledge, budget, training history, feedback accuracy.
+- **Measured:** correct detections, false contradiction reports, unresolved cases, resources used, transfer
+  performance, confidence before feedback.
+- **Never inferred:** improvement from a parameter change or from more practice alone. No generic multiplier.
+- **Held fixed:** habit (`h = 1`, `E_0 = 22`); no decay.
+- **Report** the exact operation, learning update and results before generalising to Se, Si, Ne, Ni, Te, Fe, Fi.
+- Why Ti first: its outputs can be checked against formally defined logic problems without settling subjective values
+  or social readings.
+
 ---
 
 ## 13. Results so far
@@ -1429,7 +1548,8 @@ to three measured behaviours, which is why the domain scenarios were designed.
 ### 13.3 Still to come
 
 S3 (built next on the lane), S2, S4, S5, S6, the V1 against V2 comparison, the knight test, the wardrobe test, the
-merchant experiment, the audience experiments, the Ni–Si transfer experiment (§12.5).
+merchant experiment, the audience experiments, the Ni–Si transfer experiment (§12.5), the Ti proof-of-mechanism
+experiment (§12.7, first).
 
 ---
 
@@ -1443,7 +1563,7 @@ it invalidates in the change log.
 | F1–F13 | V1 personality adjustments on the four hooks | §10.2 | V1 built, frozen |
 | `ω_f = (5 − i)/4`, `Δ = ρ_E − ρ_I` | V1 stack weights and attitude tilt | §4.2 | V1 built; crude |
 | `A_f = softmax(ln B + ln R + ln L + ln M)` | the light and the crystal | §4.3 | designed 2026-10-30; superseded for V2 by §4.5 |
-| `E_f`, `C_f = C_f,0 + k_f·log(1 + E_f)` | experience and competence over a life | §4.4 | designed; constants open (C-Q20) |
+| `E_f`, `C_f = C_f,0 + k_f·log(1 + E_f)` | experience and competence over a life | §4.4 | `E_f` kept as practice history; the log form superseded as a definition (§4.7), kept as a hypothesis |
 | `A^x_f`, `H_f`, `M_f`, `g_f` | V2 allocation: habit, motivation, competence as gain | §4.5 | built in `experimental/` (5443); `H_f` and `g_f` superseded by §4.6 |
 | `w_c`, `a_c`; ACT-R `B_e`, `P_retrieve` | attention and retrievability | §5.4 | attention and memory built; per-function cue weights open (C-Q17) |
 | `e_c = a_c·(1 + Σ A·g·enc)`, `τ_enc` | attention-weighted encoding | §5.5 | V2 designed (5450); `τ_enc` estimate |
@@ -1465,6 +1585,8 @@ it invalidates in the change log.
 | `Y_f = F_f(X, R, G, C)` | the common interface (orientation) | §2.2 | proposed architecture |
 | `H_f = 1 + h·(1 − e^(−E_f/E_0))` | saturating habit | §4.6 | adopted direction; queued (5463) with `h = 1`, `E_0 = 22` as estimates (H-Q1, H-Q2) |
 | competence effects per function; confidence as a belief | processing quality, not strength | §4.6 | adopted direction; equations open |
+| `b_f = A_f·B`; `y_f = Run_f(x, R, θ_f, b_f)`; `θ_f ← Learn_f`; `C_f(T, b) = Evaluate_f` | the competence architecture | §4.7 | adopted direction (Comp-Q1); algorithms open; `B` and costs estimates (Bud-Q1) |
+| `E_mind[ΔU next step] ≤ C_processing` | when to stop processing | §4.7 | proposed; needs a core owner (Stop-Q1) |
 | `P_self`, `{P(m|w,b)}` per listener | Fe audience interpretation | §6.4 | adopted direction (Fe-Q2) |
 | `C_Fe = Σ_b w_b·P(read as intended | b)` | Fe coherence as a number | §7.4 | proposed (Fe-Q1) |
 
@@ -1482,7 +1604,7 @@ Every open item that touches the function theory. "Whose" says who decides.
 | C-Q17 | The episode detail vector and the cue-type retrieval weights, and their sources | Rex, matrix |
 | C-Q19 | Whether Ne and Ni actively resolve meaning; Fi's "what it notices" | Rex |
 | C-Q20 | Sources and ranges for `k_f`, `C_f,0`, the form of `R_f` | Rex |
-| C-Q21 | Whether function experience decays without practice; separate from habit saturation (§4.6), which does not make a habit weaken | Rex |
+| C-Q21 | Whether function experience decays without practice; separate from habit saturation. Proposed (§4.6): history never decays; habit may weaken when a context recurs and another function is chosen, recorded apart from mere elapsed time; capability loss needs its own rule; not built yet | Rex |
 | C-Q23 | Which structure is the self-model behind Fi's identity term (keeper: beliefs for traits, identity nodes for memberships) | Rex |
 | C-Q24 | Coherence principles for Ni, Se and Ne; Ni's exact reference (outcome, causal model or pattern). Candidate answer for Ni: the relational pattern, with outcomes and causal models as its products (§3.4; Ni-Q1) | Rex |
 | C-Q27 | How coherence or Si match enters a decision. Designed in V2 (§7.4, §8.3); **reopened 2026-11-01**: the term adds value without a need. Keeper proposal: gate it to candidates that serve an active need, or act through belief | Rex |
@@ -1497,7 +1619,11 @@ Every open item that touches the function theory. "Whose" says who decides.
 | Cul-Q2 | What "the two do not overlap" means: different domains, or something else | Rex |
 | H-Q1 | How `E_f`'s units map onto Lally et al.'s daily repetitions, to set `E_0` | Rex; Cognition keeper drafts |
 | H-Q2 | The ceiling `h` on habit (no source) | Rex |
-| Comp-Q1 | Each function's competence effect as an equation (§4.6 table), and how confidence is learned | Rex; Cognition keeper drafts |
+| Comp-Q1 | The competence architecture. **Direction adopted 2026-11-01 (§4.7);** each function's `Run_f` and `Learn_f` open, Ti first (§12.7) | Rex; Cognition keeper drafts |
+| Bud-Q1 | The total budget `B` and each operation's cost (estimate or fiction, with sensitivity runs); whether `B` later reads fatigue or arousal (Reality) | Rex |
+| Stop-Q1 | The stopping rule's owner (core Cognition, not personality) and its bounded estimate | Rex; Cognition keeper |
+| Alloc-Q1 | How method confidence (the believed benefit of processing with `f`) enters allocation beside habit and motivation | Rex |
+| P9-T | A direct test that an inferior function can lead under the full allocation rule (principle 9) | Cognition keeper |
 | Coh-Q1 | The scale of the coherence and Si terms, from the stake of the need served instead of the candidate range | Rex |
 | Ti-Q1 | Whole-set consistency for Ti, with a bounded search depth as Ti competence | Rex |
 | Fi-Q1 | Fi compatibility over feature pairs plus the identity term, with association as evidence only | Rex |
@@ -1529,3 +1655,4 @@ Every open item that touches the function theory. "Whose" says who decides.
 | 2026-11-01 | Cognition keeper's reply recorded: 5444 narrowed (coherence scores as execution records, no EU term until C-Q27 is decided); 5445 keeps the positive-only match (Si-Q1 open); 5459 amends DESIGN.md to match §4.4, §5.1, §2.2 and the reopened items (§7.4, §11.7). |
 | 2026-11-01 | **Second paste:** review round by several AIs (a five-point formula reviewer, Venice on Ni, a reviewer proposing a Ti/Fi split, a mathematical reviewer's ten-item list as summarised by ChatGPT, a checker's verification, ChatGPT's syntheses); Rex: alter by the consensus. **Adopted as Rex's direction (consensus):** the revision standard (header); saturating habit replacing linear habit, decay kept separate (§4.6); competence as processing quality, confidence as a belief (§4.6); Fe keeps a per-listener map and leaves expression to response selection (§6.4). **Recorded as verified defects, forms open:** coherence scale `s` depends on irrelevant alternatives (§7.4, also §8.3); Ti pairwise misses three-way contradictions; Fi pair score is association; `C_Fe` type mismatch; Si matching narrowed to own-role conformity (§8.3); Ni objective self-validating; group prior invalid under overlap (§9.3); round/clip/encoding artifacts (§11.4); §12.5 confounded with encoding; identifiability (§12.6). **Keeper checks that disagreed with a reviewer:** Fe product cannot go undefined with Dirichlet smoothing; Ni's priority is representable through `B_f` (crude, C-Q10); V1's Ni in S1 is not exercised, not a negative; Ni-Q5 resolves without amending principle 10 if `M*` stays in learning. Superseded in place: §4.5 `H_f` and `g_f`; §6.4 pooling. Units affected: 5443 (built forms), 5445, 5446, 5447–5450; Cognition keeper told. New questions H-Q1–Q2, Comp-Q1, Coh-Q1, Ti-Q1, Fi-Q1, Fe-Q1–Q2, Si-Q2, Ni-Q5, Num-Q1. |
 | 2026-11-01 | Cognition keeper's application of 7cd2d0b recorded: 5463 saturating habit (`h = 1`, `E_0 = 22`, estimates) and `g_f` removed; 5446 redrafted as the Fe audience map; 5447–5450 without `g`, Num-Q1 ruled; 5444 and 5445 held until Rex rules; 5464 records it in DESIGN §22.7 (§4.6, §11.4, §11.7, §14, §15). |
+| 2026-11-01 | **Third paste:** Rex's review conversation on line item 1 (competence), ChatGPT and a second reviewer. **Adopted as Rex's direction:** the competence architecture (§4.7): allocation as a budget, the operation `Run_f`, learned parameters `θ_f`, competence measured outside the mind as a profile over tasks and budgets; quality and efficiency separate; knowledge separate from capability; answer and method confidence as beliefs; Ti's three outcomes; costs as labelled assumptions; the Ti proof-of-mechanism experiment first (§12.7); habit constants provisional and fixed, no decay yet (§4.6). **Changed:** §4.4's log competence form superseded as a definition, kept as a hypothesis; §4.6's competence table replaced by the reviewers' operational tests; §4.6 confidence and disuse refined; §7.4 Ti outcomes. **Flagged:** allocation-as-budget is new to the engine (no budget exists; the baseline decides in one pass), so inside V2 the budget lives in each hook call (Bud-Q1); the stopping rule is general cognition and needs a core owner, not personality (Stop-Q1); confidence needs a term to reach allocation (Alloc-Q1); registry rows `function_development` and `function_allocation` still carry the log form, competence feedback and `L_f`; principle 9 needs a direct test (P9-T). Recorded as Rex's adopted direction from this paste; the paste's own note that 'approved' is Rex's word stands, so he may overrule. |
