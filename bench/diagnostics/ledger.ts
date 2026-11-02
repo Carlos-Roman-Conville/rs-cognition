@@ -2,7 +2,7 @@ import { canonical } from "@rex/kernel";
 import type { CognitiveFunction } from "../../src/index.ts";
 import type { EpochLog } from "../scenarios/s1-forage/world.ts";
 import { adapter, ablatedOutput, DOMAIN, FUNCTIONS, HOOKS, hookContexts, rerunAblation } from "./ablation.ts";
-import type { Ablation, Hook, Run } from "./ablation.ts";
+import type { Ablation, Hook, Run, DiagnosticEpoch } from "./ablation.ts";
 
 export type LedgerLevel = "summary" | "detailed";
 export type Eligibility = "activated" | "eligible-not-activated" | "no-relevant-input";
@@ -60,7 +60,7 @@ function recordTotals(record: LedgerRecord): Totals {
 /** DESIGN diagnostics §1: margin of the BASE chosen action against its strongest competitor.
  * Missing action or competitor has no finite comparable margin: return null, never substitute zero.
  */
-export function margin(row: EpochLog, chosen: LedgerRecord["chosenAction"]): number | null {
+export function margin(row: DiagnosticEpoch, chosen: LedgerRecord["chosenAction"]): number | null {
   const same = (candidate: LedgerRecord["chosenAction"]) => candidate.action === chosen.action && candidate.target === chosen.target;
   const value = row.trace.evaluation.find(same);
   const others = row.trace.evaluation.filter((candidate) => !same(candidate));
@@ -76,7 +76,7 @@ function numericDeltas(base: unknown, other: unknown): Record<string, number> {
 /** Same-input local ablation establishes activation; full reruns establish trajectory influence.
  * Comparing divergent rerun hook inputs would incorrectly count downstream changes as activation.
  */
-export function localRecord(row: EpochLog, ablate: ReturnType<typeof adapter>, disabled: Ablation): LedgerRecord {
+export function localRecord(row: DiagnosticEpoch, ablate: ReturnType<typeof adapter>, disabled: Ablation): LedgerRecord {
   const contexts = hookContexts(row), formulas = new Set<string>();
   let changedHookCalls = 0, attentionMoved = 0, parameterMagnitude = 0;
   const interpretationDeltas: Record<string, number> = {};
@@ -132,8 +132,9 @@ export function localRecord(row: EpochLog, ablate: ReturnType<typeof adapter>, d
     learningContribution, deltaU: null, chosenAction: { action: row.intention.action, target: row.intention.target }, laterLearning: row.trace.learning.updates };
 }
 
-export function buildLedger(run: Run, level: LedgerLevel = "summary", execute = rerunAblation): Ledger {
-  if (!run.hostInputLog.length) throw new Error("Ledger needs a completed S1 run");
+export type DiagnosticRun = Pick<Run, "scenario" | "seed" | "configuration"> & { hostInputLog: readonly DiagnosticEpoch[] };
+export function buildLedger<T extends DiagnosticRun>(run: T, level: LedgerLevel = "summary", execute: (run: T, disabled: Ablation) => DiagnosticRun = (run, disabled) => rerunAblation(run as unknown as Run, disabled)): Ledger {
+  if (!run.hostInputLog.length) throw new Error("Ledger needs a completed scenario run");
   const ledger: Ledger = { schema: "function-ledger/v1", scenario: run.scenario, seed: run.seed, configuration: run.configuration,
     method: "FL-1/formula-group-ablation", limitations: ["Shared formula groups overlap; function totals are not additive causal shares.",
       "Observation deltas describe the base trajectory, not independent causal shares; learning contribution is domain KL, not developmental E_f.",

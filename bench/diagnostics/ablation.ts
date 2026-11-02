@@ -79,7 +79,8 @@ export function adapter(configuration: Configuration, disabled: Ablation) {
 }
 
 /** Reconstruct only subjective context already in the S1 trace, in hook-call order. */
-export function hookContexts(row: EpochLog): V1Context[] {
+export type DiagnosticEpoch = Pick<EpochLog, "mind" | "epoch" | "intention" | "trace"> & { cues: readonly { cue: string; domain: Domain; tags: string[] }[] };
+export function hookContexts(row: DiagnosticEpoch): V1Context[] {
   const cues = Object.fromEntries(row.cues.map((cue) => [cue.cue, {
     domain: cue.domain, physical: cue.tags.includes("physical"), present: cue.tags.includes("present"),
   }]));
@@ -88,7 +89,7 @@ export function hookContexts(row: EpochLog): V1Context[] {
     if (call.hook !== "interpret" || sensory >= row.trace.interpretation.length) return { cues };
     const id = row.trace.interpretation[sensory++].cue;
     const tags = row.cues.find((cue) => cue.cue === id)?.tags ?? [];
-    return { cues, targeted: tags.includes("targeted"), present: tags.includes("present") };
+    return { cues, targeted: tags.includes("targeted"), present: tags.includes("present"), testimony: tags.includes("procedural") };
   });
 }
 

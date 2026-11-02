@@ -37,7 +37,7 @@ export function behaviorMetrics(patches: readonly Patch[], initialPosition: stri
     foodGathered: food, counts: { gathers, inspectedGathers, visits, novelVisits, returnOpportunities, bestReturns } };
 }
 
-export function traceMetrics(rows: readonly EpochLog[]) {
+export function traceMetrics(rows: readonly Pick<EpochLog, "trace">[]) {
   const hooks = Object.fromEntries(["pertinence", "interpret", "generate", "learning"].map((hook) => [hook,
     { calls: 0, changedCalls: 0, changedParameters: {} as Record<string, number> }]));
   let changedCueShares = 0;
