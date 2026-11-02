@@ -641,6 +641,9 @@ H_f = 1 + h · (1 − exp(−E_f / E_0))
   **researched** (Lally et al. 2010: an asymptotic curve; median 66 days to reach 95 % of the plateau, range 18 to 254,
   in daily repetitions). How `E_f`'s units (allocation × relevance × time) map onto repetitions is open (H-Q1); `h` has
   no source (H-Q2).
+- **Values the Cognition keeper set for unit 5463 (estimates, 2026-11-01):** `h = 1`, so habit can at most double a
+  function's weight against another's; `E_0 = 22`, which puts 95 % of the plateau at `3·E_0 = 66`, Lally's median,
+  read as if one unit of `E_f` were one daily repetition (that reading is H-Q1). Both stay Rex's to set.
 - **Saturation is not decay.** A deep habit still does not weaken with disuse under this form; that stays C-Q21, a
   separate learning-and-forgetting rule. Lifetime experience `E_f` still feeds competence even when habit changes.
 
@@ -1295,6 +1298,10 @@ quality instead of its strength. 5443 built the §4.5 forms; they are superseded
   §4.6 the gain leaves these terms, which removes most of it.
 - Encoding may count attention twice: `a_c` is already reweighted by the attention allocation, and `e_c` multiplies by
   `A^att` again (§5.5). To check when unit 5450 is drafted.
+- **Cognition keeper's rulings (2026-11-01, Num-Q1):** Te and Ne add the expected count `2·A` rounded stochastically
+  from a seeded stream; Se uses `ψ = A^att` (no gain, no clip above 1 since `A ≤ 1`); encoding counts attention once,
+  because V2 sets no pertinence weights, and a test checks `a_c` is untouched. The multiplier 2 and the form of `ψ`
+  remain estimates.
 
 ### 11.5 The ledger for V2
 
@@ -1309,13 +1316,14 @@ changes and what it learns, to test the orientation principle (§2.2) against th
 
 ### 11.7 Build state
 
-As of 2026-11-01 (Cognition repo log): landed are 5441 (the §22 correction, b460f15), 5442 (the optional engine hook
-points with identity defaults, 63823f9) and 5443 (the V2 package in `experimental/personality-v2/` and
-experience-dependent allocation, §4.5, 98a3046). Queued: 5444 Ti/Fi coherence scores as execution records only (the
-C-Q27 term held, §7.4), 5445 Si with the positive-only match (prohibited features proposed, §8.3), 5459 the DESIGN.md
-amendment (§19 superseded route, §16 "leads", the orientation principle in §22, C-Q27, Si-Q1, Ni-Q1), 5446 Fe, 5447 Te, 5448 Ne, 5449 Se, 5450 encoding, 5451 ledger and the
-V1/V2 comparison, 5452 isolation tests. The operations are not built until their units land. §3.9 is a first step toward
-§11.6's map.
+As of 2026-11-01 (Cognition keeper's report after the review consensus): **landed** 5441 (the §22 correction,
+b460f15), 5442 (the optional engine hook points, 63823f9) and 5443 (the V2 package in `experimental/personality-v2/`
+with §4.5's allocation, 98a3046). **Queued:** 5459 (DESIGN.md amendment), 5463 (saturating habit, `g_f` removed from
+every operation, competence recorded only), 5446 (Fe as the audience map, §6.4), 5447 Te, 5448 Ne, 5449 Se and 5450
+encoding (all without `g`; Num-Q1 rulings below), 5451 ledger and the V1/V2 comparison, 5452 isolation tests, 5464
+(DESIGN §22.7 recording these changes). **Held, out of the queue until Rex rules:** 5444 Ti/Fi coherence (Ti-Q1,
+Fi-Q1, Fe-Q1, Coh-Q1, C-Q27) and 5445 Si (Si-Q1, Si-Q2, Coh-Q1). The operations are not built until their units land.
+§3.9 is a first step toward §11.6's map.
 
 ---
 
@@ -1455,7 +1463,7 @@ it invalidates in the change log.
 | `D_i(L)`, `V_i(L)`, `w_c` | identity mismatch and semantic variability | §9.4 | designed diagnostics |
 | `tolerance = σ(β·(max EU(turn) − EU(leave)))` | conversation tolerance | §9.5 | built |
 | `Y_f = F_f(X, R, G, C)` | the common interface (orientation) | §2.2 | proposed architecture |
-| `H_f = 1 + h·(1 − e^(−E_f/E_0))` | saturating habit | §4.6 | adopted direction 2026-11-01; `h`, `E_0` estimates (H-Q1, H-Q2) |
+| `H_f = 1 + h·(1 − e^(−E_f/E_0))` | saturating habit | §4.6 | adopted direction; queued (5463) with `h = 1`, `E_0 = 22` as estimates (H-Q1, H-Q2) |
 | competence effects per function; confidence as a belief | processing quality, not strength | §4.6 | adopted direction; equations open |
 | `P_self`, `{P(m|w,b)}` per listener | Fe audience interpretation | §6.4 | adopted direction (Fe-Q2) |
 | `C_Fe = Σ_b w_b·P(read as intended | b)` | Fe coherence as a number | §7.4 | proposed (Fe-Q1) |
@@ -1497,7 +1505,7 @@ Every open item that touches the function theory. "Whose" says who decides.
 | Fe-Q2 | Confirm Fe keeps its own reading and a per-listener map, and expression is ordinary response selection (replaces the §6.4 pooling) | Rex |
 | Si-Q2 | General matching (own actions, others' behaviour, objects) as evidence; role authority as one use | Rex |
 | Ni-Q5 | Ni's objective only in learning, never in decision (principle 10 kept), or a motivational anchor | Rex |
-| Num-Q1 | Smooth `k` counts, clipping, possible double attention in encoding (§11.4) | Cognition keeper; Rex if a constant |
+| Num-Q1 | Smooth `k` counts, clipping, possible double attention in encoding (§11.4) | **ruled by the Cognition keeper 2026-11-01** (§11.4); Rex may replace the estimates |
 | C-Q28 | The form of motivational modulation `M_f` | **proposed in V2** (§4.5); Rex may replace |
 | Te-Q1 | Does Te keep its measures fixed while reconfiguring, or change measures when another serves the objective better? | Rex |
 | Ori-Q1 | Where an extraverted function's objective comes from (axis partner, group, need, task), compatible with "personality never sets a goal" | Rex |
@@ -1520,3 +1528,4 @@ Every open item that touches the function theory. "Whose" says who decides.
 | 2026-11-01 | **First paste to the Function design keeper:** ChatGPT's Ni proposal, Gemini (two answers) and Venice reviews, ChatGPT's assessment of the reviews; Rex's Se and aura observation with ChatGPT's reply; ChatGPT's review of this document. **Came in and was recorded:** Ni as relational integration, with the graph, the objective, apophenia, rigidity as a consequence to test, the Ni–Ti boundary and what was not adopted (§3.4); Se as the present observable state and the Se–Ni axis (§3.1); aura and cultural valuation (§9.9); the Ni–Si transfer experiment (§12.5). **Changed:** two status markers and a rule against silent rewrites (header); the domain-pair and axis-pair distinction (§2.1); the orientation principle's status (§2.2, it is recorded in ENGINES); §4.3 and §4.4 marked superseded for V2 by §4.5, with the indirect route by which competence still reaches allocation; §5.1 stage roles read as leading, not exclusive; §7 and §7.3 retitled (coherence is not judging-only); §11.7 build state corrected (5441–5443 landed); new §3.9 derivation table and §14 equation inventory; open questions renumbered §15, this log §16. **Flagged:** C-Q27 reopened (the coherence term adds value without a need; keeper proposal to gate it); Si's match does not penalise forbidden features (half the review's point; keeper proposal Si-Q1); Ni's graph must live in the belief store and its rigidity must not reuse shared belief inertia (§3.4 check); `λ`, `γ`, `w_ab` have no values; Rex's one-pair-per-culture rule against the paste's learned-distribution form (Cul-Q1, touches Society). **Not adopted, as the paste itself concluded:** Gemini's claims that rigidity is explained and that Ni is more visionary or accurate; Venice's "structure mapping renamed". New open items Ni-Q1–Q4, Se-Q1–Q2, Si-Q1, Cul-Q1–Q2. |
 | 2026-11-01 | Cognition keeper's reply recorded: 5444 narrowed (coherence scores as execution records, no EU term until C-Q27 is decided); 5445 keeps the positive-only match (Si-Q1 open); 5459 amends DESIGN.md to match §4.4, §5.1, §2.2 and the reopened items (§7.4, §11.7). |
 | 2026-11-01 | **Second paste:** review round by several AIs (a five-point formula reviewer, Venice on Ni, a reviewer proposing a Ti/Fi split, a mathematical reviewer's ten-item list as summarised by ChatGPT, a checker's verification, ChatGPT's syntheses); Rex: alter by the consensus. **Adopted as Rex's direction (consensus):** the revision standard (header); saturating habit replacing linear habit, decay kept separate (§4.6); competence as processing quality, confidence as a belief (§4.6); Fe keeps a per-listener map and leaves expression to response selection (§6.4). **Recorded as verified defects, forms open:** coherence scale `s` depends on irrelevant alternatives (§7.4, also §8.3); Ti pairwise misses three-way contradictions; Fi pair score is association; `C_Fe` type mismatch; Si matching narrowed to own-role conformity (§8.3); Ni objective self-validating; group prior invalid under overlap (§9.3); round/clip/encoding artifacts (§11.4); §12.5 confounded with encoding; identifiability (§12.6). **Keeper checks that disagreed with a reviewer:** Fe product cannot go undefined with Dirichlet smoothing; Ni's priority is representable through `B_f` (crude, C-Q10); V1's Ni in S1 is not exercised, not a negative; Ni-Q5 resolves without amending principle 10 if `M*` stays in learning. Superseded in place: §4.5 `H_f` and `g_f`; §6.4 pooling. Units affected: 5443 (built forms), 5445, 5446, 5447–5450; Cognition keeper told. New questions H-Q1–Q2, Comp-Q1, Coh-Q1, Ti-Q1, Fi-Q1, Fe-Q1–Q2, Si-Q2, Ni-Q5, Num-Q1. |
+| 2026-11-01 | Cognition keeper's application of 7cd2d0b recorded: 5463 saturating habit (`h = 1`, `E_0 = 22`, estimates) and `g_f` removed; 5446 redrafted as the Fe audience map; 5447–5450 without `g`, Num-Q1 ruled; 5444 and 5445 held until Rex rules; 5464 records it in DESIGN §22.7 (§4.6, §11.4, §11.7, §14, §15). |
