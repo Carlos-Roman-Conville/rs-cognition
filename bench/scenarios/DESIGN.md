@@ -330,3 +330,18 @@ A stack effect that also appears under a control is reported as not attributable
 - **Configurations.** Null, the sixteen V1 stacks, the sixteen V2 stacks (once units 5426–5432 land; until then
   V1 only), and the two controls. 200 seeds.
 - **Thresholds.** §10.1's defaults.
+
+### 10.5 Clarification: what counts as a function's own opportunity (2026-11-02, before any S3 result)
+
+The S1 addendum (§10.2) found that V1's ledger gives every function group input on about a quarter of opportunities.
+That input comes through the shared attitude formulas F1, F2 and F3, which apply the stack's tilt `Δ` to shared
+parameters (`η`, `α0`, `λ`, pertinence flattening) for every function at once. Under Rex's principle (2026-11-02), a
+shared-parameter change never counts as a function's own operation. So, for every scenario from S3 onwards, and for a
+second S1 addendum:
+- **A function's own opportunity** is an opportunity where input reaches a formula owned by that function alone
+  (V1: F4 to F13 by their named function; V2: the function's own operation, §22.4 of DESIGN.md).
+- **Shared formulas F1 to F3** are reported in a separate row, "shared attitude (F1–F3)". Their opportunities never
+  count toward any single function's `o_f`.
+- `θ_ex`, `θ_s` and `α` are unchanged.
+This is a correction of the opportunity definition, dated before S3's results were examined, not a change of
+threshold. The first S1 addendum stays as recorded, with its noted discrepancy.
