@@ -1244,7 +1244,8 @@ protesters: the violence, the people, what is literally happening), reading it m
 and Ne weight other features (logistics, possibilities, what it implies). Attaches to §2.1 attention and §14.1
 attention.
 2. **Encoding: the introverted function.** The filtered data is processed into the mind's internal format (§14.1
-encoding).
+encoding). Read as: the introverted function **leads** encoding; every function's encoding weights apply, weighted by
+allocation (§16.4, §22.4).
 3. **Chemical response.** That interpretation triggers the body's chemistry (Reality's neurology and endocrine layer,
 read through §8's ports; Cognition never computes the chemistry).
 4. **Re-interpretation.** The body state is read again, externally (how it makes you react) and internally (how it
@@ -1583,6 +1584,9 @@ built.
 - **Feedback (Rex):** competence feeds back into future allocation (it is the `L_f` term of §9's `A_f(t)`), so two
   people with one hierarchy diverge by environment: an ESTP raised on abstract planning develops more Ni facility than one
   rewarded for immediate action. **The baseline `B_f` never changes.**
+  **For V2, §22.3 supersedes the `L_f` route (2026-11-02):** competence never enters allocation; it scales execution
+  (`g_f`). It can still raise allocation indirectly: competence → more successful outcomes → beliefs about success →
+  more relevant situations → `E_f` → `H_f`.
 - **Invariant (Rex):** cognitive competence ≠ domain knowledge ≠ learned skill ≠ intelligence. A developed Ti with little
   mathematics, or much mathematics reached by other strategies, are both possible. Development never substitutes for the
   learning system (§2.5, beliefs and episodes) or the skill system (reserved `cognition.skill.practice`, `mind.skill`;
@@ -1885,6 +1889,12 @@ isolation, without waiting for V1's scenarios.
 - **Constants.** Every V2 constant is `estimate` with `sourced: false` unless cited, and is never tuned to separate
   stacks.
 
+**The orientation principle (Rex, 2026-11-02; ENGINES.md; FUNCTION-DESIGN.md §2.2).** Introverted functions
+organise information against an internally maintained reference. Extraverted functions adapt to changing external
+conditions in pursuit of an operative objective. Fixed and fluid describe what an operation prioritises, never
+whether it learns. V2's operations are read against it; FUNCTION-DESIGN.md §11.6 holds the mapping. Personality
+still sets no goal: an extraverted function's objective is the mind's own need or goal.
+
 ### 22.3 Allocation with experience and competence (resolves the L_f and M_f placeholders)
 
 ```
@@ -1916,7 +1926,7 @@ writes an execution record (§22.5).
 |---|---|---|---|
 | **Ti** (coherence, conceptual criterion) | `evaluationTerms` | `C_Ti(X) = Σ_i w_i·fit(x_i) + Σ_{i<j} v_ij·compat_Ti(x_i, x_j)`, where `compat_Ti` is the mind's belief that the two items' claims are not contradictory (beliefs about incompatibility, §2.3) | the same items under Ti and Fi criteria give different scores; a believed contradiction lowers `C_Ti` and leaves `C_Fi` unchanged |
 | **Fi** (coherence, evaluative criterion) | `evaluationTerms` | the same sum, with `fit(x)` = the mean valence of the mind's episodes containing feature x, and `compat_Fi` = the valence of the episodes containing both, (pos − neg)/(n + 1) | an incompatible pair learned from negative episodes lowers `C_Fi`; the identity term waits on C-Q23 |
-| **C-Q27, resolved** | `evaluationTerms` | for a composition candidate `a` with items `X_a`, `EU'(a) = EU(a) + Σ_f A^eval_f · g_f · s · tanh(C_f(X_a) / n_pairs)`, with `s = 0.25 × (max EU − min EU)` over the current decision's candidates (estimate; self-scaled, deterministic) | with the term masked, EU equals the base exactly; with it, a coherent composition gains EU in proportion to `A·g` |
+| **C-Q27, reopened 2026-11-02 (not built)** | `evaluationTerms` | for a composition candidate `a` with items `X_a`, `EU'(a) = EU(a) + Σ_f A^eval_f · g_f · s · tanh(C_f(X_a) / n_pairs)`, with `s = 0.25 × (max EU − min EU)` over the current decision's candidates (estimate; self-scaled, deterministic) | with the term masked, EU equals the base exactly; with it, a coherent composition gains EU in proportion to `A·g` |
 | **Si** (reference matching) | `evaluationTerms` | `match(a, R) = Σ_x P(x ∈ R)·[x ∈ a] / Σ_x P(x ∈ R)` over the reference's feature beliefs; the term enters as above with `C = match − ½`, weighted by authority `A_i = P(the role applies to me) × p_relatedness` (the mind's own beliefs and need priority; never a personality goal) | an action with the reference's features gains EU only when the role belief and the relatedness priority are nonzero |
 | **Si reference update (resolved)** | none (existing §2.3) | each feature belief `(role r, feature:x)` updates by §2.3 from observed exemplars labelled r performing or omitting x (a categorical observation with perception's `q`) and from testimony; the auxiliary acts only through its interpret contribution (`η`) | observing knights who omit x lowers `P(x ∈ R)` and the match of actions with x |
 | **Fe** (contextual semantic modification) | `meaningSelection` | `P'(m) ∝ P(m | w, b*)^(1−φ) · Π_{b ∈ audience} P(m | w, b)^(φ/|audience|)`, with `φ = min(1, A^eval_Fe · g_Fe · φ_0)` and `φ_0 = 0.5` (estimate) | the same pool and speaker give a resolved meaning that shifts with the audience present only when Fe executes |
@@ -1926,6 +1936,13 @@ writes an execution record (§22.5).
 | **Ni** | none | **open** (§22.6) | none |
 | **Allocation** | none (V2 internal) | §22.3 | rising `E_f` raises `H_f` and `A_f`; different `C_f` with equal `E_f` changes `g_f` only, never `A_f` |
 | **Encoding (priority 6)** | `encoding` | each episode stores its cue features with strength `e_c = a_c · (1 + Σ_f A^att_f · g_f · enc_{f, dim(c)})`; context features with `e_c < τ_enc = 0.1` (estimate) are not stored, so the experience counts (§2.3) condition only on stored features; `enc` weights from §16.2 (Si physical, Fi valence, Ti structural, Fe social), and Ni's pattern dimension stays open | two configurations given one experience store different features and later predict differently in a context that differs in a feature only one of them stored |
+
+**C-Q27 reopened (2026-11-02, raised by the Function design keeper).** The coherence term above adds value whether or
+not a candidate serves a need, so it acts as a personality-given preference, against the rule that personality
+never touches needs or goals. It is not built: unit 5444 writes the Ti and Fi scores as execution records only.
+There are two candidate repairs, for Rex: apply the term only among candidates that serve an active need or goal,
+or let coherence act through belief, so that an incoherent plan is believed less likely to succeed. The Si term
+below has the same open status for its entry into EU, and Si-Q1 (§22.6) is open as well.
 
 The four new engine hook points (`evaluationTerms`, `meaningSelection`, `preconditionEvidence`, `encoding`) default
 to identity. The null model and V1 never use them.
@@ -1950,6 +1967,12 @@ them. A change in them appears only under "shared parameters".
   the given profiles, and retrieval is unchanged.
 - **C-Q20 and C-Q21:** the sources and ranges for `k_f` and `C_f,0`, and whether experience decays without practice.
 - **C-Q28, closed by §22.3:** the form of `M_f` (Rex may replace it).
+- **C-Q27, reopened:** how coherence (and the Si match) enters a decision without acting as a preference (see §22.4).
+- **Si-Q1:** whether a reference also holds prohibited features `R̄`, giving a match in [−1, 1] that penalises them.
+  Unit 5445 builds the positive-only match until Rex rules.
+- **Ni-Q1:** Ni as relational integration (FUNCTION-DESIGN.md §3.4). Not for building yet. If adopted, its graph is
+  relation beliefs in the one belief store (as `cognition.belief.system_formation` is registered), and its rigidity
+  must not reuse `α0`, `η` or attribution as Ni's own effect.
 - **Every `estimate`** in §22.3 and §22.4 (`s`, `φ_0`, the `k` multipliers, `τ_enc`, the habit and motivation forms).
   The values are Rex's to accept or set.
 
@@ -2001,3 +2024,4 @@ Tye 2019, *Nature Neuroscience* 22; Rubin & Wenzel 1996, *Psychological Review* 
 | 2026-11-01 | §5.1 communication build recorded (released by the controller; message format, comprehend with two-level Dirichlet meaning selection, testimony mixture, fit and reconstruction, equivocation cue, bubble exposure split, credibility settlement, persuasion read-out, encode, conversation state, tolerance as the stay-versus-leave selection probability; no new row) (unit 5324). |
 | 2026-11-01 | §22 Personality V2 recorded (Rex: V1 immutable, V2 built now in isolation; per-function contributions weighted by two softmax allocations; development measured, not fed back; five priorities with explicit gaps; comparison protocol; C-Q27, C-Q28 open) (unit 5426). |
 | 2026-11-02 | §22 corrected after Rex's audit of 49fb5fb: V2 designed, not built; operations as executable transformations with tests; allocation with usage habit, motivation and competence as execution gain (L_f, M_f placeholders removed); C-Q27 resolved as an evaluation term; Si reference update; ledger allocation / execution / influence; attention-weighted encoding; Ni open (unit 5441). |
+| 2026-11-02 | DESIGN amendments from the Function design keeper's review: C-Q27 reopened (5444 builds coherence scores as records only), §19 competence route superseded for V2, §16 stage 2 read as "leads", the orientation principle noted in §22, Si-Q1 and Ni-Q1 open (unit 5459). |
