@@ -11,7 +11,7 @@ import { observeMemory, policy } from "./policy.ts";
 import type { ObservationTrace } from "./policy.ts";
 import type { SelectionTrace } from "./select.ts";
 import { DEFAULT_COGNITIVE_PARAMS } from "./types.ts";
-import type { CognitiveParams, Episode, Intention, MemoryState, NeedState, Observation } from "./types.ts";
+import type { CognitiveParams, DecisionRecord, Episode, Intention, MemoryState, NeedState, Observation } from "./types.ts";
 
 export interface MindConfig {
   readonly communication?: import("./communication/types.ts").CommunicationDecision;
@@ -48,6 +48,8 @@ export interface Mind extends MindInput {
   readonly current?: Intention;
   readonly intentions: readonly PendingIntention[];
   readonly decisions: readonly SelectionTrace[];
+  /** Latest applied outcome since the previous decide; persisted for snapshot/replay. */
+  readonly lastOutcomeEvent?: string;
   readonly learning: readonly LearningTrace[];
 }
 
@@ -81,6 +83,7 @@ export type MindCommand =
       readonly intention?: string; readonly t: SimTime; readonly feedback: OutcomeFeedback };
 
 export type CognitionEmission =
+  | { readonly type: "cognition.decision"; readonly payload: DecisionRecord; readonly cause?: string }
   | { readonly type: "cognition.intention"; readonly payload: Intention }
   | { readonly type: "cognition.attribution"; readonly payload: LearningTrace; readonly cause: string };
 export interface MindResult { readonly state: MindsState; readonly events: CognitionEmission[]; readonly added?: string; readonly observationTrace?: ObservationTrace; readonly message?: import("./communication/types.ts").Message }
@@ -206,7 +209,22 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       counters = selected.counters;
       streamState = random.state();
       const fresh = selected.intention.id !== mind.current?.id;
+      // M1a-27: project only selected.trace; no evaluation, world reads or random draws.
+      const trace = selected.trace;
+      events.push({ type: "cognition.decision", payload: {
+        mind: trace.mind, t: trace.t,
+        needs: trace.needs.needs.map(({ definition, deficit, priority }) => ({ id: definition.id, deficit, priority })),
+        candidates: trace.candidates.map(({ candidate, expectedOutcomes, expectedUtility, probability }) => ({
+          action: candidate.action, ...(candidate.target === undefined ? {} : { target: candidate.target }),
+          pHat: structuredClone(expectedOutcomes), eu: expectedUtility, p: probability,
+        })),
+        ineligible: (trace.ineligible ?? []).map(({ candidate, reason }) => ({
+          action: candidate.action, ...(candidate.target === undefined ? {} : { target: candidate.target }), reason,
+        })),
+        intention: qualify("cognition", trace.intention.id), kept: trace.commitment.kept,
+      }, ...(mind.lastOutcomeEvent === undefined ? {} : { cause: mind.lastOutcomeEvent }) });
       mind = { ...mind, context, capacityFunctional, current: selected.intention,
+        lastOutcomeEvent: undefined,
         memory: selected.next,
         decisions: [...mind.decisions, selected.trace], intentions: fresh
           ? [...mind.intentions, { intention: selected.intention, trace: selected.trace }] : mind.intentions };
@@ -226,6 +244,7 @@ export function reduceMinds(state: MindsState, command: MindCommand, configs: Mi
       counters = learned.counters;
       const intention: Intention = { ...pending.intention, status: command.feedback.status ?? "completed" };
       mind = { ...mind, memory: learned.next, learning: [...mind.learning, learned.trace],
+        lastOutcomeEvent: command.event,
         current: mind.current?.id === intention.id ? intention : mind.current,
         intentions: mind.intentions.map((record) => record === pending ? { ...record, intention, outcomeEvent: command.event } : record) };
       events.push({ type: "cognition.attribution", payload: learned.trace, cause: command.event });

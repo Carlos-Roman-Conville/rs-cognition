@@ -48,7 +48,7 @@ describe("cognition.tick (DESIGN §4, §7; kernel DESIGN §2.3, §8)", () => {
   it("runs in default cognition/host phase order, resolves event causes and learns on the next epoch", () => {
     const { scheduler, runner, bus, process } = setup();
     scheduler.runUntil(1000);
-    const first = bus.since();
+    const first = bus.since().filter((event) => event.type !== "cognition.decision");
     expect(first.map((event) => event.type)).toEqual(["cognition.intention", "cognition.intention", "toy.outcome", "toy.outcome"]);
     expect(first[2].cause).toBe(first[0].id);
     expect(runner.state.minds.every((mind) => mind.memory.episodes.length === 0)).toBe(true);
@@ -57,7 +57,7 @@ describe("cognition.tick (DESIGN §4, §7; kernel DESIGN §2.3, §8)", () => {
     expect(runner.state.ignoredOutcomes).toEqual([]);
     const attributions = bus.since().filter((event) => event.type === "cognition.attribution");
     expect(attributions.map((event) => event.cause)).toEqual(first.slice(2).map((event) => event.id));
-    expect(process.state().cursor).toBe(4);
+    expect(bus.since().slice(0, process.state().cursor).filter((event) => event.type !== "cognition.decision")).toHaveLength(4);
     expect(process.state().intentions.map((entry) => entry.event)).toEqual(first.slice(0, 2).map((event) => event.id));
     expect(attributions[0].payload).toMatchObject({ attributedCause: "generosity" });
   });
@@ -106,14 +106,14 @@ describe("cognition.tick (DESIGN §4, §7; kernel DESIGN §2.3, §8)", () => {
   it("advances past unrelated events and never learns twice from duplicate outcomes", () => {
     const { scheduler, bus, runner, process, decoded } = setup(1);
     scheduler.runUntil(1000);
-    const intention = bus.since()[0];
+    const intention = bus.since().find((event) => event.type === "cognition.intention")!;
     bus.emit({ t: 1000, phase: 2, position: 0, source: "toy.resolve", type: "toy.unrelated", payload: {}, cause: intention.id });
     bus.emit({ t: 1000, phase: 2, position: 0, source: "toy.resolve", type: "toy.outcome", payload: {}, cause: intention.id });
     scheduler.runUntil(2000);
     expect(runner.state.minds[0].memory.episodes).toHaveLength(1);
     expect(runner.state.ignoredOutcomes[0].reason).toBe("duplicate outcome");
     expect(decoded).toHaveLength(1);
-    expect(process.state().cursor).toBe(4);
+    expect(bus.since().slice(0, process.state().cursor).filter((event) => event.type !== "cognition.decision")).toHaveLength(4);
   });
 
   it("does not publish a second intention while commitment remains unresolved", () => {
@@ -122,7 +122,7 @@ describe("cognition.tick (DESIGN §4, §7; kernel DESIGN §2.3, §8)", () => {
       outcomeTypes: [], readOutcome: () => { throw new Error("No outcomes"); } });
     const scheduler = new Scheduler({ order, emit: bus.emit }).register(process);
     scheduler.runUntil(3000);
-    expect(bus.since()).toHaveLength(1);
+    expect(bus.since().filter((event) => event.type === "cognition.intention")).toHaveLength(1);
     expect(runner.state.minds[0].decisions).toHaveLength(3);
     expect(runner.state.minds[0].decisions.slice(1).every((trace) => trace.commitment.kept)).toBe(true);
   });

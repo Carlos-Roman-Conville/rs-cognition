@@ -241,6 +241,23 @@ export interface CandidateTrace {
   readonly probability: number;
 }
 
+/** PLAN A.3, M1a-27: read-only projection of the existing decision trace for History. */
+export interface DecisionRecord {
+  readonly mind: EntityHandle;
+  readonly t: SimTime;
+  readonly needs: readonly { readonly id: string; readonly deficit: number; readonly priority: number }[];
+  readonly candidates: readonly {
+    readonly action: string;
+    readonly target?: EntityHandle;
+    readonly pHat: CategoricalBelief;
+    readonly eu: number;
+    readonly p: number;
+  }[];
+  readonly ineligible: readonly { readonly action: string; readonly target?: EntityHandle; readonly reason: string }[];
+  readonly intention: string;
+  readonly kept: boolean;
+}
+
 export interface DecisionTrace {
   readonly operations?: readonly import("./personality-operations.ts").PersonalityOperation[];
   readonly ineligible?: readonly { readonly candidate: Candidate; readonly eligible: false; readonly reason: string }[];

@@ -21,7 +21,7 @@ describe("population reducer (DESIGN §4, §7)", () => {
     const runner = setup(2);
     expect(runner.state.minds.map((mind) => mind.id)).toEqual(["mind.0001", "mind.0002"]);
     expect(runner.state.minds.map((mind) => mind.beliefIds[0].id)).toEqual(["bel.0001", "bel.0002"]);
-    const first = decide(runner).events[0];
+    const first = decide(runner).events.find((event) => event.type === "cognition.intention");
     expect(first).toMatchObject({ type: "cognition.intention", payload: { id: "cognition/int.0001", mind: "cognition/mind.0001" } });
     decide(runner, "mind.0002");
     const learned = outcome(runner);
@@ -104,13 +104,13 @@ describe("population reducer (DESIGN §4, §7)", () => {
     decide(runner);
     const original = runner.state.minds[0].intentions[0];
     runner.run({ type: "observe", mind: "mind.0001", observations: [observed(1500)], t: 1500 });
-    expect(decide(runner, "mind.0001", 1500).events).toEqual([]);
+    expect(decide(runner, "mind.0001", 1500).events.filter((event) => event.type === "cognition.intention")).toEqual([]);
     expect(runner.state.minds[0].intentions[0]).toEqual(original);
     expect(original.trace.candidates[0].expectedUtility).toBeCloseTo(0.5);
     expect(runner.state.minds[0].decisions[1].candidates[0].expectedUtility).toBeCloseTo(0.1);
     outcome(runner);
     expect(runner.state.minds[0].learning[0].predictionError).toBeCloseTo(-0.5);
-    expect(decide(runner, "mind.0001", 3000).events).toHaveLength(1);
+    expect(decide(runner, "mind.0001", 3000).events.filter((event) => event.type === "cognition.intention")).toHaveLength(1);
     expect(runner.state.minds[0].current!.id).toBe("int.0002");
   });
 
