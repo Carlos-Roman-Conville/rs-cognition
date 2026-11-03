@@ -70,6 +70,29 @@ describe("cognition.tick (DESIGN §4, §7; kernel DESIGN §2.3, §8)", () => {
     expect(canonical(replay.state)).toBe(canonical(runner.state));
     expect(canonical(replay.events)).toBe(canonical(runner.events));
     expect(log.filter((command) => command.type === "observe").every((command) => command.perceptionState !== undefined)).toBe(true);
+    expect(log.filter((command) => command.type === "tickNeeds").map(command => command.t))
+      .toEqual([1000, 1000, 2000, 2000, 3000, 3000, 4000, 4000]);
+  });
+
+  it("settles adapter-empty technical feedback without attribution or episodes and decides again at the next epoch", () => {
+    const { runner, bus } = setup(1, 10);
+    const process = new CognitionProcess({ runner, bus, period: 1000, epoch,
+      outcomeTypes: ["toy.technical"], readOutcome: () => ({ observations: [] }) });
+    const scheduler = new Scheduler({ order, emit: bus.emit }).register(process);
+    scheduler.runUntil(1000);
+    const before = structuredClone(runner.state.minds[0]);
+    const intention = bus.since().find(event => event.type === "cognition.intention")!;
+    bus.emit({ t: 1000, phase: 2, position: 0, source: "toy.resolve", type: "toy.technical",
+      payload: { reason: "technical" }, cause: intention.id });
+    scheduler.runUntil(2000);
+    const after = runner.state.minds[0];
+    expect(canonical(after.memory)).toBe(canonical(before.memory));
+    expect(after.learning).toEqual([]);
+    expect(after.intentions[0].outcomeEvent).toBeDefined();
+    expect(after.intentions[0].intention.status).toBe("failed");
+    expect(after.current!.id).not.toBe(before.current!.id);
+    expect(bus.since().filter(event => event.type === "cognition.intention")).toHaveLength(2);
+    expect(bus.since().filter(event => event.type === "cognition.attribution")).toEqual([]);
   });
 
   it("has canonical-identical scheduler traces on repeat runs and independent sensory/selection streams", () => {

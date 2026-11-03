@@ -91,7 +91,7 @@ export class CognitionProcess implements Process {
         random.get("cognition.perception.detect", entity));
       runner.run({ type: "observe", mind: id, t: ctx.t, observations: epoch.observations,
         perceptionState: random.state()[`cognition.perception.detect@${entity}`] });
-      runner.run({ type: "tickNeeds", mind: id, inputs: epoch.needs, goalProgress: epoch.goalProgress });
+      runner.run({ type: "tickNeeds", mind: id, t: ctx.t, inputs: epoch.needs, goalProgress: epoch.goalProgress });
       publish(runner.run({ type: "decide", mind: id, t: ctx.t,
         capacityFunctional: epoch.capacityFunctional, context: epoch.context }).events);
     }
