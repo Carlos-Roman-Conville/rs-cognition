@@ -95,13 +95,13 @@ describe("DESIGN §2.2 needs (level-4 model verification, not empirical validati
     expect(driveReward(single(0.1), single(0.2))).toBeLessThan(0);
   });
 
-  it("zero deficits and zero weights give uniform priorities without NaN; empty needs give zero drive", () => {
+  it("zero pressure gives every need priority 0 without NaN; empty needs give zero drive", () => {
     const rows = [signal("x"), signal("y")];
     for (const [definitions, signals] of [
       [rows, { x: 0, y: 0 }], [rows.map((row) => ({ ...row, weight: 0 })), { x: 1, y: 1 }],
     ] as const) {
       const result = evaluateNeeds(definitions, { ...input(), signals });
-      expect(result.map((need) => need.priority)).toEqual([0.5, 0.5]);
+      expect(result.map((need) => need.priority)).toEqual([0, 0]);
       expect(drive(result)).toBe(0);
     }
     expect(evaluateNeeds([], input())).toEqual([]);
@@ -109,6 +109,19 @@ describe("DESIGN §2.2 needs (level-4 model verification, not empirical validati
     const huge = evaluateNeeds([signal("x", Number.MAX_VALUE), signal("y", Number.MAX_VALUE)], { ...input(), signals: { x: 1, y: 1 } });
     expect(huge.map((need) => need.priority)).toEqual([0.5, 0.5]);
     expect(Number.isFinite(drive(huge))).toBe(true);
+  });
+
+  it("zero pressure leaves pertinence at its base π0 with the identity hook", () => {
+    const needs = evaluateNeeds([signal("x"), signal("y")], { ...input(), signals: { x: 0, y: 0 } });
+    const categories = [
+      { id: "food", base: 0.25, relevance: { x: 1, y: 0.5 } },
+      { id: "threat", base: 0, relevance: { x: 0.5, y: 1 } },
+    ];
+    // allocateAttention defaults to the identity pertinence hook and null personality.
+    const result = allocateAttention([], categories,
+      { beliefs, needs: { needs, goals: [] }, params: DEFAULT_COGNITIVE_PARAMS });
+    expect(needs.map((need) => need.pressure)).toEqual([0, 0]);
+    for (const category of categories) expect(result.pertinence[category.id]).toBe(category.base);
   });
 
   it("a goal step adds exactly V_g Δp_g, including regression and no progress", () => {

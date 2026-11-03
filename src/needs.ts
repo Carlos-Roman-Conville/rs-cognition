@@ -85,8 +85,8 @@ export function evaluateNeeds(definitions: readonly NeedDefinition[], inputs: Ne
   let max = 0;
   for (const need of needs) max = Math.max(max, need.pressure);
   const total = needs.reduce((sum, need) => sum + (max === 0 ? 0 : need.pressure / max), 0);
-  // DESIGN §2.2: M_i / sum M, scaled against overflow; proposed uniform zero-pressure convention.
-  return needs.map((need) => ({ ...need, priority: max === 0 ? 1 / needs.length : (need.pressure / max) / total }));
+  // DESIGN §2.2: M_i / sum M, scaled against overflow; zero pressure -> priority 0 (PLAN A.10 CN-1, Rex 2026-11-03)
+  return needs.map((need) => ({ ...need, priority: max === 0 ? 0 : (need.pressure / max) / total }));
 }
 
 /** DESIGN §2.2, Keramati & Gutkin (2014), level 4; defaults n=4, m=3 from the shared parameters. */
