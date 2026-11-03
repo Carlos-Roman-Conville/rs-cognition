@@ -12,7 +12,36 @@ export function interval(values: (number | null)[]): string {
   const mean = valid.reduce((a, b) => a + b, 0) / valid.length;
   return `${mean.toFixed(4)} [${Math.min(...valid).toFixed(4)}, ${Math.max(...valid).toFixed(4)}] (${valid.length}/${values.length})`;
 }
+/** A cell may span batches, but each seed must occur in exactly one batch. */
+export function combineSummaries(summaries: Summary[]): Summary[] {
+  const cells = new Map<string, Summary>();
+  for (const s of summaries) {
+    const f = s.factors;
+    const key = JSON.stringify([s.arm, f.knowledge, f.history, f.regime, f.c_d]);
+    const prior = cells.get(key);
+    if (new Set(s.settings.seeds).size !== s.settings.seeds.length)
+      throw new Error("Overlapping seeds within batch");
+    if (!prior) {
+      cells.set(key, { ...s, settings: { ...s.settings, seeds: [...s.settings.seeds] }, seeds: [...s.seeds] });
+      continue;
+    }
+    const configuration = (x: Summary) => JSON.stringify([x.settings.budgets, x.settings.trainingBudget,
+      x.settings.testCount, x.settings.trainMixes, x.settings.transferMixes, x.settings.n]);
+    if (configuration(prior) !== configuration(s)) throw new Error("Incompatible settings for cell");
+    if (s.settings.seeds.some(seed => prior.settings.seeds.includes(seed)))
+      throw new Error("Overlapping seeds across batches");
+    prior.settings.seeds.push(...s.settings.seeds);
+    prior.seeds.push(...s.seeds);
+  }
+  for (const s of cells.values()) {
+    s.settings.seeds.sort((a, b) => a - b);
+    s.seeds.sort((a, b) => a.seed - b.seed);
+  }
+  return [...cells.values()];
+}
+
 export function renderReport(summaries: Summary[]): string {
+  summaries = combineSummaries(summaries);
   const lines = ["# Ti mechanism results", "",
     "Budgeted DPLL charges one step per propagation clause check and c_d per branch. Atom choice is softmax(theta·features); polarity uses a sigmoid. REINFORCE (Williams 1992) uses lambda=0.05 and the mean of past received rewards. Correct definite reward is 1−steps/b; wrong is −1; unresolved is −0.25. Missing feedback makes no update. Confidence is recorded before feedback. Method confidence never changes allocation.", "",
     "Estimates/design choices: n=8–20; chain uses all atoms, XOR adjacent pairs, pigeon two holes/two or three pigeons, random ratio 4.26; recent-conflict window eight; signed polarity counts; c_d∈{1,2,4}; lambda, reward shape and unresolved penalty above; missing probability 0.5 and flip probability 0.3; budgets 50/100/200/400/800; histories 0/100/400; test counts 200 and seeds 40. Actual settings below override these defaults. Proposed choices: training budget 400, singleton training and pair transfer, Beta(1,1) priors, method Beta updated from own resolution, Brier calibration on definite answers, fixed-quality target 0.8. Habit is unused (design h=1, E_0=22, no decay).", "",

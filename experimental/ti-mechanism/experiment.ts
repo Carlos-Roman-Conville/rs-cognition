@@ -1,5 +1,5 @@
 /// <reference path="../../scripts/node.d.ts" />
-import { mkdirSync, writeFileSync } from "node:fs";
+import { appendFileSync, closeSync, mkdirSync, openSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { streams } from "@rex/kernel";
 import { generateProblems, type Knowledge, type Problem } from "./problems.ts";
@@ -7,6 +7,12 @@ import { families, type Family } from "./types.ts";
 import { runTi, type Theta, type TiResult } from "./run-ti.ts";
 import { feedback, learn, learner, type Regime, type Feedback } from "./learn.ts";
 import { confidence, recordConfidence, updateConfidence } from "./confidence.ts";
+
+declare module "node:fs" {
+  export function openSync(path: string, flags: string): number;
+  export function appendFileSync(fd: number, text: string): void;
+  export function closeSync(fd: number): void;
+}
 
 declare const process: { argv: string[] };
 export interface Factors { knowledge: Knowledge; history: number; regime: Regime; c_d: number }
@@ -135,19 +141,43 @@ export function runExperiment(arm: Arm, factors: Factors, settings: Settings = d
   }) } };
 }
 
+/** Keep only one seed's records in memory; serialize each record independently. */
+export function writeExperiment(out: string, name: string, arm: Arm, factors: Factors,
+  settings: Settings, summaryOnly = false): Summary {
+  const summary: Summary = { arm, factors, settings, seeds: [] };
+  const fd = summaryOnly ? undefined : openSync(join(out, `${name}.jsonl`), "w");
+  try {
+    for (const seed of settings.seeds) {
+      const result = runExperiment(arm, factors, { ...settings, seeds: [seed] });
+      if (fd !== undefined) for (const row of result.records) appendFileSync(fd, JSON.stringify(row) + "\n");
+      summary.seeds.push(...result.summary.seeds);
+    }
+  } finally {
+    if (fd !== undefined) closeSync(fd);
+  }
+  writeFileSync(join(out, `${name}.summary.json`), JSON.stringify(summary, null, 2) + "\n");
+  return summary;
+}
+
 /** --factors selects dimensions to sweep; omitted dimensions use proposed reference
  * none / 400 / accurate / 1. "all" performs the full factorial; default is all. */
-export function main(args: string[]): void {
-  let seeds = defaults.seeds, out = "experimental/ti-mechanism/results", subset = "all";
-  for (let i = 0; i < args.length; i += 2) {
-    const value = args[i + 1]; if (!value) throw new Error("Missing flag value");
-    if (args[i] === "--seeds") {
-      const count = Number(value); if (!Number.isInteger(count) || count < 1) throw new Error("--seeds requires a positive count");
-      seeds = Array.from({ length: count }, (_, j) => j + 1);
-    } else if (args[i] === "--out") out = value;
-    else if (args[i] === "--factors") subset = value;
-    else throw new Error(`Unknown flag ${args[i]}`);
+export function main(args: string[], settings: Settings = defaults): void {
+  let count = settings.seeds.length, start = 1, summaryOnly = false;
+  let out = "experimental/ti-mechanism/results", subset = "all";
+  for (let i = 0; i < args.length; i++) {
+    const flag = args[i];
+    if (flag === "--summary-only") { summaryOnly = true; continue; }
+    const value = args[++i]; if (!value) throw new Error("Missing flag value");
+    if (flag === "--seeds" || flag === "--seed-start") {
+      const number = Number(value);
+      if (!Number.isSafeInteger(number) || number < 1) throw new Error(`${flag} requires a positive integer`);
+      if (flag === "--seeds") count = number; else start = number;
+    } else if (flag === "--out") out = value;
+    else if (flag === "--factors") subset = value;
+    else throw new Error(`Unknown flag ${flag}`);
   }
+  if (!Number.isSafeInteger(start + count - 1)) throw new Error("Seed range exceeds safe integers");
+  const seeds = Array.from({ length: count }, (_, j) => start + j);
   const selected = subset === "all" ? ["knowledge", "history", "feedback", "cost"] : subset === "none" ? [] : subset.split(",");
   if (selected.some(f => !["knowledge", "history", "feedback", "cost"].includes(f))) throw new Error("Unknown factor");
   mkdirSync(out, { recursive: true });
@@ -156,11 +186,8 @@ export function main(args: string[]): void {
       for (const regime of (selected.includes("feedback") ? ["accurate", "incomplete", "misleading"] : ["accurate"]) as Regime[])
         for (const c_d of selected.includes("cost") ? [1, 2, 4] : [1])
           for (const arm of ["trained", "no-family-tags", "shuffled", "memorise"] as Arm[]) {
-            const result = runExperiment(arm, { knowledge, history, regime, c_d }, { ...defaults, seeds });
             const name = `${arm}-${knowledge}-${history}-${regime}-${c_d}`;
-            // Node writes string data as UTF-8 by default.
-            writeFileSync(join(out, `${name}.jsonl`), result.records.map(r => JSON.stringify(r)).join("\n") + "\n");
-            writeFileSync(join(out, `${name}.summary.json`), JSON.stringify(result.summary, null, 2) + "\n");
+            writeExperiment(out, name, arm, { knowledge, history, regime, c_d }, { ...settings, seeds }, summaryOnly);
           }
 }
 if (process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename)) main(process.argv.slice(2));
