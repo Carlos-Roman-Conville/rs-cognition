@@ -101,7 +101,7 @@ describe("DESIGN section 5.1 encode and conversation", () => {
     const chosen = reduceMinds(added.state, { type: "decide", mind: added.added!, t: 1000 }, config);
     expect(chosen.message?.utterances).toHaveLength(1);
     expect(chosen.state.minds[0].memory.conversations?.[0].sharedContext).toHaveLength(1);
-    expect(chosen.events.map(e => e.type)).toEqual(["cognition.intention"]);
+    expect(chosen.events.map(e => e.type)).toEqual(["cognition.decision", "cognition.intention"]);
     const kept = reduceMinds(chosen.state, { type: "decide", mind: added.added!, t: 1001 }, config);
     expect(kept.message).toBeUndefined();
     expect(kept.state.minds[0].memory.conversations?.[0].turns).toBe(1);
