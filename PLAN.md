@@ -674,10 +674,16 @@ small diagonal drift so old evidence can be outweighed when the world changes (t
   only per-cause variances. If a meal and an unrelated act always coincide, the observations constrain only the sum of
   their effects: the variance of the sum shrinks, the variance of their difference stays at its prior value, and the
   two estimates acquire a negative covariance. The split follows the priors and is reported as ambiguous, not as two
-  confident values. An unexplained change at a time with no act moves only β.
-- *Zero evidence:* no completed act of kind j inside its window → φ_j = 0 → μ_θj and its variance are unchanged
-  (except Q); no act at all → only β learns; no signal (dead body) → no update. A food never eaten keeps its prior; a
-  refused or failed eat teaches nothing about the food.
+  confident values. From an uncorrelated prior, an unexplained change at a time with no act moves only β.
+- *No direct evidence (corrected 2026-11-03):* no completed act of kind j inside its window → φ_j = 0 → that sample
+  carries **no direct evidence** about θ_j. It does **not** follow that μ_θj is unchanged: the gain is
+  `K = Σφ/(φᵀΣφ + R)`, so K_j = Σ_j·φ ≠ 0 whenever θ_j is correlated in Σ with a cause that is active (β or another
+  act). That is **indirect revision** of a previously confounded belief, which is correct inference (backward
+  blocking), not learning from the absent act. The guarantee is therefore: a refused, failed or impossible act adds
+  **no entry** to the act list and no term to φ, so the posterior equals that of the same run with the attempt removed
+  (counterfactual equality); and θ_j is unchanged only when it is uncorrelated with every active cause. No signal (dead
+  body) → no update. A food never eaten keeps its prior unless its effect is correlated with something that was
+  observed.
 
 **Initial assumptions (all labelled fixture, per scenario):** μ_θ = the host's declared naive effect of the act (so
 today's behaviour is the prior, not a rule); prior variance wide enough that one meal moves it (σ_θ,0 stated per
@@ -687,7 +693,13 @@ digestion model.
 
 **Into evaluation.** For a completed act of kind j the predicted deficit change is μ_θj, realised over G; the
 evaluation uses the predicted deficit `D + μ_θj` with the C-Q30 discount at the believed mean delay
-`T̄_j = Δ · Σ_τ τ (G(τ) − G(τ−1))`. Drive reduction is still the one function D(h) (C/§2.2); no new weight.
+`T̄_j = Σ_τ τ·(G(τ) − G(τ−))` in seconds (corrected 2026-11-03: the epoch-count form contradicted the physical-time
+basis above). Drive reduction is still the one function D(h) (C/§2.2); no new weight.
+**Each term at its own timing (Rex, 2026-11-03).** Costs incurred now and benefits arriving later are not discounted
+together: the effort cost is at T = 0, goal progress and exchange holdings at the outcome time `T = duration·Δ`, and drive
+reduction at `T̄_j` for a learned act (else `duration·Δ`). The loss-averse value v(·) is applied to the sum of the
+discounted terms, as today's v applies to the net. Assumption: the cost's T = 0 (the whole effort is treated as paid at
+the decision); stated as such, open to revision when effort is spread over the act.
 
 **Evidence labels.** This is a **proposed Bayesian associative-learning model** (level 4–5). The calculation is exact
 *under its own assumptions* (linear, additive, Gaussian, diffusion noise); that exactness says nothing about whether
@@ -701,7 +713,10 @@ otherwise they differ (e.g. backward blocking occurs here and not in Rescorla–
 
 **Added acceptance cases (to A.10's experiment):** (a) a surprising outcome moves μ against the prior's direction;
 (b) with an act and an unrelated act always together, the reported split equals the prior ratio and Σ shows the
-confounding; (c) a hunger change with no act moves β only; (d) η = 0 → no change; (e) a refused eat → no change in θ.
+confounding; (c) from an uncorrelated prior, a hunger change with no act moves β only; (d) η = 0 → no change; (e) a
+refused eat adds no act and leaves the posterior equal to the run without the attempt; (e′) after confounding, a sample
+in which only one of two correlated causes is active revises the other through Σ (indirect revision, expected). The first
+controlled verification uses the static-parameter case Q = 0; drift Q > 0 is a separate modelling choice tested after.
 
 ### A.11.2 Capability from perceived evidence (CN-5, C-Q32)
 
@@ -760,8 +775,9 @@ physiological dependency until Life's signal exists and is validated. Perceived 
    experiment: predictions compared first, then EU(eat), with the η = 0 control).
 2. Confounded causes remain uncertain: with two acts always together, the variance of the difference of their effects
    stays at its prior while the variance of the sum shrinks, and the covariance is negative.
-3. Refused meals and technical failures do not teach successful ingestion: no θ, capability, episode or prediction-error
-   change; the technical failure still settles the intention.
+3. Refused meals and technical failures do not teach successful ingestion: they add no act, episode or prediction
+   error, so θ, capability and episodes equal those of the same run without the attempt (indirect revision of θ through
+   Σ from later samples is allowed and is not ingestion learning); the technical failure still settles the intention.
 4. Update frequency manufactures no learning or bodily effect: the same fixture trajectory and elapsed time sampled at
    Δ = 1, 10 and 60 min give the same background posterior exactly and the same act-effect posterior within a stated
    tolerance (set before the run from G's sampling), and Cognition writes no bodily quantity at any Δ.
@@ -778,6 +794,29 @@ physiological dependency until Life's signal exists and is validated. Perceived 
 - **Interfaces to settle (registry map):** M1a-06 (satiety as observation), M1a-26 / E6 (generation stops reading
   capacity), M1a-20 (diagnostic cause separated from stimuli; technical failure = no feedback), M1a-27
   (`cognition.decision`).
+
+### A.11.6 Review amendments (Rex, 2026-11-03)
+
+Rex's review of Cognition keeps the core: attention `a_c = w_c/Σw_j`, drive reduction `D = (Σ w_k d_k^n)^(1/m)` with
+`r = D_before − D_after`, softmax choice and the commitment threshold, the eight-function distinctions, and allocation,
+competence and confidence as three separate quantities (competence improves an operation's relevant quality, never
+multiplies every operation's influence). It changes the build as follows.
+- **Zero pressure (CN-1 acceptance case 2) is implemented** as A.10 states: ΣM = 0 → every need priority 0 and pertinence
+  π0. Attention is not redesigned.
+- **C-Q30 is finished** with a declared expected consequence time (T̄_j); integrating over the delay distribution is
+  deferred. Terms keep their own timing (A.11.1 "Each term at its own timing"). Test: the same predicted ten-minute
+  consequence gets the same discount at any decision interval; changing how often a mind reconsiders is a separate
+  behavioural change.
+- **CN-7 keeps the joint covariance**, scoped to the need signals and act kinds the experiment exercises; no universal
+  cause model. The "zero evidence" guarantee is corrected (A.11.1); first verification at Q = 0.
+- **Consequence learning replaces the category-utility reward** (`learning.ts:194` reads perceived reward from the saved
+  utility of the predicted category): taste, expected liking and later bodily relief stay distinguishable; there is no
+  single "food reward".
+- **Memory: optimise access before changing memory.** The first step is an action-keyed index over episodes that
+  preserves today's context matching and retrieval exactly (byte-identical expectations), measured by a benchmark;
+  deletion, fixed windows or compressed summaries change what characters remember and are not proposed.
+- **Bounded:** generation stays bounded and evaluation one-action; unrestricted planning and a general Ni causal-model
+  search are deferred. Competing personality architectures stay experiments, never simultaneous modifiers.
 
 ## A.12 C-G3: belief that an office ought to be obeyed, from perceived events (keeper's bounded proposal, 2026-11-02)
 
